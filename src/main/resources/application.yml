@@ -5,6 +5,9 @@ personal:
   remoteService:
     ip: localhost
     port: 6060
+  login:
+    name: root
+    password: taosdata
 
 spring:
   application:
@@ -12,7 +15,7 @@ spring:
 
   datasource:
     driver-class-name: com.taosdata.jdbc.rs.RestfulDriver
-    url: jdbc:TAOS-RS://${personal.remoteService.ip}:${personal.remoteService.port}?useSSL=false&user=root&password=taosdata
+    url: jdbc:TAOS-RS://${personal.remoteService.ip}:${personal.remoteService.port}?useSSL=false&user=${personal.login.name}&password=${personal.login.password}&local=en_US.UTF-8&charset=UTF-8&timezone=Asia/Shanghai
     type: com.alibaba.druid.pool.DruidDataSource
     test-while-idle: true
     validation-query: SELECT 1

@@ -66,6 +66,7 @@ class TDEngineDataBaseTest {
             log.error("Failed to connect to TDengine, {}ErrMessage: {}",
                     ex instanceof SQLException ? "ErrCode: " + ((SQLException) ex).getErrorCode() + ", " : "",
                     ex.getMessage());
+            throw new RuntimeException("Failed to connect to TDengine, " + ex.getMessage());
         }
     }
 
