@@ -1,3 +1,16 @@
+server:
+  port: 8080
+
+personal:
+  remoteService:
+    ip: localhost
+    port: 6060
+
 spring:
   application:
     name: FinancialDataAnalysisBoot
+
+  datasource:
+    driver-class-name: com.taosdata.jdbc.rs.RestfulDriver
+    url: jdbc:TAOS-RS://${personal.remoteService.ip}:${personal.remoteService.port}?useSSL=false&user=root&password=taosdata
+    type: com.alibaba.druid.pool.DruidDataSource
