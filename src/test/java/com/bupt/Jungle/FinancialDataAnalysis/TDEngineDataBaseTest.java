@@ -34,12 +34,12 @@ class TDEngineDataBaseTest {
         connProps.setProperty(TSDBDriver.PROPERTY_KEY_LOCALE, "en_US.UTF-8");
         connProps.setProperty(TSDBDriver.PROPERTY_KEY_TIME_ZONE, "UTC-8");
 
-        log.info("try connect tao si database: {}", jdbcUrl);
+        log.info("try connect tao si database: TDengine");
         try (Connection conn = DriverManager.getConnection(jdbcUrl, connProps)) {
             try (Statement stmt = conn.createStatement()) {
                 stmt.executeQuery("SELECT SERVER_VERSION()");
                 ResultSet rs = stmt.getResultSet();
-                while (rs.next()) {
+                if (rs.next()) {
                     String version = rs.getString(1);
                     log.info("connected success! TD-engine server version: {}", version);
                 }
@@ -61,10 +61,9 @@ class TDEngineDataBaseTest {
         connProps.setProperty(TSDBDriver.PROPERTY_KEY_TIME_ZONE, "UTC-8");
 
         try (Connection ignore = DriverManager.getConnection(jdbcUrl, connProps)) {
-            log.info("Connected to {} successfully.", jdbcUrl);
+            log.info("Connected to TDengine successfully.");
         } catch (Exception ex) {
-            log.error("Failed to connect to {}, {}ErrMessage: {}",
-                    jdbcUrl,
+            log.error("Failed to connect to TDengine, {}ErrMessage: {}",
                     ex instanceof SQLException ? "ErrCode: " + ((SQLException) ex).getErrorCode() + ", " : "",
                     ex.getMessage());
         }
