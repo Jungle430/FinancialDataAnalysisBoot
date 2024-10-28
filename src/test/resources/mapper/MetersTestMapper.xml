@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.Jungle.FinancialDataAnalysis.mapper.MetersMapperTest">
+    <resultMap id="MeterTest" type="com.bupt.Jungle.FinancialDataAnalysis.dao.MetersTest">
+        <result column="ts" property="ts"/>
+        <result column="current" property="current"/>
+        <result column="voltage" property="voltage"/>
+        <result column="phase" property="phase"/>
+        <result column="groupid" property="groupId"/>
+        <result column="location" property="location"/>
+    </resultMap>
+    
+    <select id="find" resultMap="MeterTest">
+        SELECT * FROM test.meters LIMIT 10;
+    </select>
+</mapper>

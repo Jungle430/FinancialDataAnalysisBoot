@@ -14,3 +14,8 @@ spring:
     driver-class-name: com.taosdata.jdbc.rs.RestfulDriver
     url: jdbc:TAOS-RS://${personal.remoteService.ip}:${personal.remoteService.port}?useSSL=false&user=root&password=taosdata
     type: com.alibaba.druid.pool.DruidDataSource
+    test-while-idle: true
+    validation-query: SELECT 1
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml

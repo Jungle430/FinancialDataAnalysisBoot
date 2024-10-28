@@ -1,10 +1,13 @@
 package com.bupt.Jungle.FinancialDataAnalysis;
 
+import com.bupt.Jungle.FinancialDataAnalysis.service.MeterServiceTest;
 import com.taosdata.jdbc.TSDBDriver;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -13,11 +16,19 @@ import java.util.Properties;
 
 @SpringBootTest
 @Slf4j
+@MapperScan("com.bupt.Jungle.FinancialDataAnalysis.mapper")
 class TDEngineDataBaseTest {
-    @Value("${spring.datasource.url}")
-    private String jdbcUrl;
+    private final String jdbcUrl;
 
-    public boolean canConnTaoSiDataConnect() {
+    private final MeterServiceTest meterServiceTest;
+
+    @Autowired
+    public TDEngineDataBaseTest(@Value("${spring.datasource.url}") String jdbcUrl, MeterServiceTest meterServiceTest) {
+        this.jdbcUrl = jdbcUrl;
+        this.meterServiceTest = meterServiceTest;
+    }
+
+    private boolean canConnTaoSiDataConnect() {
         Properties connProps = new Properties();
         connProps.setProperty(TSDBDriver.PROPERTY_KEY_CHARSET, "UTF-8");
         connProps.setProperty(TSDBDriver.PROPERTY_KEY_LOCALE, "en_US.UTF-8");
@@ -26,7 +37,7 @@ class TDEngineDataBaseTest {
         log.info("try connect tao si database: {}", jdbcUrl);
         try (Connection conn = DriverManager.getConnection(jdbcUrl, connProps)) {
             try (Statement stmt = conn.createStatement()) {
-                stmt.executeQuery("select server_version();");
+                stmt.executeQuery("SELECT SERVER_VERSION()");
                 ResultSet rs = stmt.getResultSet();
                 while (rs.next()) {
                     String version = rs.getString(1);
@@ -59,4 +70,10 @@ class TDEngineDataBaseTest {
         }
     }
 
+    @Test
+    @EnabledIf("canConnTaoSiDataConnect")
+    @Tag("TaoSiDataBaseOperation")
+    public void TestTaoSiDataBaseSelect() {
+        log.info("select result:{}", meterServiceTest.find());
+    }
 }
