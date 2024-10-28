@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.sql.*;
 import java.util.Properties;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.datasource.url=jdbc:TAOS-RS://${personal.remoteService.ip}:${personal.remoteService.port}/test?useSSL=false&user=${personal.login.name}&password=${personal.login.password}&local=en_US.UTF-8&charset=UTF-8&timezone=Asia/Shanghai")
 @Slf4j
 @MapperScan("com.bupt.Jungle.FinancialDataAnalysis.mapper")
 class TDEngineDataBaseTest {
@@ -24,6 +24,7 @@ class TDEngineDataBaseTest {
 
     @Autowired
     public TDEngineDataBaseTest(@Value("${spring.datasource.url}") String jdbcUrl, MeterServiceTest meterServiceTest) {
+        log.info(jdbcUrl);
         this.jdbcUrl = jdbcUrl;
         this.meterServiceTest = meterServiceTest;
     }

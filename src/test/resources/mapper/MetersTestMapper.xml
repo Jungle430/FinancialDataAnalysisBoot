@@ -12,6 +12,6 @@
     </resultMap>
     
     <select id="find" resultMap="MeterTest">
-        SELECT * FROM test.meters LIMIT 10;
+        SELECT * FROM meters LIMIT 10;
     </select>
 </mapper>
