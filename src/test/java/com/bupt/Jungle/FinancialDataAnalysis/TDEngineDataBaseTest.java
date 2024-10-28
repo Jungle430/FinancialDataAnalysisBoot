@@ -2,6 +2,7 @@ package com.bupt.Jungle.FinancialDataAnalysis;
 
 import com.taosdata.jdbc.TSDBDriver;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +13,7 @@ import java.util.Properties;
 
 @SpringBootTest
 @Slf4j
-class FinancialDataAnalysisBootApplicationTests {
+class TDEngineDataBaseTest {
     @Value("${spring.datasource.url}")
     private String jdbcUrl;
 
@@ -22,6 +23,7 @@ class FinancialDataAnalysisBootApplicationTests {
         connProps.setProperty(TSDBDriver.PROPERTY_KEY_LOCALE, "en_US.UTF-8");
         connProps.setProperty(TSDBDriver.PROPERTY_KEY_TIME_ZONE, "UTC-8");
 
+        log.info("try connect tao si database: {}", jdbcUrl);
         try (Connection conn = DriverManager.getConnection(jdbcUrl, connProps)) {
             try (Statement stmt = conn.createStatement()) {
                 stmt.executeQuery("select server_version();");
@@ -40,6 +42,7 @@ class FinancialDataAnalysisBootApplicationTests {
 
     @Test
     @EnabledIf("canConnTaoSiDataConnect")
+    @Tag("TaoSiDataBaseConnect")
     public void TestTaoSiDataConnect() {
         Properties connProps = new Properties();
         connProps.setProperty(TSDBDriver.PROPERTY_KEY_CHARSET, "UTF-8");
