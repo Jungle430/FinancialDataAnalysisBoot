@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.sql.*;
 import java.util.Properties;
 
-@SpringBootTest(properties = "spring.datasource.url=jdbc:TAOS-RS://${personal.remoteService.ip}:${personal.remoteService.port}/test?useSSL=false&user=${personal.login.name}&password=${personal.login.password}&local=en_US.UTF-8&charset=UTF-8&timezone=Asia/Shanghai")
+@SpringBootTest(properties = "spring.datasource.url=jdbc:TAOS-RS://${personal.remoteService.ip}:${personal.remoteService.port}/test?useSSL=false&user=${personal.login.name}&password=${personal.login.password}&local=zh_CN.UTF-8&charset=UTF-8&timezone=Asia/Shanghai")
 @Slf4j
 @MapperScan("com.bupt.Jungle.FinancialDataAnalysis.mapper")
 class TDEngineDataBaseTest {
@@ -74,7 +74,14 @@ class TDEngineDataBaseTest {
     @Test
     @EnabledIf("canConnTaoSiDataConnect")
     @Tag("TaoSiDataBaseOperation")
-    public void TestTaoSiDataBaseSelect() {
+    public void TestTaoSiDataBaseSelectAllAndLimit() {
         log.info("select result:{}", meterServiceTest.find());
+    }
+
+    @Test
+    @EnabledIf("canConnTaoSiDataConnect")
+    @Tag("TaoSiDataBaseOperation")
+    public void TestTaoSiDataBaseSelectLastRow() {
+        log.info("{}", meterServiceTest.lastRow());
     }
 }

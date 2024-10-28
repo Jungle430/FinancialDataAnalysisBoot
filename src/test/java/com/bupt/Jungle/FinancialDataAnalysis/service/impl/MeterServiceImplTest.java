@@ -21,4 +21,19 @@ public class MeterServiceImplTest implements MeterServiceTest {
     public List<MetersTest> find() {
         return metersMapperTest.find();
     }
+
+    @Override
+    public Integer create(MetersTest metersTest, String tableName) {
+        return metersMapperTest.create(metersTest, tableName);
+    }
+
+    @Override
+    public Integer save(MetersTest metersTest, String tableName) {
+        return metersMapperTest.save(metersTest, tableName);
+    }
+
+    @Override
+    public MetersTest lastRow() {
+        return metersMapperTest.lastRow();
+    }
 }

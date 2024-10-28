@@ -12,6 +12,29 @@
     </resultMap>
     
     <select id="find" resultMap="MeterTest">
-        SELECT * FROM meters LIMIT 10;
+        SELECT *
+        FROM meters LIMIT 10;
+    </select>
+
+    <insert id="create">
+        CREATE TABLE IF NOT EXISTS #{tableName, jdbcType=VARCHAR}
+            USING meters TAGS
+        (
+            #{meter.groupId, jdbcType=INTEGER},
+            #{meter.location, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="save">
+        INSERT INTO #{tableName}
+        VALUES (#{meter.ts}, #{meter.current}, #{meter.voltage}, #{meter.phase});
+    </insert>
+
+    <select id="lastRow" resultMap="MeterTest">
+        SELECT LAST_ROW(ts) AS ts,
+               LAST_ROW(current) AS current,
+               LAST_ROW(voltage) AS voltage,
+               LAST_ROW(phase) AS phase
+        FROM meters;
     </select>
 </mapper>

@@ -6,4 +6,10 @@ import java.util.List;
 
 public interface MeterServiceTest {
     List<MetersTest> find();
+
+    Integer create(MetersTest metersTest, String tableName);
+
+    Integer save(MetersTest metersTest, String tableName);
+
+    MetersTest lastRow();
 }
