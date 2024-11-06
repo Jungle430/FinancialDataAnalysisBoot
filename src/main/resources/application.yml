@@ -15,7 +15,7 @@ spring:
 
   datasource:
     driver-class-name: com.taosdata.jdbc.rs.RestfulDriver
-    url: jdbc:TAOS-RS://${personal.remoteService.ip}:${personal.remoteService.port}/FinancialDataAnalysis?useSSL=false&user=${personal.login.name}&password=${personal.login.password}&local=zh_CN.UTF-8&charset=UTF-8&timezone=Asia/Shanghai
+    url: jdbc:TAOS-RS://${personal.remoteService.ip}:${personal.remoteService.port}/financial_data_analysis?useSSL=false&user=${personal.login.name}&password=${personal.login.password}&local=zh_CN.UTF-8&charset=UTF-8&timezone=Asia/Shanghai
     type: com.alibaba.druid.pool.DruidDataSource
     test-while-idle: true
     validation-query: SELECT 1

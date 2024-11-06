@@ -24,7 +24,6 @@ class TDEngineDataBaseTest {
 
     @Autowired
     public TDEngineDataBaseTest(@Value("${spring.datasource.url}") String jdbcUrl, MeterServiceTest meterServiceTest) {
-        log.info(jdbcUrl);
         this.jdbcUrl = jdbcUrl;
         this.meterServiceTest = meterServiceTest;
     }
