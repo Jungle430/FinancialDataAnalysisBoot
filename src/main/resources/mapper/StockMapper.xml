@@ -15,7 +15,7 @@
 
     <select id="queryByCompany" resultMap="Stock">
         SELECT date, closing_price, opening_price, highest_price, lowest_price, trading_volume, rise_and_fall, company
-        FROM stock
+        FROM financial_data_analysis.stock
         WHERE company = #{company}
         ORDER BY date DESC
         LIMIT #{size};

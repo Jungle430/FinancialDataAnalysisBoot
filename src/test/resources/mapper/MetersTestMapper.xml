@@ -20,12 +20,12 @@
 
     <select id="find" resultMap="MeterTest">
         SELECT *
-        FROM meters LIMIT 10;
+        FROM test.meters LIMIT 10;
     </select>
 
     <insert id="create">
         CREATE TABLE IF NOT EXISTS #{tableName, jdbcType=VARCHAR}
-            USING meters TAGS
+            USING test.meters TAGS
         (
             #{meter.groupId, jdbcType=INTEGER},
             #{meter.location, jdbcType=VARCHAR}
@@ -38,6 +38,6 @@
     </insert>
 
     <select id="lastRow" resultMap="MeterTestLastRow">
-        SELECT LAST_ROW(*) FROM meters;
+        SELECT LAST_ROW(*) FROM test.meters;
     </select>
 </mapper>
