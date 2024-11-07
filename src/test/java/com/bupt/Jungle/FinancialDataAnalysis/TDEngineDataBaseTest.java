@@ -6,25 +6,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.sql.*;
 import java.util.Properties;
 
-@SpringBootTest(classes = {FinancialDataAnalysisBoot.class}, properties = {"personal.database.name=test"})
+@SpringBootTest(classes = FinancialDataAnalysisBoot.class)
 @Slf4j
-@MapperScan("com.bupt.Jungle.FinancialDataAnalysis.mapper")
+@ActiveProfiles("test")
 class TDEngineDataBaseTest {
     private final String jdbcUrl;
 
     private final MeterServiceTest meterServiceTest;
 
     @Autowired
-    public TDEngineDataBaseTest(@Value("${spring.datasource.url}") String jdbcUrl, MeterServiceTest meterServiceTest) {
-        log.info(jdbcUrl);
+    public TDEngineDataBaseTest(@Value("${spring.datasource.url}") String jdbcUrl, MeterServiceTest meterServiceTest, @Value("${personal.database.name}") String personalDatabaseName) {
+        log.info("jdbcUrl: {}, database.name: {}", jdbcUrl, personalDatabaseName);
         this.jdbcUrl = jdbcUrl;
         this.meterServiceTest = meterServiceTest;
     }

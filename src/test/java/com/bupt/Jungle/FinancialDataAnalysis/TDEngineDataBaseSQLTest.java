@@ -5,7 +5,6 @@ import com.taosdata.jdbc.TSDBDriver;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,8 +46,8 @@ public class TDEngineDataBaseSQLTest {
     }
 
     @Autowired
-    public TDEngineDataBaseSQLTest(@Value("${spring.datasource.url}") String jdbcUrl, StockMapper stockMapper) {
-        log.info(jdbcUrl);
+    public TDEngineDataBaseSQLTest(@Value("${spring.datasource.url}") String jdbcUrl, StockMapper stockMapper, @Value("${personal.database.name}") String personalDatabaseName) {
+        log.info("jdbcUrl: {}, database.name: {}", jdbcUrl, personalDatabaseName);
         this.jdbcUrl = jdbcUrl;
         this.stockMapper = stockMapper;
     }
