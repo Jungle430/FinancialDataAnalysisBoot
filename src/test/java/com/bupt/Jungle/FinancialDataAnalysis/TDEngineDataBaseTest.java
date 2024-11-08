@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.sql.*;
 import java.util.Properties;
 
-@SpringBootTest(classes = FinancialDataAnalysisBoot.class)
+@SpringBootTest(classes = FinancialDataAnalysisBoot.class, properties = "personal.database.name=test")
 @Slf4j
 @ActiveProfiles("test")
 class TDEngineDataBaseTest {

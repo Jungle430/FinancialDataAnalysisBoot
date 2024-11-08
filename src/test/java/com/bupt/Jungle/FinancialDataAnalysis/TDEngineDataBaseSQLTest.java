@@ -8,6 +8,7 @@ import org.junit.jupiter.api.condition.EnabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,6 +18,7 @@ import java.util.Properties;
 
 @SpringBootTest(classes = FinancialDataAnalysisBoot.class)
 @Slf4j
+@ActiveProfiles("test")
 public class TDEngineDataBaseSQLTest {
     private final String jdbcUrl;
 
