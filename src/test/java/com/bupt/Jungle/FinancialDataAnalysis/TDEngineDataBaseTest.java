@@ -1,6 +1,6 @@
 package com.bupt.Jungle.FinancialDataAnalysis;
 
-import com.bupt.Jungle.FinancialDataAnalysis.service.MeterServiceTest;
+import com.bupt.Jungle.FinancialDataAnalysis.service.impl.MeterTestServiceImpl;
 import com.taosdata.jdbc.TSDBDriver;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Tag;
@@ -20,13 +20,17 @@ import java.util.Properties;
 class TDEngineDataBaseTest {
     private final String jdbcUrl;
 
-    private final MeterServiceTest meterServiceTest;
+    private final MeterTestServiceImpl meterTestService;
 
     @Autowired
-    public TDEngineDataBaseTest(@Value("${spring.datasource.url}") String jdbcUrl, MeterServiceTest meterServiceTest, @Value("${personal.database.name}") String personalDatabaseName) {
+    public TDEngineDataBaseTest(
+            @Value("${spring.datasource.url}") String jdbcUrl,
+            MeterTestServiceImpl meterTestService,
+            @Value("${personal.database.name}") String personalDatabaseName
+    ) {
         log.info("jdbcUrl: {}, database.name: {}", jdbcUrl, personalDatabaseName);
         this.jdbcUrl = jdbcUrl;
-        this.meterServiceTest = meterServiceTest;
+        this.meterTestService = meterTestService;
     }
 
     private boolean canConnTaoSiDataConnect() {
@@ -65,7 +69,7 @@ class TDEngineDataBaseTest {
             log.info("Connected to TDengine successfully.");
         } catch (Exception ex) {
             log.error("Failed to connect to TDengine, {}ErrMessage: {}",
-                    ex instanceof SQLException ? "ErrCode: " + ((SQLException) ex).getErrorCode() + ", " : "",
+                    ex instanceof SQLException sqlException ? "ErrCode: " + sqlException.getErrorCode() + ", " : "",
                     ex.getMessage());
             throw new RuntimeException("Failed to connect to TDengine, " + ex.getMessage());
         }
@@ -75,13 +79,13 @@ class TDEngineDataBaseTest {
     @EnabledIf("canConnTaoSiDataConnect")
     @Tag("TaoSiDataBaseOperation")
     public void TestTaoSiDataBaseSelectAllAndLimit() {
-        log.info("select result:{}", meterServiceTest.find());
+        log.info("select result:{}", meterTestService.find());
     }
 
     @Test
     @EnabledIf("canConnTaoSiDataConnect")
     @Tag("TaoSiDataBaseOperation")
     public void TestTaoSiDataBaseSelectLastRow() {
-        log.info("{}", meterServiceTest.lastRow());
+        log.info("{}", meterTestService.lastRow());
     }
 }
