@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MetersTestDO {
+public class MetersTestPO {
     private Timestamp ts;
 
     private Float current;

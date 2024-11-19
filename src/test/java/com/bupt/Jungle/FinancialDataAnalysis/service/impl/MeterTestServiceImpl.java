@@ -1,6 +1,6 @@
 package com.bupt.Jungle.FinancialDataAnalysis.service.impl;
 
-import com.bupt.Jungle.FinancialDataAnalysis.dao.DO.MetersTestDO;
+import com.bupt.Jungle.FinancialDataAnalysis.dao.DO.MetersTestPO;
 import com.bupt.Jungle.FinancialDataAnalysis.mapper.MetersTestMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +16,11 @@ public class MeterTestServiceImpl {
         this.metersTestMapper = metersTestMapper;
     }
 
-    public List<MetersTestDO> find() {
+    public List<MetersTestPO> find() {
         return metersTestMapper.find();
     }
 
-    public MetersTestDO lastRow() {
+    public MetersTestPO lastRow() {
         return metersTestMapper.lastRow();
     }
 }

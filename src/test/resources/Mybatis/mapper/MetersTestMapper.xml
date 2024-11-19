@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bupt.Jungle.FinancialDataAnalysis.mapper.MetersTestMapper">
-    <resultMap id="MeterTest" type="com.bupt.Jungle.FinancialDataAnalysis.dao.DO.MetersTestDO">
+    <resultMap id="MeterTest" type="com.bupt.Jungle.FinancialDataAnalysis.dao.DO.MetersTestPO">
         <result column="ts" property="ts"/>
         <result column="current" property="current"/>
         <result column="voltage" property="voltage"/>
@@ -11,7 +11,7 @@
         <result column="location" property="location"/>
     </resultMap>
 
-    <resultMap id="MeterTestLastRow" type="com.bupt.Jungle.FinancialDataAnalysis.dao.DO.MetersTestDO">
+    <resultMap id="MeterTestLastRow" type="com.bupt.Jungle.FinancialDataAnalysis.dao.DO.MetersTestPO">
         <result column="last_row(ts)" property="ts"/>
         <result column="last_row(current)" property="current"/>
         <result column="last_row(voltage)" property="voltage"/>
