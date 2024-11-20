@@ -25,3 +25,8 @@ spring:
 
 mybatis:
   mapper-locations: classpath:Mybatis/mapper/*.xml
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
