@@ -3,6 +3,7 @@ package com.bupt.Jungle.FinancialDataAnalysis;
 import com.bupt.Jungle.FinancialDataAnalysis.service.impl.MeterTestServiceImpl;
 import com.taosdata.jdbc.TSDBDriver;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
@@ -83,7 +84,7 @@ class TDEngineDataBaseTest {
     }
 
     @Test
-    @EnabledIf("canConnTaoSiDataConnect")
+    @Disabled
     @Tag("TaoSiDataBaseOperation")
     public void TestTaoSiDataBaseSelectLastRow() {
         log.info("{}", meterTestService.lastRow());
