@@ -10,6 +10,13 @@ personal:
     password: taosdata
   database:
     name: "financial_data_analysis"
+  knife4j:
+    title: "基于SpringBoot的金融数据分析软件后台测试系统"
+    version: "1.0"
+    description: "开发人员专用"
+    license: "Apache 2.0"
+    name: "Jungle"
+
 
 spring:
   application:
