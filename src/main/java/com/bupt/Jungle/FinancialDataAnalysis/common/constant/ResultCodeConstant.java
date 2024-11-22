@@ -1,4 +1,4 @@
-package com.bupt.Jungle.FinancialDataAnalysis.constant;
+package com.bupt.Jungle.FinancialDataAnalysis.common.constant;
 
 public final class ResultCodeConstant {
     /**

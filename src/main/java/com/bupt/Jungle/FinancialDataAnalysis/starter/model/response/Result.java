@@ -1,6 +1,6 @@
-package com.bupt.Jungle.FinancialDataAnalysis.util;
+package com.bupt.Jungle.FinancialDataAnalysis.starter.model.response;
 
-import com.bupt.Jungle.FinancialDataAnalysis.constant.ResultCodeConstant;
+import com.bupt.Jungle.FinancialDataAnalysis.common.constant.ResultCodeConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -42,6 +42,16 @@ public class Result<T> {
     }
 
     public static <T> Result<T> fail(String errMessage) {
+        Result<T> result = new Result<>();
+        result.setSuccess(false);
+        result.setErrMessage(errMessage);
+        result.setCode(ResultCodeConstant.OK);
+        result.setData(null);
+        result.setTimestamp(System.currentTimeMillis());
+        return result;
+    }
+
+    public static <T> Result<T> error(String errMessage) {
         Result<T> result = new Result<>();
         result.setSuccess(false);
         result.setErrMessage(errMessage);

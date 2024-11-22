@@ -1,4 +1,4 @@
-package com.bupt.Jungle.FinancialDataAnalysis.config;
+package com.bupt.Jungle.FinancialDataAnalysis.infrastructure.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import lombok.Getter;

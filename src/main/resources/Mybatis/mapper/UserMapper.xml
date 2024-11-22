@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.UserMapper">
+    <resultMap id="User" type="com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.UserPO">
+        <id column="username" jdbcType="VARCHAR" javaType="java.lang.String" property="username"/>
+        <id column="phone" jdbcType="VARCHAR" javaType="java.lang.String" property="phone"/>
+        <id column="password" jdbcType="VARCHAR" javaType="java.lang.String" property="password"/>
+        <id column="create_time" jdbcType="TIMESTAMP" javaType="java.sql.Timestamp" property="createTime"/>
+        <id column="update_time" jdbcType="TIMESTAMP" javaType="java.sql.Timestamp" property="updateTime"/>
+    </resultMap>
+
+    <select id="queryUserByPhoneAndPassword" resultMap="User">
+        SELECT username, phone, password, create_time, update_time
+        FROM `financial_data_analysis`.`user`
+        WHERE phone = #{phone,jdbcType=VARCHAR}
+          AND password = #{password,jdbcType=VARCHAR};
+    </select>
+</mapper>

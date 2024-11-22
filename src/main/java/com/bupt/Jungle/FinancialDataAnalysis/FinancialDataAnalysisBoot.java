@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.bupt.Jungle.FinancialDataAnalysis.dal.mapper")
+@MapperScan("com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper")
 public class FinancialDataAnalysisBoot {
 
     public static void main(String[] args) {

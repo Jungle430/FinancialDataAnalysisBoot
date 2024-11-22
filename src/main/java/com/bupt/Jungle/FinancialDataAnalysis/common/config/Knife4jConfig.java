@@ -1,4 +1,4 @@
-package com.bupt.Jungle.FinancialDataAnalysis.config;
+package com.bupt.Jungle.FinancialDataAnalysis.common.config;
 
 
 import io.swagger.v3.oas.models.OpenAPI;
