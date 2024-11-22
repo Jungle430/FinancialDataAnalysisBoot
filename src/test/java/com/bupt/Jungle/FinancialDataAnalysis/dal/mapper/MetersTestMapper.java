@@ -1,6 +1,6 @@
-package com.bupt.Jungle.FinancialDataAnalysis.mapper;
+package com.bupt.Jungle.FinancialDataAnalysis.dal.mapper;
 
-import com.bupt.Jungle.FinancialDataAnalysis.dao.DO.MetersTestPO;
+import com.bupt.Jungle.FinancialDataAnalysis.dal.model.MetersTestPO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

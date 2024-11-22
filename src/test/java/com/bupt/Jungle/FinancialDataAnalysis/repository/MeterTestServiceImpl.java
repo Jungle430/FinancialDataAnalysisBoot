@@ -1,13 +1,13 @@
-package com.bupt.Jungle.FinancialDataAnalysis.service.impl;
+package com.bupt.Jungle.FinancialDataAnalysis.repository;
 
-import com.bupt.Jungle.FinancialDataAnalysis.dao.DO.MetersTestPO;
-import com.bupt.Jungle.FinancialDataAnalysis.mapper.MetersTestMapper;
+import com.bupt.Jungle.FinancialDataAnalysis.dal.model.MetersTestPO;
+import com.bupt.Jungle.FinancialDataAnalysis.dal.mapper.MetersTestMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Service
+@Repository
 public class MeterTestServiceImpl {
     private final MetersTestMapper metersTestMapper;
 

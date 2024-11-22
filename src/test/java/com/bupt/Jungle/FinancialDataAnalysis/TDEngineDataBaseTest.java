@@ -1,12 +1,13 @@
 package com.bupt.Jungle.FinancialDataAnalysis;
 
-import com.bupt.Jungle.FinancialDataAnalysis.service.impl.MeterTestServiceImpl;
+import com.bupt.Jungle.FinancialDataAnalysis.repository.MeterTestServiceImpl;
 import com.taosdata.jdbc.TSDBDriver;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +19,7 @@ import java.util.Properties;
 @SpringBootTest(classes = FinancialDataAnalysisBoot.class, properties = "personal.database.name=test")
 @Slf4j
 @ActiveProfiles("test")
+@MapperScan("com.bupt.Jungle.FinancialDataAnalysis.dal.mapper")
 class TDEngineDataBaseTest {
     private final String jdbcUrl;
 

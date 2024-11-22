@@ -1,4 +1,4 @@
-package com.bupt.Jungle.FinancialDataAnalysis.dao.DO;
+package com.bupt.Jungle.FinancialDataAnalysis.dal.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
