@@ -1,7 +1,7 @@
 package com.bupt.Jungle.FinancialDataAnalysis.service.common;
 
 import com.bupt.Jungle.FinancialDataAnalysis.constant.CacheServiceConstant;
-import com.bupt.Jungle.FinancialDataAnalysis.exception.CacheServiceException;
+import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.exception.CacheServiceException;
 
 import java.util.Map;
 import java.util.Objects;
