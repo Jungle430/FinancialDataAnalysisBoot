@@ -1,5 +1,5 @@
 package com.bupt.Jungle.FinancialDataAnalysis.constant;
 
-public class CacheServiceConstant {
+public final class CacheServiceConstant {
     public static final long NEVER_EXPIRE = -1;
 }
