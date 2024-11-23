@@ -10,6 +10,10 @@ personal:
     password: taosdata
   database:
     name: "financial_data_analysis"
+  redis:
+    login:
+      prefix: "financial_data_analysis.user.login:"
+      expiration_time_in_days: 3
   knife4j:
     title: "基于SpringBoot的金融数据分析软件后台测试系统"
     version: "1.0"
@@ -28,6 +32,19 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     test-while-idle: true
     validation-query: SELECT 1
+  data:
+    redis:
+      database: 0
+      host: 8.140.245.69
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          max-wait: -1ms
+          min-idle: 0
+        shutdown-timeout: 100ms
+      port: 6379
+      password: 
 
 
 mybatis:
@@ -37,6 +54,3 @@ knife4j:
   enable: true
   setting:
     language: zh_cn
-
-guava:
-  size: 100

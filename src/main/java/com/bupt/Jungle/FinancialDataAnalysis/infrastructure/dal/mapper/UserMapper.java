@@ -9,4 +9,6 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
     List<UserPO> queryUserByPhoneAndPassword(@Param("phone") String phone, @Param("password") String password);
+
+    List<UserPO> queryUserByPhone(@Param("phone") String phone);
 }

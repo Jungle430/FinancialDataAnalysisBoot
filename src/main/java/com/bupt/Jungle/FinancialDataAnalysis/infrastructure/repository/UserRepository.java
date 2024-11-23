@@ -26,4 +26,12 @@ public class UserRepository {
         }
         return UserAssembler.UserPO2BO(userPOList.get(0));
     }
+
+    public UserBO queryUserByPhone(String phone) {
+        List<UserPO> userPOList = userMapper.queryUserByPhone(phone);
+        if (CollectionUtils.isEmpty(userPOList)) {
+            return null;
+        }
+        return UserAssembler.UserPO2BO(userPOList.get(0));
+    }
 }

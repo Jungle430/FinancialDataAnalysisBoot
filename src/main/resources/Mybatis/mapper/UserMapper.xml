@@ -16,4 +16,10 @@
         WHERE phone = #{phone,jdbcType=VARCHAR}
           AND password = #{password,jdbcType=VARCHAR};
     </select>
+
+    <select id="queryUserByPhone" resultMap="User">
+        SELECT username, phone, password, create_time, update_time
+        FROM `financial_data_analysis`.`user`
+        WHERE phone = #{phone,jdbcType=VARCHAR};
+    </select>
 </mapper>
