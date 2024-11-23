@@ -15,9 +15,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("/user")
@@ -40,10 +40,17 @@ public class UserController {
         return LoginAssembler.LoginBO2Response(userLogService.login(loginRequest.getPhone(), loginRequest.getPassword()));
     }
 
-    @GetMapping("/info/{token}")
+    @GetMapping("/info")
     @Operation(summary = "实时获取用户信息")
     @Parameters({@Parameter(name = "token", description = "本地存储的token")})
-    public Result<UserInfoResponse> info(@PathVariable(name = "token") @NonNull String token) {
+    public Result<UserInfoResponse> info(@RequestParam(name = "token") @NonNull String token) {
         return UserAssembler.UserInfoBO2Response(userInfoService.getUserInfo(token));
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "登出")
+    @Parameters({@Parameter(name = "token", description = "本地存储的token")})
+    public Result<Boolean> logout(@RequestParam(name = "token") @NonNull String token) {
+        return userLogService.logout(token) ? Result.ok(true) : Result.fail("未查询到该用户");
     }
 }

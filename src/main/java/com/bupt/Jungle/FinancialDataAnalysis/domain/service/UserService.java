@@ -4,6 +4,7 @@ import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.UserAssembler
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.LoginBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.UserBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.UserInfoBO;
+import com.bupt.Jungle.FinancialDataAnalysis.domain.config.UserLogConfig;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.cache.CacheService;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.gateway.RedisGateway;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.repository.UserRepository;
@@ -13,7 +14,6 @@ import com.bupt.Jungle.FinancialDataAnalysis.util.ToolUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -28,17 +28,12 @@ public class UserService {
     @Resource(type = RedisGateway.class)
     private CacheService cacheService;
 
-    private final String loginPrefix;
-
-    private final Long loginExpireTimeInDays;
+    private final UserLogConfig userLogConfig;
 
     @Autowired
-    public UserService(UserRepository userRepository,
-                       @Value("${personal.redis.login.prefix}") String loginPrefix,
-                       @Value("${personal.redis.login.expiration_time_in_days}") Long loginExpireTimeInDays) {
+    public UserService(UserRepository userRepository, UserLogConfig userLogConfig) {
         this.userRepository = userRepository;
-        this.loginPrefix = loginPrefix;
-        this.loginExpireTimeInDays = loginExpireTimeInDays;
+        this.userLogConfig = userLogConfig;
     }
 
     public LoginBO login(String phone, String password) {
@@ -66,13 +61,13 @@ public class UserService {
         String userInfoBOJsonStr = GsonUtil.beanToJson(userInfoBO);
         String token = UUID.randomUUID().toString();
         log.info("cacheService.set start, key:{}", token);
-        cacheService.set(loginPrefix + token, userInfoBOJsonStr, loginExpireTimeInDays, TimeUnit.DAYS);
+        cacheService.set(userLogConfig.getPrefix() + token, userInfoBOJsonStr, userLogConfig.getExpireTimeInDays(), TimeUnit.DAYS);
         log.info("cacheService.set end, key:{}", token);
         return LoginAssembler.buildLoginBOFromToken(token);
     }
 
     public UserInfoBO getUserInfo(String token) {
-        String userInfoBOJsonStr = cacheService.get(loginPrefix + token);
+        String userInfoBOJsonStr = cacheService.get(userLogConfig.getPrefix() + token);
         if (Objects.isNull(userInfoBOJsonStr)) {
             return null;
         }
@@ -80,11 +75,15 @@ public class UserService {
     }
 
     public boolean refreshUserInfoCache(String token) {
-        String userInfoBOJsonStr = cacheService.get(loginPrefix + token);
+        String userInfoBOJsonStr = cacheService.get(userLogConfig.getPrefix() + token);
         if (Objects.isNull(userInfoBOJsonStr)) {
             return false;
         }
-        cacheService.set(loginPrefix + token, userInfoBOJsonStr, loginExpireTimeInDays, TimeUnit.DAYS);
+        cacheService.set(userLogConfig.getPrefix() + token, userInfoBOJsonStr, userLogConfig.getExpireTimeInDays(), TimeUnit.DAYS);
         return true;
+    }
+
+    public boolean delUserInfoCache(String token) {
+        return cacheService.del(userLogConfig.getPrefix() + token);
     }
 }

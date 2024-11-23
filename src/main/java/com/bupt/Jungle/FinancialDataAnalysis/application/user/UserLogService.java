@@ -17,4 +17,8 @@ public class UserLogService {
     public LoginBO login(String phone, String password) {
         return userService.login(phone, password);
     }
+
+    public boolean logout(String token) {
+        return userService.delUserInfoCache(token);
+    }
 }

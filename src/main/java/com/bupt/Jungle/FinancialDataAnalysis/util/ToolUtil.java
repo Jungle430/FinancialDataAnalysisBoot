@@ -14,7 +14,7 @@ public final class ToolUtil {
     }
 
     /*
-     * 检查密码长度是否在6-255之间
+     * 检查密码长度是否在5-255之间
      */
     public static boolean checkPassword(String password) {
         return StringUtils.isNotBlank(password)
