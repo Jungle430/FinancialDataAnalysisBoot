@@ -70,4 +70,21 @@ public class UserService {
         log.info("cacheService.set end, key:{}", token);
         return LoginAssembler.buildLoginBOFromToken(token);
     }
+
+    public UserInfoBO getUserInfo(String token) {
+        String userInfoBOJsonStr = cacheService.get(loginPrefix + token);
+        if (Objects.isNull(userInfoBOJsonStr)) {
+            return null;
+        }
+        return GsonUtil.jsonToBean(userInfoBOJsonStr, UserInfoBO.class);
+    }
+
+    public boolean refreshUserInfoCache(String token) {
+        String userInfoBOJsonStr = cacheService.get(loginPrefix + token);
+        if (Objects.isNull(userInfoBOJsonStr)) {
+            return false;
+        }
+        cacheService.set(loginPrefix + token, userInfoBOJsonStr, loginExpireTimeInDays, TimeUnit.DAYS);
+        return true;
+    }
 }
