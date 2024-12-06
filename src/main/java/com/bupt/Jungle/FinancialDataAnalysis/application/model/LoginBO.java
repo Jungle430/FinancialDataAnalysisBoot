@@ -10,9 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginBO {
-    private Boolean success;
-
     private String token;
-
-    private String errMessage;
 }

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("/user")
 @Tag(name = "用户")
-public class UserController {
+public class  UserController {
     private final UserLogService userLogService;
 
     private final UserInfoService userInfoService;
@@ -36,7 +36,7 @@ public class UserController {
     @PostMapping("/login")
     @Operation(summary = "登录")
     @Parameters({@Parameter(name = "loginRequest", description = "登录信息")})
-    public Result<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
         return LoginAssembler.LoginBO2Response(userLogService.login(loginRequest.getPhone(), loginRequest.getPassword()));
     }
 
