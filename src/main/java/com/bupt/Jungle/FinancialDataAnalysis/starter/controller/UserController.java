@@ -43,7 +43,7 @@ public class  UserController {
     @GetMapping("/info")
     @Operation(summary = "实时获取用户信息")
     @Parameters({@Parameter(name = "token", description = "本地存储的token")})
-    public Result<UserInfoResponse> info(@RequestParam(name = "token") @NonNull String token) {
+    public UserInfoResponse info(@RequestParam(name = "token") @NonNull String token) {
         return UserAssembler.UserInfoBO2Response(userInfoService.getUserInfo(token));
     }
 

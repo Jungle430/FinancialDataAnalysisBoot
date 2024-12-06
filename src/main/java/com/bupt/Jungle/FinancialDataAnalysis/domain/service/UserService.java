@@ -70,7 +70,7 @@ public class UserService {
     public UserInfoBO getUserInfo(String token) {
         String userInfoBOJsonStr = cacheService.get(userLogConfig.getPrefix() + token);
         if (Objects.isNull(userInfoBOJsonStr)) {
-            return null;
+            throw new BusinessException("没有该用户!请重新登录!");
         }
         return GsonUtil.jsonToBean(userInfoBOJsonStr, UserInfoBO.class);
     }
