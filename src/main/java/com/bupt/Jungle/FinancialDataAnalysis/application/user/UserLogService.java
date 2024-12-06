@@ -1,6 +1,7 @@
 package com.bupt.Jungle.FinancialDataAnalysis.application.user;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.LoginBO;
+import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,9 @@ public class UserLogService {
         return userService.login(phone, password);
     }
 
-    public boolean logout(String token) {
-        return userService.delUserInfoCache(token);
+    public void logout(String token) {
+        if (!userService.delUserInfoCache(token)) {
+            throw new BusinessException("没有该用户!请重新登录!");
+        }
     }
 }

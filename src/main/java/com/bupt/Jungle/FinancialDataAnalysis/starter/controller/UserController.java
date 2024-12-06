@@ -6,7 +6,6 @@ import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.LoginAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.UserAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.LoginRequest;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.LoginResponse;
-import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.Result;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.UserInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -50,7 +49,7 @@ public class  UserController {
     @PostMapping("/logout")
     @Operation(summary = "登出")
     @Parameters({@Parameter(name = "token", description = "本地存储的token")})
-    public Result<Boolean> logout(@RequestParam(name = "token") @NonNull String token) {
-        return userLogService.logout(token) ? Result.ok(true) : Result.fail("未查询到该用户");
+    public void logout(@RequestParam(name = "token") @NonNull String token) {
+        userLogService.logout(token);
     }
 }
