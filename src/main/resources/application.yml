@@ -17,7 +17,7 @@ personal:
     name: "Jungle"
   front:
     token:
-      head_key: "X-token"
+      head_key: "X-Token"
       prefix: "userService:token:"
       expiration_time_in_days: 3
 
