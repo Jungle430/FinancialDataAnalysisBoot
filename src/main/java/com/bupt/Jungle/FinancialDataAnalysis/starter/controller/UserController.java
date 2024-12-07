@@ -10,6 +10,7 @@ import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.UserInfoResp
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,7 @@ public class UserController {
 
     @GetMapping("/info")
     @Operation(summary = "实时获取用户信息")
+    @Parameters({@Parameter(name = "X-Token", description = "本地存储的token", in = ParameterIn.HEADER)})
     public UserInfoResponse info() {
         return UserAssembler.UserInfoBO2Response(userInfoService.getUserInfo());
     }

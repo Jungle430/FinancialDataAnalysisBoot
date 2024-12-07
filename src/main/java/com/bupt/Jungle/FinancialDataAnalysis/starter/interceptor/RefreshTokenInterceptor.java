@@ -35,10 +35,16 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
         }
 
         String key = userLogConfig.getPrefix() + token;
-        UserInfoBO userInfoBo = GsonUtil.jsonToBean(cacheService.get(token), UserInfoBO.class);
+        String value = cacheService.get(key);
+        if (StringUtils.isEmpty(value)) {
+            return true;
+        }
+
+        UserInfoBO userInfoBo = GsonUtil.jsonToBean(value, UserInfoBO.class);
         if (Objects.isNull(userInfoBo)) {
             return true;
         }
+
         UserInfoHolder.saveUserInfoBO(userInfoBo);
         cacheService.expire(key, userLogConfig.getExpireTimeInDays(), TimeUnit.DAYS);
         return true;
