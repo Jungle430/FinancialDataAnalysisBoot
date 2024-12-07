@@ -2,6 +2,8 @@ package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.user.UserInfoService;
 import com.bupt.Jungle.FinancialDataAnalysis.application.user.UserLogService;
+import com.bupt.Jungle.FinancialDataAnalysis.common.config.UserLogConfig;
+import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.LoginAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.UserAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.LoginRequest;
@@ -12,27 +14,33 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.NonNull;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/user")
 @Tag(name = "用户")
+@Slf4j
 public class UserController {
     private final UserLogService userLogService;
 
     private final UserInfoService userInfoService;
 
+    private final String HEADERS_TOKEN_KEY;
+
     @Autowired
-    public UserController(UserLogService userService, UserInfoService userInfoService) {
+    public UserController(UserLogService userService, UserInfoService userInfoService, UserLogConfig userLogConfig) {
         this.userLogService = userService;
         this.userInfoService = userInfoService;
+        this.HEADERS_TOKEN_KEY = userLogConfig.getHead_token_key();
     }
 
     @PostMapping("/login")
@@ -51,8 +59,13 @@ public class UserController {
 
     @PostMapping("/logout")
     @Operation(summary = "登出")
-    @Parameters({@Parameter(name = "token", description = "本地存储的token")})
-    public void logout(@RequestParam(name = "token") @NonNull String token) {
+    @Parameters({@Parameter(name = "X-Token", description = "本地存储的token", in = ParameterIn.HEADER)})
+    public void logout(@NonNull HttpServletRequest request) {
+        String token = request.getHeader(HEADERS_TOKEN_KEY);
+        if (StringUtils.isEmpty(token)) {
+            log.error("token is empty");
+            throw new BusinessException("token为空!");
+        }
         userLogService.logout(token);
     }
 }

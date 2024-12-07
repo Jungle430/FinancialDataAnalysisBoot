@@ -6,6 +6,7 @@ import com.bupt.Jungle.FinancialDataAnalysis.application.model.UserBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.UserInfoBO;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.common.config.UserLogConfig;
+import com.bupt.Jungle.FinancialDataAnalysis.common.exception.NoAuthException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.cache.CacheService;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.gateway.RedisGateway;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.repository.UserRepository;
@@ -67,16 +68,13 @@ public class UserService {
         return LoginAssembler.buildLoginBOFromToken(token);
     }
 
-    public boolean refreshUserInfoCache(String token) {
-        String userInfoBOJsonStr = cacheService.get(userLogConfig.getPrefix() + token);
-        if (Objects.isNull(userInfoBOJsonStr)) {
-            return false;
+    public void delUserInfoCache(String token) {
+        log.info("cacheService.del start, key:{}", token);
+        boolean success = cacheService.del(userLogConfig.getPrefix() + token);
+        if (!success) {
+            log.error("no user's information in cache, token: {}", token);
+            throw new NoAuthException();
         }
-        cacheService.set(userLogConfig.getPrefix() + token, userInfoBOJsonStr, userLogConfig.getExpireTimeInDays(), TimeUnit.DAYS);
-        return true;
-    }
-
-    public boolean delUserInfoCache(String token) {
-        return cacheService.del(userLogConfig.getPrefix() + token);
+        log.info("cacheService.del end, key:{}", token);
     }
 }
