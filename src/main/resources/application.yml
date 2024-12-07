@@ -2,17 +2,16 @@ server:
   port: 8080
 
 personal:
-  remoteService:
+  database:
     ip: localhost
     port: 6060
-  login:
-    name: root
-    password: taosdata
-  database:
     name: "financial_data_analysis"
+    user:
+      name: root
+      password: taosdata
   redis:
     login:
-      prefix: "financial_data_analysis.user.login:"
+      prefix: "userService.login:"
       expiration_time_in_days: 3
   knife4j:
     title: "基于SpringBoot的金融数据分析软件后台测试系统"
@@ -20,6 +19,10 @@ personal:
     description: "开发人员专用"
     license: "Apache 2.0"
     name: "Jungle"
+  front:
+    token:
+      head_key: "X-token"
+
 
 
 spring:
@@ -28,7 +31,7 @@ spring:
 
   datasource:
     driver-class-name: com.taosdata.jdbc.rs.RestfulDriver
-    url: jdbc:TAOS-RS://${personal.remoteService.ip}:${personal.remoteService.port}/${personal.database.name}?useSSL=false&user=${personal.login.name}&password=${personal.login.password}&local=zh_CN.UTF-8&charset=UTF-8&timezone=Asia/Shanghai
+    url: jdbc:TAOS-RS://${personal.database.ip}:${personal.database.port}/${personal.database.name}?useSSL=false&user=${personal.database.user.name}&password=${personal.database.user.password}&local=zh_CN.UTF-8&charset=UTF-8&timezone=Asia/Shanghai
     type: com.alibaba.druid.pool.DruidDataSource
     test-while-idle: true
     validation-query: SELECT 1
@@ -44,7 +47,7 @@ spring:
           min-idle: 0
         shutdown-timeout: 100ms
       port: 6379
-      password: 
+      password:
 
 
 mybatis:
