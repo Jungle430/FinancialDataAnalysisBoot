@@ -67,14 +67,6 @@ public class UserService {
         return LoginAssembler.buildLoginBOFromToken(token);
     }
 
-    public UserInfoBO getUserInfo(String token) {
-        String userInfoBOJsonStr = cacheService.get(userLogConfig.getPrefix() + token);
-        if (Objects.isNull(userInfoBOJsonStr)) {
-            throw new BusinessException("没有该用户!请重新登录!");
-        }
-        return GsonUtil.jsonToBean(userInfoBOJsonStr, UserInfoBO.class);
-    }
-
     public boolean refreshUserInfoCache(String token) {
         String userInfoBOJsonStr = cacheService.get(userLogConfig.getPrefix() + token);
         if (Objects.isNull(userInfoBOJsonStr)) {
