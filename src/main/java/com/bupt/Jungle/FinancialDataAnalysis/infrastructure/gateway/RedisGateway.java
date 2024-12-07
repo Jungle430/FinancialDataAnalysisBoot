@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -78,7 +79,7 @@ public class RedisGateway implements CacheService {
 
     @Override
     public boolean del(String key) throws CacheServiceException {
-        return stringRedisTemplate.delete(key);
+        return Boolean.TRUE.equals(stringRedisTemplate.delete(key));
     }
 
     @Override
@@ -95,11 +96,16 @@ public class RedisGateway implements CacheService {
     @Override
     public long memSize(String prefix) throws CacheServiceException {
         long totalSize = 0;
-        totalSize += stringRedisTemplate.execute(new DefaultRedisScript<>("return #redis.call('keys', KEYS[1])", Long.class), Collections.singletonList(prefix + ":*"));
-        totalSize += stringRedisTemplate.execute(new DefaultRedisScript<>("return #redis.call('keys', KEYS[1])", Long.class), Collections.singletonList(prefix + ":[list]*"));
-        totalSize += stringRedisTemplate.execute(new DefaultRedisScript<>("return #redis.call('keys', KEYS[1])", Long.class), Collections.singletonList(prefix + ":[set]*"));
-        totalSize += stringRedisTemplate.execute(new DefaultRedisScript<>("return #redis.call('keys', KEYS[1])", Long.class), Collections.singletonList(prefix + ":[zset]*"));
-        totalSize += stringRedisTemplate.execute(new DefaultRedisScript<>("return #redis.call('keys', KEYS[1])", Long.class), Collections.singletonList(prefix + ":[hash]*"));
+        totalSize += Objects.requireNonNull(stringRedisTemplate.execute(new DefaultRedisScript<>("return #redis.call('keys', KEYS[1])", Long.class), Collections.singletonList(prefix + ":*")));
+        totalSize += Objects.requireNonNull(stringRedisTemplate.execute(new DefaultRedisScript<>("return #redis.call('keys', KEYS[1])", Long.class), Collections.singletonList(prefix + ":[list]*")));
+        totalSize += Objects.requireNonNull(stringRedisTemplate.execute(new DefaultRedisScript<>("return #redis.call('keys', KEYS[1])", Long.class), Collections.singletonList(prefix + ":[set]*")));
+        totalSize += Objects.requireNonNull(stringRedisTemplate.execute(new DefaultRedisScript<>("return #redis.call('keys', KEYS[1])", Long.class), Collections.singletonList(prefix + ":[zset]*")));
+        totalSize += Objects.requireNonNull(stringRedisTemplate.execute(new DefaultRedisScript<>("return #redis.call('keys', KEYS[1])", Long.class), Collections.singletonList(prefix + ":[hash]*")));
         return totalSize;
+    }
+
+    @Override
+    public boolean expire(String key, long timeout, TimeUnit timeUnit) throws CacheServiceException {
+        return Boolean.TRUE.equals(stringRedisTemplate.expire(key, timeout, timeUnit));
     }
 }

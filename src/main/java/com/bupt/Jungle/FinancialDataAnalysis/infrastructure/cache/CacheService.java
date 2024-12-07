@@ -43,4 +43,13 @@ public interface CacheService {
     void clear(String prefix) throws CacheServiceException;
 
     long memSize(String prefix) throws CacheServiceException;
+
+    default boolean expire(String key, long timeout, TimeUnit timeUnit) throws CacheServiceException {
+        String value = get(key);
+        if (!del(key)) {
+            return false;
+        }
+        set(key, value , timeout, timeUnit);
+        return true;
+    }
 }
