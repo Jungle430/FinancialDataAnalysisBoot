@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = {
+        "com.bupt.Jungle.FinancialDataAnalysis.starter.controller"
+})
 @Order(2)
 public class RestResponseAdviceAspect implements ResponseBodyAdvice<Object> {
     private static final String DEFAULT_ERROR_MESSAGE = "服务器错误，请稍后再试!";
