@@ -12,17 +12,19 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
-public class AuthAndRefreshTokenInterceptor implements HandlerInterceptor {
+public class RefreshTokenInterceptor implements HandlerInterceptor {
     private final CacheService cacheService;
 
     private final UserLogConfig userLogConfig;
 
-    private static final String HEADERS_TOKEN_KEY = "X-Token";
+    private final String HEADERS_TOKEN_KEY;
 
-    public AuthAndRefreshTokenInterceptor(CacheService cacheService, UserLogConfig userLogConfig) {
+    public RefreshTokenInterceptor(CacheService cacheService, UserLogConfig userLogConfig) {
         this.cacheService = cacheService;
         this.userLogConfig = userLogConfig;
+        this.HEADERS_TOKEN_KEY = userLogConfig.getHead_token_key();
     }
 
     @Override
@@ -33,13 +35,12 @@ public class AuthAndRefreshTokenInterceptor implements HandlerInterceptor {
         }
 
         String key = userLogConfig.getPrefix() + token;
-        String s = cacheService.get(token);
-        UserInfoBO userInfoBo = GsonUtil.jsonToBean(s, UserInfoBO.class);
+        UserInfoBO userInfoBo = GsonUtil.jsonToBean(cacheService.get(token), UserInfoBO.class);
         if (Objects.isNull(userInfoBo)) {
             return true;
         }
         UserInfoHolder.saveUserInfoBO(userInfoBo);
-
+        cacheService.expire(key, userLogConfig.getExpireTimeInDays(), TimeUnit.DAYS);
         return true;
     }
 }

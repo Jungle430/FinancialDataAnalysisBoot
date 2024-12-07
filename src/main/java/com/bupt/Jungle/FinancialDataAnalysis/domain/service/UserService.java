@@ -5,7 +5,7 @@ import com.bupt.Jungle.FinancialDataAnalysis.application.model.LoginBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.UserBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.UserInfoBO;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
-import com.bupt.Jungle.FinancialDataAnalysis.domain.config.UserLogConfig;
+import com.bupt.Jungle.FinancialDataAnalysis.common.config.UserLogConfig;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.cache.CacheService;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.gateway.RedisGateway;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.repository.UserRepository;

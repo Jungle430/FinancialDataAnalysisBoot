@@ -1,4 +1,4 @@
-package com.bupt.Jungle.FinancialDataAnalysis.starter.threadLocal;
+package com.bupt.Jungle.FinancialDataAnalysis.starter.local;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.UserInfoBO;
 
