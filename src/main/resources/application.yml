@@ -9,10 +9,6 @@ personal:
     user:
       name: root
       password: taosdata
-  redis:
-    login:
-      prefix: "userService.login:"
-      expiration_time_in_days: 3
   knife4j:
     title: "基于SpringBoot的金融数据分析软件后台测试系统"
     version: "1.0"
@@ -22,6 +18,8 @@ personal:
   front:
     token:
       head_key: "X-token"
+      prefix: "userService:"
+      expiration_time_in_days: 3
 
 
 
