@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.StockMapper">
+    <resultMap id="Stock" type="com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.StockPO">
+        <id column="ts" jdbcType="TIMESTAMP" javaType="java.sql.Timestamp" property="ts"/>
+        <id column="closing_price" jdbcType="DOUBLE" javaType="java.lang.Double" property="closingPrice"/>
+        <id column="opening_price" jdbcType="DOUBLE" javaType="java.lang.Double" property="openingPrice"/>
+        <id column="highest_price" jdbcType="DOUBLE" javaType="java.lang.Double" property="highestPrice"/>
+        <id column="lowest_price" jdbcType="DOUBLE" javaType="java.lang.Double" property="lowestPrice"/>
+        <id column="trading_volume" jdbcType="DOUBLE" javaType="java.lang.Double" property="tradeVolume"/>
+        <id column="rise_and_fall" jdbcType="DOUBLE" javaType="java.lang.Double" property="riseAndFall"/>
+        <id column="code" jdbcType="VARCHAR" javaType="java.lang.String" property="code"/>
+        <id column="platform" jdbcType="VARCHAR" javaType="java.lang.String" property="platform"/>
+        <id column="region" jdbcType="VARCHAR" javaType="java.lang.String" property="region"/>
+        <id column="currency" jdbcType="VARCHAR" javaType="java.lang.String" property="currency"/>
+        <id column="name" jdbcType="VARCHAR" javaType="java.lang.String" property="name"/>
+        <id column="market_region" jdbcType="VARCHAR" javaType="java.lang.String" property="marketRegion"/>
+    </resultMap>
+
+    <select id="queryAllRegion" resultType="java.lang.String">
+        SELECT region
+        FROM `financial_data_analysis`.`stock`
+        GROUP BY region;
+    </select>
+
+    <select id="queryAllCurrency" resultType="java.lang.String">
+        SELECT currency
+        FROM `financial_data_analysis`.`stock`
+        GROUP BY currency;
+    </select>
+
+    <select id="queryAllMarketRegion" resultType="java.lang.String">
+        SELECT market_region
+        FROM `financial_data_analysis`.`stock`
+        GROUP BY market_region;
+    </select>
+</mapper>
