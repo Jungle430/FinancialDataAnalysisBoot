@@ -22,19 +22,19 @@ public class StockController {
         this.stockService = stockService;
     }
 
-    @GetMapping("/list/region")
+    @GetMapping("/region/list")
     @Operation(summary = "获取所有公司所在国家|地区信息")
     public RegionsResponse getAllRegion() {
         return StockAssembler.BuildRegionsResponseFromStrings(stockService.getAllRegion());
     }
 
-    @GetMapping("/list/marketRegion")
+    @GetMapping("/marketRegion/list")
     @Operation(summary = "获取所有交易所在国家|地区信息")
     public RegionsResponse getAllMarketRegion() {
         return StockAssembler.BuildRegionsResponseFromStrings(stockService.getAllMarketRegion());
     }
 
-    @GetMapping("/list/currency")
+    @GetMapping("/currency/list")
     @Operation(summary = "获取所有交易货币信息")
     public CurrenciesResponse getAllCurrency() {
         return StockAssembler.BuildCurrenciesResponseFromStrings(stockService.getAllCurrency());
