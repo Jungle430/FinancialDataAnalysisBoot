@@ -1,6 +1,10 @@
 package com.bupt.Jungle.FinancialDataAnalysis.application.user;
 
+import com.bupt.Jungle.FinancialDataAnalysis.application.model.CurrencyBO;
+import com.bupt.Jungle.FinancialDataAnalysis.application.model.RegionBO;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.StockMapper;
+import com.bupt.Jungle.FinancialDataAnalysis.util.CurrencyUtil;
+import com.bupt.Jungle.FinancialDataAnalysis.util.ISOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,15 +19,42 @@ public class StockService {
         this.stockMapper = stockMapper;
     }
 
-    public List<String> getAllRegion() {
-        return stockMapper.queryAllRegion();
+    public List<RegionBO> getAllMarketRegion() {
+        return stockMapper.queryAllMarketRegion()
+                .stream()
+                .map(isoCode -> RegionBO
+                        .builder()
+                        .isoCode(isoCode)
+                        .simplifiedChineseName(ISOUtil.isoSimplifiedChineseName(isoCode))
+                        .englishName(ISOUtil.isoEnglishName(isoCode))
+                        .build()
+                )
+                .toList();
     }
 
-    public List<String> getAllCurrency() {
-        return stockMapper.queryAllCurrency();
+    public List<RegionBO> getAllRegion() {
+        return stockMapper.queryAllRegion()
+                .stream()
+                .map(isoCode -> RegionBO
+                        .builder()
+                        .isoCode(isoCode)
+                        .simplifiedChineseName(ISOUtil.isoSimplifiedChineseName(isoCode))
+                        .englishName(ISOUtil.isoEnglishName(isoCode))
+                        .build()
+                )
+                .toList();
     }
 
-    public List<String> getAllMarketRegion() {
-        return stockMapper.queryAllMarketRegion();
+
+    public List<CurrencyBO> getAllCurrency() {
+        return stockMapper.queryAllCurrency()
+                .stream()
+                .map(currencyCode -> CurrencyBO
+                        .builder()
+                        .currencyCode(currencyCode)
+                        .simplifiedChineseName(CurrencyUtil.getSimplifiedCurrencyChineseName(currencyCode))
+                        .englishName(CurrencyUtil.getCurrencyEnglishName(currencyCode))
+                        .build()
+                ).toList();
     }
 }

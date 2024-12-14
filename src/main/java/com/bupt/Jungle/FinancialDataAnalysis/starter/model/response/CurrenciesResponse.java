@@ -1,5 +1,6 @@
 package com.bupt.Jungle.FinancialDataAnalysis.starter.model.response;
 
+import com.bupt.Jungle.FinancialDataAnalysis.application.model.CurrencyBO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,5 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CurrenciesResponse {
-    private List<String> currencies;
+    private List<CurrencyBO> currencies;
 }
