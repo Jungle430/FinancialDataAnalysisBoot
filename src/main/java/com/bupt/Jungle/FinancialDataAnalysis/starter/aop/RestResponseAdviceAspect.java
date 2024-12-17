@@ -3,6 +3,7 @@ package com.bupt.Jungle.FinancialDataAnalysis.starter.aop;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.NoAuthException;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.Result;
+import com.bupt.Jungle.FinancialDataAnalysis.util.GsonUtil;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
@@ -34,7 +35,13 @@ public class RestResponseAdviceAspect implements ResponseBodyAdvice<Object> {
                                   @NonNull Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   @NonNull ServerHttpRequest request,
                                   @NonNull ServerHttpResponse response) {
-        return body instanceof Result<?> result ? result : Result.ok(body);
+        if (body instanceof String string) {
+            return GsonUtil.beanToJson(Result.ok(string));
+        }
+        if (body instanceof Result<?> result) {
+            return result;
+        }
+        return Result.ok(body);
     }
 
     @ExceptionHandler(value = BusinessException.class)
