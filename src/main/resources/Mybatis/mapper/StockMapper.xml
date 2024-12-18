@@ -35,4 +35,70 @@
         FROM `financial_data_analysis`.`stock`
         GROUP BY market_region;
     </select>
+
+    <select id="queryStockTag" resultMap="Stock">
+        SELECT TAGS code, platform, region, currency, name, market_region
+        FROM `financial_data_analysis`.`stock`
+        <where>
+            <if test="code != null and code != ''">
+                <bind name="queryCode" value="'%' + code + '%'"/>
+                AND code LIKE #{queryCode}
+            </if>
+            <if test="platform != null and platform != ''">
+                <bind name="queryPlatform" value="'%' + platform + '%'"/>
+                AND platform LIKE #{queryPlatform}
+            </if>
+            <if test="region != null and region != ''">
+                <bind name="queryRegion" value="'%' + region + '%'"/>
+                AND region LIKE #{queryRegion}
+            </if>
+            <if test="currency != null and currency != ''">
+                <bind name="queryCurrency" value="'%' + region + '%'"/>
+                AND currency LIKE #{queryCurrency}
+            </if>
+            <if test="name != null and name != ''">
+                <bind name="queryName" value="'%' + name + '%'"/>
+                AND name LIKE #{queryName}
+            </if>
+            <if test="marketRegion != null and marketRegion != ''">
+                <bind name="queryMarketRegion" value="'%' + marketRegion + '%'"/>
+                AND market_region LIKE #{queryMarketRegion}
+            </if>
+        </where>
+        ORDER BY code, platform, region, currency, name, market_region
+        LIMIT #{limitSize} OFFSET #{offSet};
+    </select>
+
+    <select id="queryStockTagTotalCount" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM
+        (SELECT TAGS code, platform, region, currency, name, market_region
+        FROM `financial_data_analysis`.`stock`
+        <where>
+            <if test="code != null and code != ''">
+                <bind name="queryCode" value="'%' + code + '%'"/>
+                AND code LIKE #{queryCode}
+            </if>
+            <if test="platform != null and platform != ''">
+                <bind name="queryPlatform" value="'%' + platform + '%'"/>
+                AND platform LIKE #{queryPlatform}
+            </if>
+            <if test="region != null and region != ''">
+                <bind name="queryRegion" value="'%' + region + '%'"/>
+                AND region LIKE #{queryRegion}
+            </if>
+            <if test="currency != null and currency != ''">
+                <bind name="queryCurrency" value="'%' + region + '%'"/>
+                AND currency LIKE #{queryCurrency}
+            </if>
+            <if test="name != null and name != ''">
+                <bind name="queryName" value="'%' + name + '%'"/>
+                AND name LIKE #{queryName}
+            </if>
+            <if test="marketRegion != null and marketRegion != ''">
+                <bind name="queryMarketRegion" value="'%' + marketRegion + '%'"/>
+                AND market_region LIKE #{queryMarketRegion}
+            </if>
+        </where>
+        )
+    </select>
 </mapper>
