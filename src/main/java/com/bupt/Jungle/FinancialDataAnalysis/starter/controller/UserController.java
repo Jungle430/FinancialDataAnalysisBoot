@@ -1,10 +1,8 @@
 package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 
-import com.bupt.Jungle.FinancialDataAnalysis.application.user.UserInfoService;
-import com.bupt.Jungle.FinancialDataAnalysis.application.user.UserLogService;
+import com.bupt.Jungle.FinancialDataAnalysis.application.service.UserService;
 import com.bupt.Jungle.FinancialDataAnalysis.common.config.UserLogConfig;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
-import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.LoginAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.UserAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.LoginRequest;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.LoginResponse;
@@ -30,16 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "用户")
 @Slf4j
 public class UserController {
-    private final UserLogService userLogService;
-
-    private final UserInfoService userInfoService;
+    private final UserService userService;
 
     private final String HEADERS_TOKEN_KEY;
 
     @Autowired
-    public UserController(UserLogService userService, UserInfoService userInfoService, UserLogConfig userLogConfig) {
-        this.userLogService = userService;
-        this.userInfoService = userInfoService;
+    public UserController(UserService userService, UserLogConfig userLogConfig) {
+        this.userService = userService;
         this.HEADERS_TOKEN_KEY = userLogConfig.getHead_token_key();
     }
 
@@ -47,14 +42,14 @@ public class UserController {
     @Operation(summary = "登录")
     @Parameters({@Parameter(name = "loginRequest", description = "登录信息")})
     public LoginResponse login(@RequestBody LoginRequest loginRequest) {
-        return LoginAssembler.LoginBO2Response(userLogService.login(loginRequest.getPhone(), loginRequest.getPassword()));
+        return UserAssembler.LoginBO2Response(userService.login(loginRequest.getPhone(), loginRequest.getPassword()));
     }
 
     @GetMapping("/info")
     @Operation(summary = "实时获取用户信息")
     @Parameters({@Parameter(name = "X-Token", description = "本地存储的token", in = ParameterIn.HEADER)})
     public UserInfoResponse info() {
-        return UserAssembler.UserInfoBO2Response(userInfoService.getUserInfo());
+        return UserAssembler.UserInfoBO2Response(userService.getUserInfo());
     }
 
     @PostMapping("/logout")
@@ -66,6 +61,6 @@ public class UserController {
             log.error("token is empty");
             throw new BusinessException("token为空!");
         }
-        userLogService.logout(token);
+        userService.logout(token);
     }
 }
