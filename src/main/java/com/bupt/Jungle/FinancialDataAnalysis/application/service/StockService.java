@@ -5,14 +5,15 @@ import com.bupt.Jungle.FinancialDataAnalysis.application.model.CurrencyBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.RegionBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockTagBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockTagPageBO;
-import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.StockMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class StockService {
     private final StockMapper stockMapper;
 
@@ -62,7 +63,7 @@ public class StockService {
 
         long offSet = (current - 1) * pageSize;
         if (offSet > total) {
-            throw new BusinessException("没有该页");
+            offSet = 0;
         }
 
         List<StockTagBO> stockPOS = stockMapper.queryStockTag(
