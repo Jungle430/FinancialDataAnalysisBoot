@@ -53,7 +53,7 @@
                 AND region LIKE #{queryRegion}
             </if>
             <if test="currency != null and currency != ''">
-                <bind name="queryCurrency" value="'%' + region + '%'"/>
+                <bind name="queryCurrency" value="'%' + currency + '%'"/>
                 AND currency LIKE #{queryCurrency}
             </if>
             <if test="name != null and name != ''">
@@ -87,7 +87,7 @@
                 AND region LIKE #{queryRegion}
             </if>
             <if test="currency != null and currency != ''">
-                <bind name="queryCurrency" value="'%' + region + '%'"/>
+                <bind name="queryCurrency" value="'%' + currency + '%'"/>
                 AND currency LIKE #{queryCurrency}
             </if>
             <if test="name != null and name != ''">
