@@ -17,14 +17,14 @@ public class StockTagBO {
     private String platform;
 
     // 公司所在地区
-    private String region;
+    private RegionBO region;
 
     // 交易货币
-    private String currency;
+    private CurrencyBO currency;
 
     // 公司名称
     private String name;
 
     // 交易地区
-    private String marketRegion;
+    private RegionBO marketRegion;
 }

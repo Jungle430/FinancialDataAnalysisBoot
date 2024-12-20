@@ -15,10 +15,10 @@ public class StockAssembler {
         return StockTagBO.builder()
                 .code(stockPO.getCode())
                 .platform(stockPO.getPlatform())
-                .region(stockPO.getRegion())
-                .currency(stockPO.getCurrency())
+                .region(buildRegionBOFromISOCode(stockPO.getRegion()))
+                .currency(buildCurrencyBOFromCurrencyCode(stockPO.getCurrency()))
                 .name(stockPO.getName())
-                .marketRegion(stockPO.getMarketRegion())
+                .marketRegion(buildRegionBOFromISOCode(stockPO.getMarketRegion()))
                 .build();
     }
 
