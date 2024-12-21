@@ -20,12 +20,14 @@
     <select id="queryAllRegion" resultType="java.lang.String">
         SELECT region
         FROM `financial_data_analysis`.`stock_index`
-        GROUP BY region;
+        GROUP BY region
+        ORDER BY region;
     </select>
 
     <select id="queryAllCurrency" resultType="java.lang.String">
         SELECT currency
         FROM `financial_data_analysis`.`stock_index`
-        GROUP BY currency;
+        GROUP BY currency
+        ORDER BY currency;
     </select>
 </mapper>
