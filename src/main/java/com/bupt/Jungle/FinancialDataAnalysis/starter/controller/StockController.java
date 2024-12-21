@@ -33,19 +33,19 @@ public class StockController {
     @GetMapping("/region/list")
     @Operation(summary = "获取所有公司所在国家|地区信息")
     public RegionsResponse getAllRegion() {
-        return StockAssembler.buildRegionsResponseFromStrings(stockService.getAllRegion());
+        return StockAssembler.buildRegionsResponseFromRegionBOs(stockService.getAllRegion());
     }
 
     @GetMapping("/marketRegion/list")
     @Operation(summary = "获取所有交易所在国家|地区信息")
     public RegionsResponse getAllMarketRegion() {
-        return StockAssembler.buildRegionsResponseFromStrings(stockService.getAllMarketRegion());
+        return StockAssembler.buildRegionsResponseFromRegionBOs(stockService.getAllMarketRegion());
     }
 
     @GetMapping("/currency/list")
     @Operation(summary = "获取所有交易货币信息")
     public CurrenciesResponse getAllCurrency() {
-        return StockAssembler.buildCurrenciesResponseFromStrings(stockService.getAllCurrency());
+        return StockAssembler.buildCurrenciesResponseFromCurrencyBOs(stockService.getAllCurrency());
     }
 
     @PostMapping("/table/{current}/{pageSize}")

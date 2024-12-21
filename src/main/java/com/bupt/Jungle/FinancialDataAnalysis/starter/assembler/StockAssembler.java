@@ -10,13 +10,13 @@ import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.StockTagPage
 import java.util.List;
 
 public class StockAssembler {
-    public static RegionsResponse buildRegionsResponseFromStrings(List<RegionBO> regions) {
+    public static RegionsResponse buildRegionsResponseFromRegionBOs(List<RegionBO> regions) {
         RegionsResponse regionsResponse = new RegionsResponse();
         regionsResponse.setRegions(regions);
         return regionsResponse;
     }
 
-    public static CurrenciesResponse buildCurrenciesResponseFromStrings(List<CurrencyBO> currencies) {
+    public static CurrenciesResponse buildCurrenciesResponseFromCurrencyBOs(List<CurrencyBO> currencies) {
         CurrenciesResponse currenciesResponse = new CurrenciesResponse();
         currenciesResponse.setCurrencies(currencies);
         return currenciesResponse;
