@@ -25,7 +25,7 @@ public class StockIndexController {
 
     @GetMapping("/region/list")
     @Operation(summary = "获取所有交易国家|地区信息")
-    public RegionsResponse getAllRegions() {
+    public RegionsResponse getAllRegion() {
         return StockAssembler.buildRegionsResponseFromRegionBOs(stockIndexService.getAllRegions());
     }
 
