@@ -20,7 +20,7 @@ public class StockIndexService {
         this.stockIndexMapper = stockIndexMapper;
     }
 
-    public List<RegionBO> getAllRegions() {
+    public List<RegionBO> getAllRegion() {
         return stockIndexMapper.queryAllRegion()
                 .stream()
                 .map(StockAssembler::buildRegionBOFromISOCode)
