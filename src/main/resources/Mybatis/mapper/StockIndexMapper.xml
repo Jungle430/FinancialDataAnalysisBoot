@@ -30,4 +30,62 @@
         GROUP BY currency
         ORDER BY currency;
     </select>
+
+    <select id="queryStockIndexTag" resultMap="StockIndex">
+        SELECT TAGS code, platform, region, currency, name
+        FROM `financial_data_analysis`.`stock_index`
+        <where>
+            <if test="code != null and code != ''">
+                <bind name="queryCode" value="'%' + code + '%'"/>
+                AND code LIKE #{queryCode}
+            </if>
+            <if test="platform != null and platform != ''">
+                <bind name="queryPlatform" value="'%' + platform + '%'"/>
+                AND platform LIKE #{queryPlatform}
+            </if>
+            <if test="region != null and region != ''">
+                <bind name="queryRegion" value="'%' + region + '%'"/>
+                AND region LIKE #{queryRegion}
+            </if>
+            <if test="currency != null and currency != ''">
+                <bind name="queryCurrency" value="'%' + currency + '%'"/>
+                AND currency LIKE #{queryCurrency}
+            </if>
+            <if test="name != null and name != ''">
+                <bind name="queryName" value="'%' + name + '%'"/>
+                AND name LIKE #{queryName}
+            </if>
+        </where>
+        ORDER BY code, platform, region, currency, name
+        LIMIT #{limitSize} OFFSET #{offSet};
+    </select>
+
+    <select id="queryStockIndexTagTotalCount" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM
+        (SELECT TAGS code, platform, region, currency, name
+        FROM `financial_data_analysis`.`stock_index`
+        <where>
+            <if test="code != null and code != ''">
+                <bind name="queryCode" value="'%' + code + '%'"/>
+                AND code LIKE #{queryCode}
+            </if>
+            <if test="platform != null and platform != ''">
+                <bind name="queryPlatform" value="'%' + platform + '%'"/>
+                AND platform LIKE #{queryPlatform}
+            </if>
+            <if test="region != null and region != ''">
+                <bind name="queryRegion" value="'%' + region + '%'"/>
+                AND region LIKE #{queryRegion}
+            </if>
+            <if test="currency != null and currency != ''">
+                <bind name="queryCurrency" value="'%' + currency + '%'"/>
+                AND currency LIKE #{queryCurrency}
+            </if>
+            <if test="name != null and name != ''">
+                <bind name="queryName" value="'%' + name + '%'"/>
+                AND name LIKE #{queryName}
+            </if>
+        </where>
+        )
+    </select>
 </mapper>

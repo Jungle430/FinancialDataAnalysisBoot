@@ -2,6 +2,8 @@ package com.bupt.Jungle.FinancialDataAnalysis.application.service;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.CurrencyBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.RegionBO;
+import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockIndexTagBO;
+import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockIndexTagPageBO;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.StockIndexMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,5 +32,37 @@ public class StockIndexService {
                 .stream()
                 .map(StockAssembler::buildCurrencyBOFromCurrencyCode)
                 .toList();
+    }
+
+    public StockIndexTagPageBO queryStockIndexTagPage(String code,
+                                                      String platform,
+                                                      String region,
+                                                      String currency,
+                                                      String name,
+                                                      Long current,
+                                                      Long pageSize) {
+        Long total = stockIndexMapper.queryStockIndexTagTotalCount(
+                code,
+                platform,
+                region,
+                currency,
+                name
+        );
+
+        long offset = (current - 1) * pageSize;
+        if (offset > total) {
+            offset = 0;
+        }
+
+        List<StockIndexTagBO> stockIndexTagBOS = stockIndexMapper.queryStockIndexTag(
+                code,
+                platform,
+                region,
+                currency,
+                name,
+                pageSize,
+                offset
+        ).stream().map(StockAssembler::StockIndexPO2StockIndexTagBO).toList();
+        return StockAssembler.buildStockIndexTagPageBOFromStockIndexTagBOs(stockIndexTagBOS, total);
     }
 }
