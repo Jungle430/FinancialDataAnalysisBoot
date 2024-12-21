@@ -36,7 +36,7 @@ public class StockIndexPO {
     // 涨跌幅
     private Double riseAndFall;
 
-    // 股票代码
+    // 股票指数代码
     private String code;
 
     // 交易平台
