@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.CommoditiesMapper">
+    <resultMap id="Commodities" type="com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.CommoditiesPO">
+        <id column="ts" jdbcType="TIMESTAMP" javaType="java.sql.Timestamp" property="ts"/>
+        <id column="closing_price" jdbcType="DOUBLE" javaType="java.lang.Double" property="closingPrice"/>
+        <id column="opening_price" jdbcType="DOUBLE" javaType="java.lang.Double" property="openingPrice"/>
+        <id column="highest_price" jdbcType="DOUBLE" javaType="java.lang.Double" property="highestPrice"/>
+        <id column="lowest_price" jdbcType="DOUBLE" javaType="java.lang.Double" property="lowestPrice"/>
+        <id column="trading_volume" jdbcType="DOUBLE" javaType="java.lang.Double" property="tradeVolume"/>
+        <id column="rise_and_fall" jdbcType="DOUBLE" javaType="java.lang.Double" property="riseAndFall"/>
+        <id column="code" jdbcType="VARCHAR" javaType="java.lang.String" property="code"/>
+        <id column="platform" jdbcType="VARCHAR" javaType="java.lang.String" property="platform"/>
+        <id column="region" jdbcType="VARCHAR" javaType="java.lang.String" property="region"/>
+        <id column="currency" jdbcType="VARCHAR" javaType="java.lang.String" property="currency"/>
+        <id column="name" jdbcType="VARCHAR" javaType="java.lang.String" property="name"/>
+    </resultMap>
+
+    <select id="queryAllRegion" resultType="java.lang.String">
+        SELECT region
+        FROM `financial_data_analysis`.`commodities`
+        GROUP BY region
+        ORDER BY region;
+    </select>
+
+    <select id="queryAllCurrency" resultType="java.lang.String">
+        SELECT currency
+        FROM `financial_data_analysis`.`commodities`
+        GROUP BY currency
+        ORDER BY currency;
+    </select>
+
+    <select id="queryCommoditiesTag" resultMap="Commodities">
+        SELECT TAGS code, platform, region, currency, name
+        FROM `financial_data_analysis`.`commodities`
+        <where>
+            <if test="code != null and code != ''">
+                <bind name="queryCode" value="'%' + code + '%'"/>
+                AND code LIKE #{queryCode}
+            </if>
+            <if test="platform != null and platform != ''">
+                <bind name="queryPlatform" value="'%' + platform + '%'"/>
+                AND platform LIKE #{queryPlatform}
+            </if>
+            <if test="region != null and region != ''">
+                <bind name="queryRegion" value="'%' + region + '%'"/>
+                AND region LIKE #{queryRegion}
+            </if>
+            <if test="currency != null and currency != ''">
+                <bind name="queryCurrency" value="'%' + currency + '%'"/>
+                AND currency LIKE #{queryCurrency}
+            </if>
+            <if test="name != null and name != ''">
+                <bind name="queryName" value="'%' + name + '%'"/>
+                AND name LIKE #{queryName}
+            </if>
+        </where>
+        ORDER BY code, platform, region, currency, name
+        LIMIT #{limitSize} OFFSET #{offSet};
+    </select>
+
+    <select id="queryCommoditiesTagTotalCount" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM
+        (SELECT TAGS code, platform, region, currency, name
+        FROM `financial_data_analysis`.`commodities`
+        <where>
+            <if test="code != null and code != ''">
+                <bind name="queryCode" value="'%' + code + '%'"/>
+                AND code LIKE #{queryCode}
+            </if>
+            <if test="platform != null and platform != ''">
+                <bind name="queryPlatform" value="'%' + platform + '%'"/>
+                AND platform LIKE #{queryPlatform}
+            </if>
+            <if test="region != null and region != ''">
+                <bind name="queryRegion" value="'%' + region + '%'"/>
+                AND region LIKE #{queryRegion}
+            </if>
+            <if test="currency != null and currency != ''">
+                <bind name="queryCurrency" value="'%' + currency + '%'"/>
+                AND currency LIKE #{queryCurrency}
+            </if>
+            <if test="name != null and name != ''">
+                <bind name="queryName" value="'%' + name + '%'"/>
+                AND name LIKE #{queryName}
+            </if>
+        </where>
+        )
+    </select>
+</mapper>
