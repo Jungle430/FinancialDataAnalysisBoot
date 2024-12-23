@@ -11,8 +11,8 @@ public class BondsAssembler {
         return BondsTagBO.builder()
                 .code(bondsPO.getCode())
                 .platform(bondsPO.getPlatform())
-                .region(StockAssembler.buildRegionBOFromISOCode(bondsPO.getRegion()))
-                .currency(StockAssembler.buildCurrencyBOFromCurrencyCode(bondsPO.getCurrency()))
+                .region(RegionAssembler.buildRegionBOFromISOCode(bondsPO.getRegion()))
+                .currency(CurrencyAssembler.buildCurrencyBOFromCurrencyCode(bondsPO.getCurrency()))
                 .name(bondsPO.getName())
                 .build();
     }

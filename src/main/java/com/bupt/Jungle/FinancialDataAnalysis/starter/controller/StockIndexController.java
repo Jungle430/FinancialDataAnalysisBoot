@@ -1,6 +1,8 @@
 package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.StockIndexService;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.CurrencyAssembler;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.RegionAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.StockIndexTableRequest;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.CurrenciesResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.RegionsResponse;
@@ -34,13 +36,13 @@ public class StockIndexController {
     @GetMapping("/region/list")
     @Operation(summary = "获取所有交易国家|地区信息")
     public RegionsResponse getAllRegion() {
-        return StockAssembler.buildRegionsResponseFromRegionBOs(stockIndexService.getAllRegion());
+        return RegionAssembler.buildRegionsResponseFromRegionBOs(stockIndexService.getAllRegion());
     }
 
     @GetMapping("/currency/list")
     @Operation(summary = "获取所有交易货币信息")
     public CurrenciesResponse getAllCurrency() {
-        return StockAssembler.buildCurrenciesResponseFromCurrencyBOs(stockIndexService.getAllCurrency());
+        return CurrencyAssembler.buildCurrenciesResponseFromCurrencyBOs(stockIndexService.getAllCurrency());
     }
 
     @PostMapping("/table/{current}/{pageSize}")

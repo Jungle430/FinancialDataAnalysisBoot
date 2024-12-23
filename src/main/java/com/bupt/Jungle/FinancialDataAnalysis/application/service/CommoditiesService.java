@@ -1,7 +1,8 @@
 package com.bupt.Jungle.FinancialDataAnalysis.application.service;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.CommoditiesAssembler;
-import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.StockAssembler;
+import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.CurrencyAssembler;
+import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.RegionAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.CommoditiesTagBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.CommoditiesTagPageBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.CurrencyBO;
@@ -24,14 +25,14 @@ public class CommoditiesService {
     public List<RegionBO> getAllRegion() {
         return commoditiesMapper.queryAllRegion()
                 .stream()
-                .map(StockAssembler::buildRegionBOFromISOCode)
+                .map(RegionAssembler::buildRegionBOFromISOCode)
                 .toList();
     }
 
     public List<CurrencyBO> getAllCurrency() {
         return commoditiesMapper.queryAllCurrency()
                 .stream()
-                .map(StockAssembler::buildCurrencyBOFromCurrencyCode)
+                .map(CurrencyAssembler::buildCurrencyBOFromCurrencyCode)
                 .toList();
     }
 

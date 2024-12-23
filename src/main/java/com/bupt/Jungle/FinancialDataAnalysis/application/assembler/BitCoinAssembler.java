@@ -11,8 +11,8 @@ public class BitCoinAssembler {
         return BitCoinTagBO.builder()
                 .code(bitCoinPO.getCode())
                 .platform(bitCoinPO.getPlatform())
-                .region(StockAssembler.buildRegionBOFromISOCode(bitCoinPO.getRegion()))
-                .currency(StockAssembler.buildCurrencyBOFromCurrencyCode(bitCoinPO.getCurrency()))
+                .region(RegionAssembler.buildRegionBOFromISOCode(bitCoinPO.getRegion()))
+                .currency(CurrencyAssembler.buildCurrencyBOFromCurrencyCode(bitCoinPO.getCurrency()))
                 .build();
     }
 

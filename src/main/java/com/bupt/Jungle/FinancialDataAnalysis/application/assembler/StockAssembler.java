@@ -1,15 +1,11 @@
 package com.bupt.Jungle.FinancialDataAnalysis.application.assembler;
 
-import com.bupt.Jungle.FinancialDataAnalysis.application.model.CurrencyBO;
-import com.bupt.Jungle.FinancialDataAnalysis.application.model.RegionBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockIndexTagBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockIndexTagPageBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockTagBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockTagPageBO;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.StockIndexPO;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.StockPO;
-import com.bupt.Jungle.FinancialDataAnalysis.util.CurrencyUtil;
-import com.bupt.Jungle.FinancialDataAnalysis.util.ISOUtil;
 
 import java.util.Collection;
 
@@ -18,10 +14,10 @@ public class StockAssembler {
         return StockTagBO.builder()
                 .code(stockPO.getCode())
                 .platform(stockPO.getPlatform())
-                .region(buildRegionBOFromISOCode(stockPO.getRegion()))
-                .currency(buildCurrencyBOFromCurrencyCode(stockPO.getCurrency()))
+                .region(RegionAssembler.buildRegionBOFromISOCode(stockPO.getRegion()))
+                .currency(CurrencyAssembler.buildCurrencyBOFromCurrencyCode(stockPO.getCurrency()))
                 .name(stockPO.getName())
-                .marketRegion(buildRegionBOFromISOCode(stockPO.getMarketRegion()))
+                .marketRegion(RegionAssembler.buildRegionBOFromISOCode(stockPO.getMarketRegion()))
                 .build();
     }
 
@@ -29,8 +25,8 @@ public class StockAssembler {
         return StockIndexTagBO.builder()
                 .code(stockIndexPO.getCode())
                 .platform(stockIndexPO.getPlatform())
-                .region(buildRegionBOFromISOCode(stockIndexPO.getRegion()))
-                .currency(buildCurrencyBOFromCurrencyCode(stockIndexPO.getCurrency()))
+                .region(RegionAssembler.buildRegionBOFromISOCode(stockIndexPO.getRegion()))
+                .currency(CurrencyAssembler.buildCurrencyBOFromCurrencyCode(stockIndexPO.getCurrency()))
                 .name(stockIndexPO.getName())
                 .build();
     }
@@ -48,24 +44,4 @@ public class StockAssembler {
                 .total(total)
                 .build();
     }
-
-    public static RegionBO buildRegionBOFromISOCode(String isoCode) {
-        return RegionBO
-                .builder()
-                .isoCode(isoCode)
-                .simplifiedChineseName(ISOUtil.isoSimplifiedChineseName(isoCode))
-                .englishName(ISOUtil.isoEnglishName(isoCode))
-                .build();
-    }
-
-    public static CurrencyBO buildCurrencyBOFromCurrencyCode(String currencyCode) {
-        return CurrencyBO
-                .builder()
-                .currencyCode(currencyCode)
-                .simplifiedChineseName(CurrencyUtil.getSimplifiedCurrencyChineseName(currencyCode))
-                .englishName(CurrencyUtil.getCurrencyEnglishName(currencyCode))
-                .build();
-    }
-
-
 }

@@ -1,6 +1,8 @@
 package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.StockService;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.CurrencyAssembler;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.RegionAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.StockAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.StockTableRequest;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.CurrenciesResponse;
@@ -33,19 +35,19 @@ public class StockController {
     @GetMapping("/region/list")
     @Operation(summary = "获取所有公司所在国家|地区信息")
     public RegionsResponse getAllRegion() {
-        return StockAssembler.buildRegionsResponseFromRegionBOs(stockService.getAllRegion());
+        return RegionAssembler.buildRegionsResponseFromRegionBOs(stockService.getAllRegion());
     }
 
     @GetMapping("/marketRegion/list")
     @Operation(summary = "获取所有交易所在国家|地区信息")
     public RegionsResponse getAllMarketRegion() {
-        return StockAssembler.buildRegionsResponseFromRegionBOs(stockService.getAllMarketRegion());
+        return RegionAssembler.buildRegionsResponseFromRegionBOs(stockService.getAllMarketRegion());
     }
 
     @GetMapping("/currency/list")
     @Operation(summary = "获取所有交易货币信息")
     public CurrenciesResponse getAllCurrency() {
-        return StockAssembler.buildCurrenciesResponseFromCurrencyBOs(stockService.getAllCurrency());
+        return CurrencyAssembler.buildCurrenciesResponseFromCurrencyBOs(stockService.getAllCurrency());
     }
 
     @PostMapping("/table/{current}/{pageSize}")

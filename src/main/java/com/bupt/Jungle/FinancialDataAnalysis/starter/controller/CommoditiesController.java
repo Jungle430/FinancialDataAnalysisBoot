@@ -2,7 +2,8 @@ package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.CommoditiesService;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.CommoditiesAssembler;
-import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.StockAssembler;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.CurrencyAssembler;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.RegionAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.CommoditiesTableRequest;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.CommoditiesTagPageResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.CurrenciesResponse;
@@ -34,13 +35,13 @@ public class CommoditiesController {
     @GetMapping("/region/list")
     @Operation(summary = "获取所有交易国家|地区信息")
     public RegionsResponse getAllRegion() {
-        return StockAssembler.buildRegionsResponseFromRegionBOs(commoditiesService.getAllRegion());
+        return RegionAssembler.buildRegionsResponseFromRegionBOs(commoditiesService.getAllRegion());
     }
 
     @GetMapping("/currency/list")
     @Operation(summary = "获取所有交易货币信息")
     public CurrenciesResponse getAllCurrency() {
-        return StockAssembler.buildCurrenciesResponseFromCurrencyBOs(commoditiesService.getAllCurrency());
+        return CurrencyAssembler.buildCurrenciesResponseFromCurrencyBOs(commoditiesService.getAllCurrency());
     }
 
     @PostMapping("/table/{current}/{pageSize}")

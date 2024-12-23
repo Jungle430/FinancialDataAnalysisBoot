@@ -2,7 +2,8 @@ package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.BitCoinService;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.BitCoinAssembler;
-import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.StockAssembler;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.CurrencyAssembler;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.RegionAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.BitCoinTableRequest;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.BitCoinTagPageResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.CurrenciesResponse;
@@ -34,13 +35,13 @@ public class BitCoinController {
     @GetMapping("/region/list")
     @Operation(summary = "获取所有交易国家|地区信息")
     public RegionsResponse getAllRegion() {
-        return StockAssembler.buildRegionsResponseFromRegionBOs(bitCoinService.getAllRegion());
+        return RegionAssembler.buildRegionsResponseFromRegionBOs(bitCoinService.getAllRegion());
     }
 
     @GetMapping("/currency/list")
     @Operation(summary = "获取所有交易货币信息")
     public CurrenciesResponse getAllCurrency() {
-        return StockAssembler.buildCurrenciesResponseFromCurrencyBOs(bitCoinService.getAllCurrency());
+        return CurrencyAssembler.buildCurrenciesResponseFromCurrencyBOs(bitCoinService.getAllCurrency());
     }
 
     @PostMapping("/table/{current}/{pageSize}")

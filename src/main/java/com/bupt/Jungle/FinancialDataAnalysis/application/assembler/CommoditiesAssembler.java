@@ -11,8 +11,8 @@ public class CommoditiesAssembler {
         return CommoditiesTagBO.builder()
                 .code(commoditiesPO.getCode())
                 .platform(commoditiesPO.getPlatform())
-                .region(StockAssembler.buildRegionBOFromISOCode(commoditiesPO.getRegion()))
-                .currency(StockAssembler.buildCurrencyBOFromCurrencyCode(commoditiesPO.getCurrency()))
+                .region(RegionAssembler.buildRegionBOFromISOCode(commoditiesPO.getRegion()))
+                .currency(CurrencyAssembler.buildCurrencyBOFromCurrencyCode(commoditiesPO.getCurrency()))
                 .name(commoditiesPO.getName())
                 .build();
     }
