@@ -55,7 +55,7 @@ public class StockIndexController {
     public StockIndexTagPageResponse getStockIndexTableData(@RequestBody StockIndexTableRequest stockIndexTableRequest,
                                                             @PathVariable(name = "current") Long current,
                                                             @PathVariable(name = "pageSize") Long pageSize) {
-        return StockAssembler.StockIndexTagPageBO2StockIndexTagPageResponse(stockIndexService.queryStockIndexTagPage(
+        return StockAssembler.StockIndexTagPageBO2StockIndexTagPageResponse(stockIndexService.getStockIndexTagPage(
                 stockIndexTableRequest.getCode(),
                 stockIndexTableRequest.getPlatform(),
                 stockIndexTableRequest.getRegion(),

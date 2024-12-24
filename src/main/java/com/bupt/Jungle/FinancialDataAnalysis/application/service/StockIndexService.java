@@ -36,13 +36,13 @@ public class StockIndexService {
                 .toList();
     }
 
-    public StockIndexTagPageBO queryStockIndexTagPage(String code,
-                                                      String platform,
-                                                      String region,
-                                                      String currency,
-                                                      String name,
-                                                      Long current,
-                                                      Long pageSize) {
+    public StockIndexTagPageBO getStockIndexTagPage(String code,
+                                                    String platform,
+                                                    String region,
+                                                    String currency,
+                                                    String name,
+                                                    Long current,
+                                                    Long pageSize) {
         Long total = stockIndexMapper.queryStockIndexTagTotalCount(
                 code,
                 platform,

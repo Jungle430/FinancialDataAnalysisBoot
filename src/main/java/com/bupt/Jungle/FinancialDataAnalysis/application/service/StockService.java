@@ -46,14 +46,14 @@ public class StockService {
                 .toList();
     }
 
-    public StockTagPageBO queryStockTagPage(String code,
-                                            String platform,
-                                            String region,
-                                            String currency,
-                                            String name,
-                                            String marketRegion,
-                                            Long current,
-                                            Long pageSize) {
+    public StockTagPageBO getStockTagPage(String code,
+                                          String platform,
+                                          String region,
+                                          String currency,
+                                          String name,
+                                          String marketRegion,
+                                          Long current,
+                                          Long pageSize) {
         Long total = stockMapper.queryStockTagTotalCount(
                 code,
                 platform,

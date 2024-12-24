@@ -60,7 +60,7 @@ public class StockController {
     public StockTagPageResponse getStockTableData(@RequestBody StockTableRequest stockTableRequest,
                                                   @PathVariable(name = "current") Long current,
                                                   @PathVariable(name = "pageSize") Long pageSize) {
-        return StockAssembler.StockTagPageBO2StockTagsPageResponse(stockService.queryStockTagPage(
+        return StockAssembler.StockTagPageBO2StockTagsPageResponse(stockService.getStockTagPage(
                 stockTableRequest.getCode(),
                 stockTableRequest.getPlatform(),
                 stockTableRequest.getRegion(),

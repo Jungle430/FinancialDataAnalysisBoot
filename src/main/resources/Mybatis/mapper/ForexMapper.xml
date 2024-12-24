@@ -52,4 +52,56 @@
         GROUP BY quote_currency
         ORDER BY quote_currency;
     </select>
+
+    <select id="queryForexTag" resultMap="Forex">
+        SELECT TAGS base_region, base_currency, quote_region, quote_currency
+        FROM `financial_data_analysis`.`forex`
+        <where>
+            base_currency != 'CNH' AND quote_currency != 'CNH'
+            <if test="baseRegion != null and baseRegion !=''">
+                <bind name="queryBaseRegion" value="'%' + baseRegion + '%'"/>
+                AND base_region LIKE #{queryBaseRegion}
+            </if>
+            <if test="baseCurrency != null and baseCurrency != ''">
+                <bind name="queryBaseCurrency" value="'%' + baseCurrency + '%'"/>
+                AND base_currency LIKE #{queryBaseCurrency}
+            </if>
+            <if test="quoteRegion != null and quoteRegion != ''">
+                <bind name="queryQuoteRegion" value="'%' + quoteRegion + '%'"/>
+                AND quote_region LIKE #{queryQuoteRegion}
+            </if>
+            <if test="quoteCurrency != null and quoteCurrency != ''">
+                <bind name="queryQuoteCurrency" value="'%' + quoteCurrency + '%'"/>
+                AND quote_currency LIKE #{queryQuoteCurrency}
+            </if>
+        </where>
+        ORDER BY base_region, base_currency, quote_region, quote_currency
+        LIMIT #{limitSize} OFFSET #{offSet};
+    </select>
+
+    <select id="queryForexTagTotalCount" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM
+        (SELECT TAGS base_region, base_currency, quote_region, quote_currency
+        FROM `financial_data_analysis`.`forex`
+        <where>
+            base_currency != 'CNH' AND quote_currency != 'CNH'
+            <if test="baseRegion != null and baseRegion !=''">
+                <bind name="queryBaseRegion" value="'%' + baseRegion + '%'"/>
+                AND base_region LIKE #{queryBaseRegion}
+            </if>
+            <if test="baseCurrency != null and baseCurrency != ''">
+                <bind name="queryBaseCurrency" value="'%' + baseCurrency + '%'"/>
+                AND base_currency LIKE #{queryBaseCurrency}
+            </if>
+            <if test="quoteRegion != null and quoteRegion != ''">
+                <bind name="queryQuoteRegion" value="'%' + quoteRegion + '%'"/>
+                AND quote_region LIKE #{queryQuoteRegion}
+            </if>
+            <if test="quoteCurrency != null and quoteCurrency != ''">
+                <bind name="queryQuoteCurrency" value="'%' + quoteCurrency + '%'"/>
+                AND quote_currency LIKE #{queryQuoteCurrency}
+            </if>
+        </where>
+        )
+    </select>
 </mapper>
