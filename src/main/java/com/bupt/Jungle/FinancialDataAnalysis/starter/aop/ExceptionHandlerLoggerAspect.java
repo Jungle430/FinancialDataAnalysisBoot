@@ -3,6 +3,7 @@ package com.bupt.Jungle.FinancialDataAnalysis.starter.aop;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.NoAuthException;
 
+import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -37,6 +38,13 @@ public class ExceptionHandlerLoggerAspect {
                     businessException.getMessage(),
                     businessException);
             throw businessException;
+        } catch (ServiceException serviceException) {
+            LOGGER.error("ServiceException caught in method: {}， Method arguments: {}, Exception message: {}",
+                    joinPoint.getSignature().getName(),
+                    Arrays.toString(joinPoint.getArgs()),
+                    serviceException.getMessage(),
+                    serviceException);
+            throw serviceException;
         } catch (Exception exception) {
             LOGGER.error("Exception caught in method: {}， Method arguments: {}, Exception Type: {}, Exception message: {}",
                     joinPoint.getSignature().getName(),
