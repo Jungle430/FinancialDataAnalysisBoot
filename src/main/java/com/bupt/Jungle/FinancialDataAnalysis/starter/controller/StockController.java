@@ -7,6 +7,7 @@ import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.StockAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.StockTableRequest;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.CurrenciesResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.RegionsResponse;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.StockEchartsResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.StockTagPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -70,5 +71,14 @@ public class StockController {
                 current,
                 pageSize
         ));
+    }
+
+    @GetMapping("/echarts/{code}")
+    @Operation(summary = "股票图像查询")
+    @Parameters({
+            @Parameter(name = "code", description = "股票代码", in = ParameterIn.PATH)
+    })
+    public StockEchartsResponse getStockEchartsData(@PathVariable(name = "code") String code) {
+        return StockAssembler.buildStockEchartsResponseFromStockEchartsBO(stockService.getStockEchartsData(code));
     }
 }

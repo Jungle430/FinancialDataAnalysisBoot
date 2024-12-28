@@ -14,6 +14,10 @@ public interface StockMapper {
 
     List<String> queryAllMarketRegion();
 
+    List<StockPO> queryStockDataByCode(@Param("code") String code);
+
+    List<StockPO> queryStockTagByCode(@Param("code") String code);
+
     List<StockPO> queryStockTag(
             @Param("code") String code,
             @Param("platform") String platform,
