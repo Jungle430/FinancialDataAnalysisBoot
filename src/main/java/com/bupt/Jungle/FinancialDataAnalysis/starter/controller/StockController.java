@@ -1,6 +1,7 @@
 package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.StockService;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.annotation.Performance;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.CurrencyAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.RegionAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.StockAssembler;
@@ -73,6 +74,7 @@ public class StockController {
         ));
     }
 
+    @Performance()
     @GetMapping("/echarts/{code}")
     @Operation(summary = "股票图像查询")
     @Parameters({
