@@ -16,6 +16,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 @Aspect
 @Component
@@ -45,30 +46,36 @@ public class PerformanceAspect {
             boolean timePerformance = performance.timePerformance();
             boolean memoryPerformance = performance.memoryPerformance();
             if (!timePerformance && memoryPerformance) {
-                LOGGER.info("Method {},Heap memory usage before:{}bytes/{}mb/{}GB,Heap memory usage after:{}bytes/{}mb/{}GB",
+                LOGGER.info("Method:{}, Method arguments:{}, Heap memory usage before:{}bytes/{}mb/{}GB,Heap memory usage after:{}bytes/{}mb/{}GB",
                         joinPoint.getSignature().getName(),
+                        Arrays.toString(joinPoint.getArgs()),
                         heapMemoryUsageBeforeBytes,
-                        heapMemoryUsageBeforeMb,
-                        heapMemoryUsageBeforeGb,
+                        String.format("%.5f", heapMemoryUsageBeforeMb),
+                        String.format("%.2f", heapMemoryUsageBeforeGb),
                         heapMemoryUsageAfterBytes,
-                        heapMemoryUsageAfterMb,
-                        heapMemoryUsageAfterGb
+                        String.format("%.5f", heapMemoryUsageAfterMb),
+                        String.format("%.2f", heapMemoryUsageAfterGb)
                 );
             }
 
             if (timePerformance && !memoryPerformance) {
-                LOGGER.info("Method {} execution time: {}ms", joinPoint.getSignature().getName(), duration);
+                LOGGER.info("Method:{}, Method arguments:{}, execution time: {}ms",
+                        joinPoint.getSignature().getName(),
+                        Arrays.toString(joinPoint.getArgs()),
+                        duration);
             }
 
             if (timePerformance && memoryPerformance) {
-                LOGGER.info("Method {} execution time: {}ms,Heap memory usage before:{}bytes/{}mb/{}GB,Heap memory usage after:{}bytes/{}mb/{}GB",
-                        joinPoint.getSignature().getName(), duration,
+                LOGGER.info("Method {}, Method arguments:{}, execution time: {}ms,Heap memory usage before:{}bytes/{}mb/{}GB,Heap memory usage after:{}bytes/{}mb/{}GB",
+                        joinPoint.getSignature().getName(),
+                        Arrays.toString(joinPoint.getArgs()),
+                        duration,
                         heapMemoryUsageBeforeBytes,
-                        heapMemoryUsageBeforeMb,
-                        heapMemoryUsageBeforeGb,
+                        String.format("%.5f", heapMemoryUsageBeforeMb),
+                        String.format("%.2f", heapMemoryUsageBeforeGb),
                         heapMemoryUsageAfterBytes,
-                        heapMemoryUsageAfterMb,
-                        heapMemoryUsageAfterGb
+                        String.format("%.5f", heapMemoryUsageAfterMb),
+                        String.format("%.2f", heapMemoryUsageAfterGb)
                 );
             }
         }
