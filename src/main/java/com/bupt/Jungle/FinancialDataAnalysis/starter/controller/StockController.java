@@ -74,7 +74,7 @@ public class StockController {
         ));
     }
 
-    @Performance()
+    @Performance
     @GetMapping("/echarts/{code}")
     @Operation(summary = "股票图像查询")
     @Parameters({

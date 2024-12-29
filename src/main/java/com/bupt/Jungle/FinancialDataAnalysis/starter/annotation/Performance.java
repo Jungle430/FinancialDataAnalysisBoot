@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 public @interface Performance {
     boolean timePerformance() default true;
 
-    boolean memoryPerformance() default false;
+    boolean memoryPerformance() default true;
 }

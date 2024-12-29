@@ -1,9 +1,12 @@
 package com.bupt.Jungle.FinancialDataAnalysis.starter.aop;
 
 
+import com.bupt.Jungle.FinancialDataAnalysis.starter.annotation.Performance;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
+import java.lang.reflect.Method;
 
 @Aspect
 @Component
@@ -36,15 +40,50 @@ public class PerformanceAspect {
             long heapMemoryUsageAfterBytes = heapMemoryUsageAfter.getUsed();
             double heapMemoryUsageAfterMb = (double) heapMemoryUsageAfterBytes / (1024 * 1024);
             double heapMemoryUsageAfterGb = heapMemoryUsageAfterMb / 1024;
-            LOGGER.info("Method {} execution time: {}ms,Heap memory usage before:{}bytes/{}mb/{}GB,Heap memory usage after:{}bytes/{}mb/{}GB",
-                    joinPoint.getSignature().getName(), duration,
-                    heapMemoryUsageBeforeBytes,
-                    heapMemoryUsageBeforeMb,
-                    heapMemoryUsageBeforeGb,
-                    heapMemoryUsageAfterBytes,
-                    heapMemoryUsageAfterMb,
-                    heapMemoryUsageAfterGb
-            );
+            Method method = extractActualMethod(joinPoint);
+            Performance performance = method.getAnnotation(Performance.class);
+            boolean timePerformance = performance.timePerformance();
+            boolean memoryPerformance = performance.memoryPerformance();
+            if (!timePerformance && memoryPerformance) {
+                LOGGER.info("Method {},Heap memory usage before:{}bytes/{}mb/{}GB,Heap memory usage after:{}bytes/{}mb/{}GB",
+                        joinPoint.getSignature().getName(),
+                        heapMemoryUsageBeforeBytes,
+                        heapMemoryUsageBeforeMb,
+                        heapMemoryUsageBeforeGb,
+                        heapMemoryUsageAfterBytes,
+                        heapMemoryUsageAfterMb,
+                        heapMemoryUsageAfterGb
+                );
+            }
+
+            if (timePerformance && !memoryPerformance) {
+                LOGGER.info("Method {} execution time: {}ms", joinPoint.getSignature().getName(), duration);
+            }
+
+            if (timePerformance && memoryPerformance) {
+                LOGGER.info("Method {} execution time: {}ms,Heap memory usage before:{}bytes/{}mb/{}GB,Heap memory usage after:{}bytes/{}mb/{}GB",
+                        joinPoint.getSignature().getName(), duration,
+                        heapMemoryUsageBeforeBytes,
+                        heapMemoryUsageBeforeMb,
+                        heapMemoryUsageBeforeGb,
+                        heapMemoryUsageAfterBytes,
+                        heapMemoryUsageAfterMb,
+                        heapMemoryUsageAfterGb
+                );
+            }
+        }
+
+    }
+
+    private Method extractActualMethod(ProceedingJoinPoint joinPoint) throws Exception {
+        Signature signature = joinPoint.getSignature();
+        try {
+            Method method = ((MethodSignature) signature).getMethod();
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            return joinPoint.getTarget().getClass().getDeclaredMethod(signature.getName(), parameterTypes);
+        } catch (Exception e) {
+            LOGGER.error("can't find method:{}", signature.getName(), e);
+            throw e;
         }
     }
 }
