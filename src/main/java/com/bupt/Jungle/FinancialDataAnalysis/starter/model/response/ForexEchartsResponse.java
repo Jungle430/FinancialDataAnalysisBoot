@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ForexEchartsResponse {
-    private List<ForexBO> forexBOs;
+    private List<ForexBO> forexes;
 
     private ForexTagBO tags;
 

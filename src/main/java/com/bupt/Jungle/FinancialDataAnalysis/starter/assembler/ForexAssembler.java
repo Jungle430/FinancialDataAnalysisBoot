@@ -15,7 +15,7 @@ public class ForexAssembler {
 
     public static ForexEchartsResponse buildForexEchartsResponseFromForexEchartsBO(ForexEchartsBO forexEchartsBO) {
         return ForexEchartsResponse.builder()
-                .forexBOs(forexEchartsBO.getForexBOs())
+                .forexes(forexEchartsBO.getForexBOs())
                 .tags(forexEchartsBO.getForexTagBO())
                 .MA5(forexEchartsBO.getMA5())
                 .MA10(forexEchartsBO.getMA10())
