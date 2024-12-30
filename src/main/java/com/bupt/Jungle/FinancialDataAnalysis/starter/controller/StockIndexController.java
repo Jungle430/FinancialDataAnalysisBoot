@@ -72,7 +72,7 @@ public class StockIndexController {
     @GetMapping("/echarts/{code}")
     @Operation(summary = "股票指数图像查询")
     @Parameters({
-            @Parameter(name = "code", description = "股票代码", in = ParameterIn.PATH)
+            @Parameter(name = "code", description = "股票指数代码", in = ParameterIn.PATH)
     })
     public StockIndexEchartsResponse getStockIndexEchartsData(@PathVariable(name = "code") String code) {
         return StockAssembler.buildStockIndexEchartsResponseFromStockIndexEchartsBO(stockIndexService.getStockIndexEchartsData(code));
