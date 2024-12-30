@@ -16,6 +16,16 @@ public interface ForexMapper {
 
     List<String> queryAllQuoteCurrency();
 
+    List<ForexPO> queryForexDataByBaseRegionAndQuoteRegion(
+            @Param("baseCurrency") String baseCurrency,
+            @Param("quoteCurrency") String quoteCurrency
+    );
+
+    List<ForexPO> queryForexTagByBaseRegionAndQuoteRegion(
+            @Param("baseCurrency") String baseCurrency,
+            @Param("quoteCurrency") String quoteCurrency
+    );
+
     List<ForexPO> queryForexTag(
             @Param("baseRegion") String baseRegion,
             @Param("baseCurrency") String baseCurrency,

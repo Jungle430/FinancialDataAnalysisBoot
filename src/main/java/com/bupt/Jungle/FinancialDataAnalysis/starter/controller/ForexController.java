@@ -1,11 +1,13 @@
 package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.ForexService;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.annotation.Performance;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.CurrencyAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.ForexAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.RegionAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.ForexTableRequest;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.CurrenciesResponse;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.ForexEchartsResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.ForexTagPageResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.RegionsResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -74,5 +76,19 @@ public class ForexController {
                 current,
                 pageSize
         ));
+    }
+
+    @Performance
+    @GetMapping("/echarts/{baseCurrency}/{quoteCurrency}")
+    @Operation(summary = "外汇图像查询")
+    @Parameters({
+            @Parameter(name = "baseCurrency", description = "基础货币", in = ParameterIn.PATH),
+            @Parameter(name = "quoteCurrency", description = "报价货币", in = ParameterIn.PATH),
+    })
+    public ForexEchartsResponse getForexEchartsData(
+            @PathVariable(name = "baseCurrency") String baseCurrency,
+            @PathVariable(name = "quoteCurrency") String quoteCurrency
+    ) {
+        return ForexAssembler.buildForexEchartsResponseFromForexEchartsBO(forexService.getForexEchartsData(baseCurrency, quoteCurrency));
     }
 }
