@@ -79,4 +79,17 @@
         </where>
         )
     </select>
+
+    <select id="queryBitCoinDataByCode" resultMap="BitCoin">
+        SELECT ts, closing_price, opening_price, highest_price, lowest_price, trading_volume, rise_and_fall
+        FROM `financial_data_analysis`.`bit_coin`
+        WHERE code = #{code}
+        ORDER BY ts;
+    </select>
+
+    <select id="queryBitCoinTagByCode" resultMap="BitCoin">
+        SELECT TAGS code, platform, region, currency
+        FROM `financial_data_analysis`.`bit_coin`
+        WHERE code = #{code};
+    </select>
 </mapper>

@@ -3,11 +3,17 @@ package com.bupt.Jungle.FinancialDataAnalysis.application.service;
 import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.BitCoinAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.CurrencyAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.RegionAssembler;
+import com.bupt.Jungle.FinancialDataAnalysis.application.model.BitCoinBO;
+import com.bupt.Jungle.FinancialDataAnalysis.application.model.BitCoinEchartsBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.BitCoinTagBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.BitCoinTagPageBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.CurrencyBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.RegionBO;
+import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
+import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.BitCoinMapper;
+import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.BitCoinPO;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,5 +69,20 @@ public class BitCoinService {
                 offSet
         ).stream().map(BitCoinAssembler::BitCoinPO2BitCoinTagBO).toList();
         return BitCoinAssembler.buildBitCoinTagPageBOFromBitCoinTagBOs(bitCoinPOS, total);
+    }
+
+    public BitCoinEchartsBO getBitCoinEchartsData(String code) {
+        List<BitCoinPO> bitCoinTags = bitCoinMapper.queryBitCoinTagByCode(code);
+        if (CollectionUtils.isEmpty(bitCoinTags)) {
+            throw new BusinessException("没有该股票");
+        }
+
+        if (bitCoinTags.size() > 1) {
+            throw new ServiceException(String.format("数据库数据有问题, 一个code查出来两组TAG, code:%s, tags:%s", code, bitCoinTags));
+        }
+
+        BitCoinTagBO bitCoinTagBO = BitCoinAssembler.BitCoinPO2BitCoinTagBO(bitCoinTags.get(0));
+        List<BitCoinBO> bitCoinBOS = bitCoinMapper.queryBitCoinDataByCode(code).stream().map(BitCoinAssembler::BitCoinPO2BitCoinBO).toList();
+        return BitCoinAssembler.buildBitCoinEchartsBOFromBitCoinBOsAndBitCoinTagBO(bitCoinBOS, bitCoinTagBO);
     }
 }

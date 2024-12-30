@@ -1,10 +1,12 @@
 package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.BitCoinService;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.annotation.Performance;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.BitCoinAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.CurrencyAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.RegionAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.BitCoinTableRequest;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.BitCoinEchartsResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.BitCoinTagPageResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.CurrenciesResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.RegionsResponse;
@@ -62,5 +64,15 @@ public class BitCoinController {
                 current,
                 pageSize
         ));
+    }
+
+    @Performance
+    @GetMapping("/echarts/{code}")
+    @Operation(summary = "比特币图像查询")
+    @Parameters({
+            @Parameter(name = "code", description = "比特币代码", in = ParameterIn.PATH)
+    })
+    public BitCoinEchartsResponse getBitCoinEchartsData(@PathVariable(name = "code") String code) {
+        return BitCoinAssembler.buildBitCoinEchartsResponseFromBitCoinEchartsBO(bitCoinService.getBitCoinEchartsData(code));
     }
 }

@@ -12,6 +12,10 @@ public interface BitCoinMapper {
 
     List<String> queryAllCurrency();
 
+    List<BitCoinPO> queryBitCoinDataByCode(@Param("code") String code);
+
+    List<BitCoinPO> queryBitCoinTagByCode(@Param("code") String code);
+
     List<BitCoinPO> queryBitCoinTag(
             @Param("code") String code,
             @Param("platform") String platform,
