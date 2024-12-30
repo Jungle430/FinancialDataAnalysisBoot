@@ -1,11 +1,13 @@
 package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.StockIndexService;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.annotation.Performance;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.CurrencyAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.RegionAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.StockIndexTableRequest;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.CurrenciesResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.RegionsResponse;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.StockIndexEchartsResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.StockIndexTagPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -64,5 +66,15 @@ public class StockIndexController {
                 current,
                 pageSize
         ));
+    }
+
+    @Performance
+    @GetMapping("/echarts/{code}")
+    @Operation(summary = "股票指数图像查询")
+    @Parameters({
+            @Parameter(name = "code", description = "股票代码", in = ParameterIn.PATH)
+    })
+    public StockIndexEchartsResponse getStockIndexEchartsData(@PathVariable(name = "code") String code) {
+        return StockAssembler.buildStockIndexEchartsResponseFromStockIndexEchartsBO(stockIndexService.getStockIndexEchartsData(code));
     }
 }

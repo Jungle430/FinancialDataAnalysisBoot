@@ -2,6 +2,8 @@ package com.bupt.Jungle.FinancialDataAnalysis.application.assembler;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockEchartsBO;
+import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockIndexBO;
+import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockIndexEchartsBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockIndexTagBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockIndexTagPageBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockTagBO;
@@ -61,6 +63,18 @@ public class StockAssembler {
                 .build();
     }
 
+    public static StockIndexBO StockIndexPO2StockIndexBO(StockIndexPO stockIndexPO) {
+        return StockIndexBO.builder()
+                .ts(stockIndexPO.getTs())
+                .openingPrice(stockIndexPO.getOpeningPrice())
+                .closingPrice(stockIndexPO.getClosingPrice())
+                .highestPrice(stockIndexPO.getHighestPrice())
+                .lowestPrice(stockIndexPO.getLowestPrice())
+                .tradeVolume(stockIndexPO.getTradeVolume())
+                .riseAndFall(stockIndexPO.getRiseAndFall())
+                .build();
+    }
+
     public static StockEchartsBO buildStockEchartsBOFromStockBOsAndStockTagBO(List<StockBO> stockBOs, StockTagBO stockTagBO) {
         StockEchartsBO stockEchartsBO = new StockEchartsBO();
         stockEchartsBO.setStockBOs(stockBOs);
@@ -71,5 +85,17 @@ public class StockAssembler {
         stockEchartsBO.setMA20(StockCalculateUtil.preciseCalculateMA(closingPrices, 20));
         stockEchartsBO.setMA30(StockCalculateUtil.preciseCalculateMA(closingPrices, 30));
         return stockEchartsBO;
+    }
+
+    public static StockIndexEchartsBO buildStockIndexEchartsBOFromStockIndexBOsAndStockIndexTagBO(List<StockIndexBO> stockIndexBOs, StockIndexTagBO stockIndexTagBO) {
+        StockIndexEchartsBO stockIndexEchartsBO = new StockIndexEchartsBO();
+        stockIndexEchartsBO.setStockIndexBOs(stockIndexBOs);
+        stockIndexEchartsBO.setStockIndexTagBO(stockIndexTagBO);
+        List<Double> closingPrices = stockIndexBOs.stream().map(StockIndexBO::getClosingPrice).toList();
+        stockIndexEchartsBO.setMA5(StockCalculateUtil.preciseCalculateMA(closingPrices, 5));
+        stockIndexEchartsBO.setMA5(StockCalculateUtil.preciseCalculateMA(closingPrices, 10));
+        stockIndexEchartsBO.setMA20(StockCalculateUtil.preciseCalculateMA(closingPrices, 20));
+        stockIndexEchartsBO.setMA30(StockCalculateUtil.preciseCalculateMA(closingPrices, 30));
+        return stockIndexEchartsBO;
     }
 }

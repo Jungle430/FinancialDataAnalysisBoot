@@ -4,9 +4,15 @@ import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.CurrencyAssem
 import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.RegionAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.CurrencyBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.RegionBO;
+import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockIndexBO;
+import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockIndexEchartsBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockIndexTagBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockIndexTagPageBO;
+import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
+import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.StockIndexMapper;
+import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.StockIndexPO;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.StockAssembler;
@@ -66,5 +72,20 @@ public class StockIndexService {
                 offset
         ).stream().map(StockAssembler::StockIndexPO2StockIndexTagBO).toList();
         return StockAssembler.buildStockIndexTagPageBOFromStockIndexTagBOs(stockIndexTagBOS, total);
+    }
+
+    public StockIndexEchartsBO getStockIndexEchartsData(String code) {
+        List<StockIndexPO> stockIndexTags = stockIndexMapper.queryStockIndexTagByCode(code);
+        if (CollectionUtils.isEmpty(stockIndexTags)) {
+            throw new BusinessException("没有该股票");
+        }
+
+        if (stockIndexTags.size() > 1) {
+            throw new ServiceException(String.format("数据库数据有问题, 一个code查出来两组TAG, code:%s, tags:%s", code, stockIndexTags));
+        }
+
+        StockIndexTagBO stockIndexTagBO = StockAssembler.StockIndexPO2StockIndexTagBO(stockIndexTags.get(0));
+        List<StockIndexBO> stockIndexBOS = stockIndexMapper.queryStockIndexDataByCode(code).stream().map(StockAssembler::StockIndexPO2StockIndexBO).toList();
+        return StockAssembler.buildStockIndexEchartsBOFromStockIndexBOsAndStockIndexTagBO(stockIndexBOS, stockIndexTagBO);
     }
 }

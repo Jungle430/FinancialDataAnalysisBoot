@@ -89,9 +89,7 @@ public class StockService {
     }
 
     public StockEchartsBO getStockEchartsData(String code) {
-        List<StockBO> stockBOS = stockMapper.queryStockDataByCode(code).stream().map(StockAssembler::StockPO2StockBO).toList();
         List<StockPO> stockTags = stockMapper.queryStockTagByCode(code);
-
         if (CollectionUtils.isEmpty(stockTags)) {
             throw new BusinessException("没有该股票");
         }
@@ -101,6 +99,7 @@ public class StockService {
         }
 
         StockTagBO stockTagBO = StockAssembler.StockPO2StockTagBO(stockTags.get(0));
+        List<StockBO> stockBOS = stockMapper.queryStockDataByCode(code).stream().map(StockAssembler::StockPO2StockBO).toList();
         return StockAssembler.buildStockEchartsBOFromStockBOsAndStockTagBO(stockBOS, stockTagBO);
     }
 }

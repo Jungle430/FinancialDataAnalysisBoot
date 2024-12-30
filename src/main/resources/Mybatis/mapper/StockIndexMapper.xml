@@ -88,4 +88,17 @@
         </where>
         )
     </select>
+
+    <select id="queryStockIndexTagByCode" resultMap="StockIndex">
+        SELECT TAGS code, platform, region, currency, name
+        FROM `financial_data_analysis`.`stock_index`
+        WHERE code = #{code};
+    </select>
+
+    <select id="queryStockIndexDataByCode" resultMap="StockIndex">
+        SELECT ts, closing_price, opening_price, highest_price, lowest_price, trading_volume, rise_and_fall
+        FROM `financial_data_analysis`.`stock_index`
+        WHERE code = #{code}
+        ORDER BY ts;
+    </select>
 </mapper>
