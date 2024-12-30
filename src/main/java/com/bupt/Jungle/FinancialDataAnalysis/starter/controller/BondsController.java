@@ -1,10 +1,12 @@
 package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.BondsService;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.annotation.Performance;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.BondsAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.CurrencyAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.RegionAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.BondsTableRequest;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.BondsEchartsResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.BondsTagPageResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.CurrenciesResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.RegionsResponse;
@@ -63,5 +65,15 @@ public class BondsController {
                 current,
                 pageSize
         ));
+    }
+
+    @Performance
+    @GetMapping("/echarts/{code}")
+    @Operation(summary = "债券图像查询")
+    @Parameters({
+            @Parameter(name = "code", description = "债券代码", in = ParameterIn.PATH)
+    })
+    public BondsEchartsResponse getBondsEchartsData(@PathVariable(name = "code") String code) {
+        return BondsAssembler.buildBondsEchartsResponseFromBondsEchartsBO(bondsService.getBondsEchartsData(code));
     }
 }

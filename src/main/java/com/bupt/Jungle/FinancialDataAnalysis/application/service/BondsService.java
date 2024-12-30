@@ -3,11 +3,17 @@ package com.bupt.Jungle.FinancialDataAnalysis.application.service;
 import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.BondsAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.CurrencyAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.RegionAssembler;
+import com.bupt.Jungle.FinancialDataAnalysis.application.model.BondsBO;
+import com.bupt.Jungle.FinancialDataAnalysis.application.model.BondsEchartsBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.BondsTagBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.BondsTagPageBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.CurrencyBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.RegionBO;
+import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
+import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.BondsMapper;
+import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.BondsPO;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,11 +50,11 @@ public class BondsService {
                                           Long current,
                                           Long pageSize) {
         Long total = bondsMapper.queryBondsTagTotalCount(
-                 code,
-                 platform,
-                 region,
-                 currency,
-                 name
+                code,
+                platform,
+                region,
+                currency,
+                name
         );
 
         long offSet = (current - 1) * pageSize;
@@ -66,5 +72,20 @@ public class BondsService {
                 offSet
         ).stream().map(BondsAssembler::BondsPO2BondsTagBO).toList();
         return BondsAssembler.buildBondsTagPageBOFromBondsTagBOs(bondsTagBOS, total);
+    }
+
+    public BondsEchartsBO getBondsEchartsData(String code) {
+        List<BondsPO> bondsTags = bondsMapper.queryBondsTagByCode(code);
+        if (CollectionUtils.isEmpty(bondsTags)) {
+            throw new BusinessException("没有该债券");
+        }
+
+        if (bondsTags.size() > 1) {
+            throw new ServiceException(String.format("数据库数据有问题, 一个code查出来两组TAG, code:%s, tags:%s", code, bondsTags));
+        }
+
+        BondsTagBO bondsTagBO = BondsAssembler.BondsPO2BondsTagBO(bondsTags.get(0));
+        List<BondsBO> bondsBOS = bondsMapper.queryBondsDataByCode(code).stream().map(BondsAssembler::BondsPO2BondsBO).toList();
+        return BondsAssembler.buildBondsEchartsBOFromBondsBOsAndBondsTagPageBO(bondsBOS, bondsTagBO);
     }
 }
