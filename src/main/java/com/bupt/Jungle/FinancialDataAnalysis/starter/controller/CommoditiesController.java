@@ -1,10 +1,12 @@
 package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.CommoditiesService;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.annotation.Performance;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.CommoditiesAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.CurrencyAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.RegionAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.CommoditiesTableRequest;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.CommoditiesEchartsResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.CommoditiesTagPageResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.CurrenciesResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.RegionsResponse;
@@ -63,5 +65,15 @@ public class CommoditiesController {
                 current,
                 pageSize
         ));
+    }
+
+    @Performance
+    @GetMapping("/echarts/{code}")
+    @Operation(summary = "大宗商品图像查询")
+    @Parameters({
+            @Parameter(name = "code", description = "大宗商品代码", in = ParameterIn.PATH)
+    })
+    public CommoditiesEchartsResponse getCommoditiesEchartsData(@PathVariable(name = "code") String code) {
+        return CommoditiesAssembler.buildCommoditiesEchartsResponseFromCommoditiesEchartsBO(commoditiesService.getCommoditiesEchartsData(code));
     }
 }

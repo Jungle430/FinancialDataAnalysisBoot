@@ -110,7 +110,8 @@
         FROM `financial_data_analysis`.`forex`
         <include refid="currencyCondition"/>
         AND base_currency = #{baseCurrency}
-        AND quote_currency = #{quoteCurrency};
+        AND quote_currency = #{quoteCurrency}
+        ORDER BY ts;
     </select>
 
     <select id="queryForexTagByBaseRegionAndQuoteRegion" resultMap="Forex">

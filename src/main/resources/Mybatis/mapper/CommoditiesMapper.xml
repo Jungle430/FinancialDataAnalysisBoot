@@ -88,4 +88,17 @@
         </where>
         )
     </select>
+
+    <select id="queryCommoditiesDataByCode" resultMap="Commodities">
+        SELECT ts, closing_price, opening_price, highest_price, lowest_price, trading_volume, rise_and_fall
+        FROM `financial_data_analysis`.`commodities`
+        WHERE code = #{code}
+        ORDER BY ts;
+    </select>
+
+    <select id="queryCommoditiesTagByCode" resultMap="Commodities">
+        SELECT TAGS code, platform, region, currency, name
+        FROM `financial_data_analysis`.`commodities`
+        WHERE code = #{code};
+    </select>
 </mapper>
