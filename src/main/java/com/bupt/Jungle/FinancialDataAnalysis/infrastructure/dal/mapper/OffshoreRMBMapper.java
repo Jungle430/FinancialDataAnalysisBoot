@@ -17,6 +17,16 @@ public interface OffshoreRMBMapper {
 
     List<String> queryAllQuoteCurrency();
 
+    List<ForexPO> queryOffshoreRMBDataByBaseRegionAndQuoteRegion(
+            @Param("baseCurrency") String baseCurrency,
+            @Param("quoteCurrency") String quoteCurrency
+    );
+
+    List<ForexPO> queryOffshoreRMBTagByBaseRegionAndQuoteRegion(
+            @Param("baseCurrency") String baseCurrency,
+            @Param("quoteCurrency") String quoteCurrency
+    );
+
     List<ForexPO> queryOffshoreRMBTag(
             @Param("baseRegion") String baseRegion,
             @Param("baseCurrency") String baseCurrency,

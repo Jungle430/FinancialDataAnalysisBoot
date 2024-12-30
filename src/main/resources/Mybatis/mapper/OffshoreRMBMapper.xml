@@ -18,7 +18,7 @@
     </resultMap>
 
     <sql id="currencyCondition">
-        WHERE base_currency = 'CNH' OR quote_currency = 'CNH'
+        WHERE (base_currency = 'CNH' OR quote_currency = 'CNH')
     </sql>
 
     <select id="queryAllBaseRegion" resultType="java.lang.String">
@@ -103,5 +103,21 @@
             </if>
         </where>
         )
+    </select>
+
+    <select id="queryOffshoreRMBDataByBaseRegionAndQuoteRegion" resultMap="Forex">
+        SELECT ts, closing_price, opening_price, highest_price, lowest_price, rise_and_fall
+        FROM `financial_data_analysis`.`forex`
+        <include refid="currencyCondition"/>
+        AND base_currency = #{baseCurrency}
+        AND quote_currency = #{quoteCurrency};
+    </select>
+
+    <select id="queryOffshoreRMBTagByBaseRegionAndQuoteRegion" resultMap="Forex">
+        SELECT TAGS base_region, base_currency, quote_region, quote_currency
+        FROM `financial_data_analysis`.`forex`
+        <include refid="currencyCondition"/>
+        AND base_currency = #{baseCurrency}
+        AND quote_currency = #{quoteCurrency};
     </select>
 </mapper>

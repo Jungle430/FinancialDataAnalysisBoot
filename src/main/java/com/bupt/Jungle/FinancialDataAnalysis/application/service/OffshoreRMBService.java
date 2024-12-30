@@ -4,10 +4,16 @@ import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.CurrencyAssem
 import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.ForexAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.RegionAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.CurrencyBO;
+import com.bupt.Jungle.FinancialDataAnalysis.application.model.ForexBO;
+import com.bupt.Jungle.FinancialDataAnalysis.application.model.ForexEchartsBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.ForexTagBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.ForexTagPageBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.RegionBO;
+import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
+import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.OffshoreRMBMapper;
+import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.ForexPO;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -77,5 +83,20 @@ public class OffshoreRMBService {
                 offSet
         ).stream().map(ForexAssembler::ForexPO2ForexTagBO).toList();
         return ForexAssembler.buildForexTagPageBOFromForexTagBOs(offshoreRMBTags, total);
+    }
+
+    public ForexEchartsBO getOffshoreRMBEchartsData(String baseCurrency, String quoteCurrency) {
+        List<ForexPO> offshoreRMBTags = offshoreRMBMapper.queryOffshoreRMBTagByBaseRegionAndQuoteRegion(baseCurrency, quoteCurrency);
+        if (CollectionUtils.isEmpty(offshoreRMBTags)) {
+            throw new BusinessException("没有该股票");
+        }
+
+        if (offshoreRMBTags.size() > 1) {
+            throw new ServiceException(String.format("数据库数据有问题, 一个code查出来两组TAG, baseCurrency:%s, quoteCurrency:%s, tags:%s", baseCurrency, quoteCurrency, offshoreRMBTags));
+        }
+
+        ForexTagBO offshoreRMBTagBO = ForexAssembler.ForexPO2ForexTagBO(offshoreRMBTags.get(0));
+        List<ForexBO> offshoreRMBBOS = offshoreRMBMapper.queryOffshoreRMBDataByBaseRegionAndQuoteRegion(baseCurrency, quoteCurrency).stream().map(ForexAssembler::ForexPO2ForexBO).toList();
+        return ForexAssembler.buildForexEchartsBOFromForexBOsAndForexTagBO(offshoreRMBBOS, offshoreRMBTagBO);
     }
 }

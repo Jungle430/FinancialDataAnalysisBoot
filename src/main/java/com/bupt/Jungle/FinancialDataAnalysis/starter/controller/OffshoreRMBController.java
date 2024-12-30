@@ -1,11 +1,13 @@
 package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.OffshoreRMBService;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.annotation.Performance;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.CurrencyAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.ForexAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.RegionAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.ForexTableRequest;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.CurrenciesResponse;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.ForexEchartsResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.ForexTagPageResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.RegionsResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,7 +53,7 @@ public class OffshoreRMBController {
     }
 
     @GetMapping("/quoteCurrency/list")
-    @Operation(summary = "获取所有报价基础货币信息")
+    @Operation(summary = "获取所有报价货币信息")
     public CurrenciesResponse getAllQuoteCurrency() {
         return CurrencyAssembler.buildCurrenciesResponseFromCurrencyBOs(offshoreRMBService.getAllQuoteCurrency());
     }
@@ -63,9 +65,9 @@ public class OffshoreRMBController {
             @Parameter(name = "current", description = "当前页数", in = ParameterIn.PATH),
             @Parameter(name = "pageSize", description = "页大小", in = ParameterIn.PATH),
     })
-    public ForexTagPageResponse getForexTableData(@RequestBody ForexTableRequest offshoreRMBTableRequest,
-                                                  @PathVariable(name = "current") Long current,
-                                                  @PathVariable(name = "pageSize") Long pageSize) {
+    public ForexTagPageResponse getOffshoreRMBTableData(@RequestBody ForexTableRequest offshoreRMBTableRequest,
+                                                        @PathVariable(name = "current") Long current,
+                                                        @PathVariable(name = "pageSize") Long pageSize) {
         return ForexAssembler.ForexTagPageBO2ForexTagPageResponse(offshoreRMBService.getOffshoreRMBTagPage(
                 offshoreRMBTableRequest.getBaseRegion(),
                 offshoreRMBTableRequest.getBaseCurrency(),
@@ -74,5 +76,18 @@ public class OffshoreRMBController {
                 current,
                 pageSize
         ));
+    }
+
+    @Performance
+    @GetMapping("/echarts/{baseCurrency}/{quoteCurrency}")
+    @Operation(summary = "离岸人民币图像查询")
+    @Parameters({
+            @Parameter(name = "baseCurrency", description = "基础货币", in = ParameterIn.PATH),
+            @Parameter(name = "quoteCurrency", description = "报价货币", in = ParameterIn.PATH),
+    })
+    public ForexEchartsResponse getOffshoreRMBEchartsData(
+            @PathVariable(name = "baseCurrency") String baseCurrency,
+            @PathVariable(name = "quoteCurrency") String quoteCurrency) {
+        return ForexAssembler.buildForexEchartsResponseFromForexEchartsBO(offshoreRMBService.getOffshoreRMBEchartsData(baseCurrency, quoteCurrency));
     }
 }
