@@ -47,6 +47,11 @@ spring:
       port: 6379
       password:
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
 
 mybatis:
   mapper-locations: classpath:Mybatis/mapper/*.xml
