@@ -4,7 +4,7 @@ server:
 personal:
   database:
     ip: localhost
-    port: 6060
+    port: 6041
     name: "financial_data_analysis"
     user:
       name: root
