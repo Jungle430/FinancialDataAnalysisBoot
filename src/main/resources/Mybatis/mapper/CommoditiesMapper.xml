@@ -17,6 +17,10 @@
         <id column="name" jdbcType="VARCHAR" javaType="java.lang.String" property="name"/>
     </resultMap>
 
+    <sql id="commoditiesValues">
+        ts, closing_price, opening_price, highest_price, lowest_price, trading_volume, rise_and_fall
+    </sql>
+
     <sql id="commoditiesTags">
         code, platform, region, currency, name
     </sql>
@@ -27,21 +31,21 @@
 
     <select id="queryAllRegion" resultType="java.lang.String">
         SELECT region
-        FROM `financial_data_analysis`.`commodities`
+        FROM <include refid="commoditiesSTable"/>
         GROUP BY region
         ORDER BY region;
     </select>
 
     <select id="queryAllCurrency" resultType="java.lang.String">
         SELECT currency
-        FROM `financial_data_analysis`.`commodities`
+        FROM <include refid="commoditiesSTable"/>
         GROUP BY currency
         ORDER BY currency;
     </select>
 
     <select id="queryCommoditiesTag" resultMap="Commodities">
-        SELECT TAGS code, platform, region, currency, name
-        FROM `financial_data_analysis`.`commodities`
+        SELECT TAGS <include refid="commoditiesTags"/>
+        FROM <include refid="commoditiesSTable"/>
         <where>
             <if test="code != null and code != ''">
                 <bind name="queryCode" value="'%' + code + '%'"/>
@@ -64,14 +68,14 @@
                 AND name LIKE #{queryName}
             </if>
         </where>
-        ORDER BY code, platform, region, currency, name
+        ORDER BY <include refid="commoditiesTags"/>
         LIMIT #{limitSize} OFFSET #{offSet};
     </select>
 
     <select id="queryCommoditiesTagTotalCount" resultType="java.lang.Long">
         SELECT COUNT(*) FROM
-        (SELECT TAGS code, platform, region, currency, name
-        FROM `financial_data_analysis`.`commodities`
+        (SELECT TAGS <include refid="commoditiesTags"/>
+        FROM <include refid="commoditiesSTable"/>
         <where>
             <if test="code != null and code != ''">
                 <bind name="queryCode" value="'%' + code + '%'"/>
@@ -98,15 +102,15 @@
     </select>
 
     <select id="queryCommoditiesDataByCode" resultMap="Commodities">
-        SELECT ts, closing_price, opening_price, highest_price, lowest_price, trading_volume, rise_and_fall
-        FROM `financial_data_analysis`.`commodities`
+        SELECT <include refid="commoditiesValues"/>
+        FROM <include refid="commoditiesSTable"/>
         WHERE code = #{code}
         ORDER BY ts;
     </select>
 
     <select id="queryCommoditiesTagByCode" resultMap="Commodities">
-        SELECT TAGS code, platform, region, currency, name
-        FROM `financial_data_analysis`.`commodities`
+        SELECT TAGS <include refid="commoditiesTags"/>
+        FROM <include refid="commoditiesSTable"/>
         WHERE code = #{code};
     </select>
 

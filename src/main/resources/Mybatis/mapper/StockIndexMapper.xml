@@ -17,6 +17,10 @@
         <id column="name" jdbcType="VARCHAR" javaType="java.lang.String" property="name"/>
     </resultMap>
 
+    <sql id="stockIndexValues">
+        ts, closing_price, opening_price, highest_price, lowest_price, trading_volume, rise_and_fall
+    </sql>
+
     <sql id="stockIndexTags">
         code, platform, region, currency, name
     </sql>
@@ -27,21 +31,21 @@
 
     <select id="queryAllRegion" resultType="java.lang.String">
         SELECT region
-        FROM `financial_data_analysis`.`stock_index`
+        FROM <include refid="stockIndexSTable"/>
         GROUP BY region
         ORDER BY region;
     </select>
 
     <select id="queryAllCurrency" resultType="java.lang.String">
         SELECT currency
-        FROM `financial_data_analysis`.`stock_index`
+        FROM <include refid="stockIndexSTable"/>
         GROUP BY currency
         ORDER BY currency;
     </select>
 
     <select id="queryStockIndexTag" resultMap="StockIndex">
-        SELECT TAGS code, platform, region, currency, name
-        FROM `financial_data_analysis`.`stock_index`
+        SELECT TAGS <include refid="stockIndexTags"/>
+        FROM <include refid="stockIndexSTable"/>
         <where>
             <if test="code != null and code != ''">
                 <bind name="queryCode" value="'%' + code + '%'"/>
@@ -64,14 +68,14 @@
                 AND name LIKE #{queryName}
             </if>
         </where>
-        ORDER BY code, platform, region, currency, name
+        ORDER BY <include refid="stockIndexTags"/>
         LIMIT #{limitSize} OFFSET #{offSet};
     </select>
 
     <select id="queryStockIndexTagTotalCount" resultType="java.lang.Long">
         SELECT COUNT(*) FROM
-        (SELECT TAGS code, platform, region, currency, name
-        FROM `financial_data_analysis`.`stock_index`
+        (SELECT TAGS <include refid="stockIndexTags"/>
+        FROM <include refid="stockIndexSTable"/>
         <where>
             <if test="code != null and code != ''">
                 <bind name="queryCode" value="'%' + code + '%'"/>
@@ -98,14 +102,14 @@
     </select>
 
     <select id="queryStockIndexTagByCode" resultMap="StockIndex">
-        SELECT TAGS code, platform, region, currency, name
-        FROM `financial_data_analysis`.`stock_index`
+        SELECT TAGS <include refid="stockIndexTags"/>
+        FROM <include refid="stockIndexSTable"/>
         WHERE code = #{code};
     </select>
 
     <select id="queryStockIndexDataByCode" resultMap="StockIndex">
-        SELECT ts, closing_price, opening_price, highest_price, lowest_price, trading_volume, rise_and_fall
-        FROM `financial_data_analysis`.`stock_index`
+        SELECT <include refid="stockIndexValues"/>
+        FROM <include refid="stockIndexSTable"/>
         WHERE code = #{code}
         ORDER BY ts;
     </select>

@@ -17,6 +17,10 @@
         <id column="name" jdbcType="VARCHAR" javaType="java.lang.String" property="name"/>
     </resultMap>
 
+    <sql id="bondsValues">
+        ts, closing_price, opening_price, highest_price, lowest_price, trading_volume, rise_and_fall
+    </sql>
+
     <sql id="bondsTags">
         code, platform, region, currency, name
     </sql>
@@ -27,21 +31,21 @@
 
     <select id="queryAllRegion" resultType="java.lang.String">
         SELECT region
-        FROM `financial_data_analysis`.`bonds`
+        FROM <include refid="bondsSTable"/>
         GROUP BY region
         ORDER BY region;
     </select>
 
     <select id="queryAllCurrency" resultType="java.lang.String">
         SELECT currency
-        FROM `financial_data_analysis`.`bonds`
+        FROM <include refid="bondsSTable"/>
         GROUP BY currency
         ORDER BY currency;
     </select>
 
     <select id="queryBondsTag" resultMap="Bonds">
-        SELECT TAGS code, platform, region, currency, name
-        FROM `financial_data_analysis`.`bonds`
+        SELECT TAGS <include refid="bondsTags"/>
+        FROM <include refid="bondsSTable"/>
         <where>
             <if test="code != null and code != ''">
                 <bind name="queryCode" value="'%' + code + '%'"/>
@@ -64,14 +68,14 @@
                 AND name LIKE #{queryName}
             </if>
         </where>
-        ORDER BY code, platform, region, currency, name
+        ORDER BY <include refid="bondsTags"/>
         LIMIT #{limitSize} OFFSET #{offSet};
     </select>
 
     <select id="queryBondsTagTotalCount" resultType="java.lang.Long">
         SELECT COUNT(*) FROM
-        (SELECT TAGS code, platform, region, currency, name
-        FROM `financial_data_analysis`.`bonds`
+        (SELECT TAGS <include refid="bondsTags"/>
+        FROM <include refid="bondsSTable"/>
         <where>
             <if test="code != null and code != ''">
                 <bind name="queryCode" value="'%' + code + '%'"/>
@@ -98,15 +102,15 @@
     </select>
 
     <select id="queryBondsDataByCode" resultMap="Bonds">
-        SELECT ts, closing_price, opening_price, highest_price, lowest_price, trading_volume, rise_and_fall
-        FROM `financial_data_analysis`.`bonds`
+        SELECT <include refid="bondsValues"/>
+        FROM <include refid="bondsSTable"/>
         WHERE code = #{code}
         ORDER BY ts;
     </select>
 
     <select id="queryBondsTagByCode" resultMap="Bonds">
-        SELECT TAGS code, platform, region, currency, name
-        FROM `financial_data_analysis`.`bonds`
+        SELECT TAGS <include refid="bondsTags"/>
+        FROM <include refid="bondsSTable"/>
         WHERE code = #{code};
     </select>
 

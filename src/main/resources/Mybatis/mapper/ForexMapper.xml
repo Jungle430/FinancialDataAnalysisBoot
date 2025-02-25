@@ -17,6 +17,10 @@
         <id column="quote_currency_cn" jdbcType="VARCHAR" javaType="java.lang.String" property="quoteCurrencyCn"/>
     </resultMap>
 
+    <sql id="forexValues">
+        ts, closing_price, opening_price, highest_price, lowest_price, rise_and_fall
+    </sql>
+
     <sql id="forexTags">
         base_region, base_currency, quote_region, quote_currency
     </sql>
@@ -31,7 +35,7 @@
 
     <select id="queryAllBaseRegion" resultType="java.lang.String">
         SELECT base_region
-        FROM `financial_data_analysis`.`forex`
+        FROM <include refid="forexSTable"/>
         <include refid="currencyCondition"/>
         GROUP BY base_region
         ORDER BY base_region;
@@ -39,7 +43,7 @@
 
     <select id="queryAllBaseCurrency" resultType="java.lang.String">
         SELECT base_currency
-        FROM `financial_data_analysis`.`forex`
+        FROM <include refid="forexSTable"/>
         <include refid="currencyCondition"/>
         GROUP BY base_currency
         ORDER BY base_currency;
@@ -47,7 +51,7 @@
 
     <select id="queryAllQuoteRegion" resultType="java.lang.String">
         SELECT quote_region
-        FROM `financial_data_analysis`.`forex`
+        FROM <include refid="forexSTable"/>
         <include refid="currencyCondition"/>
         GROUP BY quote_region
         ORDER BY quote_region;
@@ -55,15 +59,15 @@
 
     <select id="queryAllQuoteCurrency" resultType="java.lang.String">
         SELECT quote_currency
-        FROM `financial_data_analysis`.`forex`
+        FROM <include refid="forexSTable"/>
         <include refid="currencyCondition"/>
         GROUP BY quote_currency
         ORDER BY quote_currency;
     </select>
 
     <select id="queryForexTag" resultMap="Forex">
-        SELECT TAGS base_region, base_currency, quote_region, quote_currency
-        FROM `financial_data_analysis`.`forex`
+        SELECT TAGS <include refid="forexTags"/>
+        FROM <include refid="forexSTable"/>
         <where>
             base_currency != 'CNH' AND quote_currency != 'CNH'
             <if test="baseRegion != null and baseRegion !=''">
@@ -83,14 +87,14 @@
                 AND quote_currency LIKE #{queryQuoteCurrency}
             </if>
         </where>
-        ORDER BY base_region, base_currency, quote_region, quote_currency
+        ORDER BY <include refid="forexTags"/>
         LIMIT #{limitSize} OFFSET #{offSet};
     </select>
 
     <select id="queryForexTagTotalCount" resultType="java.lang.Long">
         SELECT COUNT(*) FROM
-        (SELECT TAGS base_region, base_currency, quote_region, quote_currency
-        FROM `financial_data_analysis`.`forex`
+        (SELECT TAGS <include refid="forexTags"/>
+        FROM <include refid="forexSTable"/>
         <where>
             base_currency != 'CNH' AND quote_currency != 'CNH'
             <if test="baseRegion != null and baseRegion !=''">
@@ -114,8 +118,8 @@
     </select>
 
     <select id="queryForexDataByBaseRegionAndQuoteRegion" resultMap="Forex">
-        SELECT ts, closing_price, opening_price, highest_price, lowest_price, rise_and_fall
-        FROM `financial_data_analysis`.`forex`
+        SELECT <include refid="forexValues"/>
+        FROM <include refid="forexSTable"/>
         <include refid="currencyCondition"/>
         AND base_currency = #{baseCurrency}
         AND quote_currency = #{quoteCurrency}
@@ -123,8 +127,8 @@
     </select>
 
     <select id="queryForexTagByBaseRegionAndQuoteRegion" resultMap="Forex">
-        SELECT TAGS base_region, base_currency, quote_region, quote_currency
-        FROM `financial_data_analysis`.`forex`
+        SELECT TAGS <include refid="forexTags"/>
+        FROM <include refid="forexSTable"/>
         <include refid="currencyCondition"/>
         AND base_currency = #{baseCurrency}
         AND quote_currency = #{quoteCurrency};
@@ -141,8 +145,10 @@
     </select>
 
     <select id="queryForexDataByBaseRegionAndQuoteRegionWithOffshoreRMB" resultMap="Forex">
-        SELECT ts, closing_price, opening_price, highest_price, lowest_price, rise_and_fall
-        FROM `financial_data_analysis`.`forex`
+        SELECT
+        <include refid="forexValues"/>
+        FROM
+        <include refid="forexSTable"/>
         WHERE base_currency = #{baseCurrency}
         AND quote_currency = #{quoteCurrency};
     </select>

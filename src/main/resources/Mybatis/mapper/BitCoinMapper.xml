@@ -16,6 +16,10 @@
         <id column="currency" jdbcType="VARCHAR" javaType="java.lang.String" property="currency"/>
     </resultMap>
 
+    <sql id="bitCoinValues">
+        ts, closing_price, opening_price, highest_price, lowest_price, trading_volume, rise_and_fall
+    </sql>
+
     <sql id="bitCoinTags">
         code, platform, region, currency
     </sql>
@@ -26,21 +30,21 @@
 
     <select id="queryAllRegion" resultType="java.lang.String">
         SELECT region
-        FROM `financial_data_analysis`.`bit_coin`
+        FROM <include refid="bitCoinSTable"/>
         GROUP BY region
         ORDER BY region;
     </select>
 
     <select id="queryAllCurrency" resultType="java.lang.String">
         SELECT currency
-        FROM `financial_data_analysis`.`bit_coin`
+        FROM <include refid="bitCoinSTable"/>
         GROUP BY currency
         ORDER BY currency;
     </select>
 
     <select id="queryBitCoinTag" resultMap="BitCoin">
-        SELECT TAGS code, platform, region, currency
-        FROM `financial_data_analysis`.`bit_coin`
+        SELECT TAGS <include refid="bitCoinTags"/>
+        FROM <include refid="bitCoinSTable"/>
         <where>
             <if test="code != null and code != ''">
                 <bind name="queryCode" value="'%' + code + '%'"/>
@@ -59,14 +63,14 @@
                 AND currency LIKE #{queryCurrency}
             </if>
         </where>
-        ORDER BY code, platform, region, currency
+        ORDER BY <include refid="bitCoinTags"/>
         LIMIT #{limitSize} OFFSET #{offSet};
     </select>
 
     <select id="queryBitCoinTagTotalCount" resultType="java.lang.Long">
         SELECT COUNT(*) FROM
-        (SELECT TAGS code, platform, region, currency
-        FROM `financial_data_analysis`.`bit_coin`
+        (SELECT TAGS <include refid="bitCoinTags"/>
+        FROM <include refid="bitCoinSTable"/>
         <where>
             <if test="code != null and code != ''">
                 <bind name="queryCode" value="'%' + code + '%'"/>
@@ -89,15 +93,15 @@
     </select>
 
     <select id="queryBitCoinDataByCode" resultMap="BitCoin">
-        SELECT ts, closing_price, opening_price, highest_price, lowest_price, trading_volume, rise_and_fall
-        FROM `financial_data_analysis`.`bit_coin`
+        SELECT <include refid="bitCoinValues"/>
+        FROM <include refid="bitCoinSTable"/>
         WHERE code = #{code}
         ORDER BY ts;
     </select>
 
     <select id="queryBitCoinTagByCode" resultMap="BitCoin">
-        SELECT TAGS code, platform, region, currency
-        FROM `financial_data_analysis`.`bit_coin`
+        SELECT TAGS <include refid="bitCoinTags"/>
+        FROM <include refid="bitCoinSTable"/>
         WHERE code = #{code};
     </select>
 
