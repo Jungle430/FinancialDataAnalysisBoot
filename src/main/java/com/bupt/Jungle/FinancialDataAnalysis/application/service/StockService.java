@@ -15,14 +15,15 @@ import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.StockMapp
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.StockPO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service(value = "stock")
 @Slf4j
-public class StockService {
+public class StockService implements AnalysisBaseService {
     private final StockMapper stockMapper;
 
     @Autowired
@@ -101,5 +102,41 @@ public class StockService {
         StockTagBO stockTagBO = StockAssembler.StockPO2StockTagBO(stockTags.get(0));
         List<StockBO> stockBOS = stockMapper.queryStockDataByCode(code).stream().map(StockAssembler::StockPO2StockBO).toList();
         return StockAssembler.buildStockEchartsBOFromStockBOsAndStockTagBO(stockBOS, stockTagBO);
+    }
+
+    @Override
+    public List<ImmutablePair<String, String>> getAllBranchBaseData() {
+        List<StockPO> stockTags = stockMapper.queryAllTags();
+
+        if (CollectionUtils.isEmpty(stockTags)) {
+            throw new BusinessException("股票没有分支数据");
+        }
+
+        return stockTags.stream()
+                .map(stockPO ->
+                        ImmutablePair.of(
+                                stockPO.getCode(),
+                                String.join("-",
+                                        stockPO.getCode(),
+                                        stockPO.getName(),
+                                        stockPO.getPlatform(),
+                                        CurrencyAssembler.buildCurrencyDetailMessageFromCurrencyCode(stockPO.getCurrency()),
+                                        RegionAssembler.buildDetailRegionMessageFromISOCode(stockPO.getRegion()),
+                                        RegionAssembler.buildDetailRegionMessageFromISOCode(stockPO.getMarketRegion())
+                                )
+                        )
+                )
+                .toList();
+    }
+
+    @Override
+    public ImmutablePair<List<?>, Class<?>> getAllFinancialBranchData(String code) {
+        return ImmutablePair.of(
+                stockMapper.queryStockDataByCode(code)
+                        .stream()
+                        .map(StockAssembler::StockPO2StockBO)
+                        .toList(),
+                StockBO.class
+        );
     }
 }

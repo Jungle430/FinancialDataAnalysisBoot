@@ -17,6 +17,14 @@
         <id column="name" jdbcType="VARCHAR" javaType="java.lang.String" property="name"/>
     </resultMap>
 
+    <sql id="stockIndexTags">
+        code, platform, region, currency, name
+    </sql>
+
+    <sql id="stockIndexSTable">
+        `financial_data_analysis`.`stock_index`
+    </sql>
+
     <select id="queryAllRegion" resultType="java.lang.String">
         SELECT region
         FROM `financial_data_analysis`.`stock_index`
@@ -100,5 +108,15 @@
         FROM `financial_data_analysis`.`stock_index`
         WHERE code = #{code}
         ORDER BY ts;
+    </select>
+
+    <select id="queryAllTags" resultMap="StockIndex">
+        SELECT
+        <include refid="stockIndexTags"/>
+        FROM
+        <include refid="stockIndexSTable"/>
+        GROUP BY
+        <include refid="stockIndexTags"/>
+        ORDER BY<include refid="stockIndexTags"/>;
     </select>
 </mapper>

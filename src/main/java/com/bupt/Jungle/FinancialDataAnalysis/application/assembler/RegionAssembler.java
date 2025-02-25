@@ -12,4 +12,8 @@ public class RegionAssembler {
                 .englishName(ISOUtil.isoEnglishName(isoCode))
                 .build();
     }
+
+    public static String buildDetailRegionMessageFromISOCode(String isoCode) {
+        return String.format("%s(%s)", ISOUtil.isoSimplifiedChineseName(isoCode), ISOUtil.isoEnglishName(isoCode));
+    }
 }

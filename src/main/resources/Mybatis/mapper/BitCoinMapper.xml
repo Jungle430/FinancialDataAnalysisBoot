@@ -16,6 +16,14 @@
         <id column="currency" jdbcType="VARCHAR" javaType="java.lang.String" property="currency"/>
     </resultMap>
 
+    <sql id="bitCoinTags">
+        code, platform, region, currency
+    </sql>
+
+    <sql id="bitCoinSTable">
+        `financial_data_analysis`.`bit_coin`
+    </sql>
+
     <select id="queryAllRegion" resultType="java.lang.String">
         SELECT region
         FROM `financial_data_analysis`.`bit_coin`
@@ -91,5 +99,12 @@
         SELECT TAGS code, platform, region, currency
         FROM `financial_data_analysis`.`bit_coin`
         WHERE code = #{code};
+    </select>
+
+    <select id="queryAllTags" resultMap="BitCoin">
+        SELECT <include refid="bitCoinTags"/>
+        FROM <include refid="bitCoinSTable"/>
+        GROUP BY <include refid="bitCoinTags"/>
+        ORDER BY <include refid="bitCoinTags"/>;
     </select>
 </mapper>

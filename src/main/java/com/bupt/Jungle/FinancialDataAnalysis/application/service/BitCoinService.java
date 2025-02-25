@@ -14,13 +14,14 @@ import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.BitCoinMapper;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.BitCoinPO;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class BitCoinService {
+@Service(value = "bit_coin")
+public class BitCoinService implements AnalysisBaseService {
     private final BitCoinMapper bitCoinMapper;
 
     @Autowired
@@ -74,7 +75,7 @@ public class BitCoinService {
     public BitCoinEchartsBO getBitCoinEchartsData(String code) {
         List<BitCoinPO> bitCoinTags = bitCoinMapper.queryBitCoinTagByCode(code);
         if (CollectionUtils.isEmpty(bitCoinTags)) {
-            throw new BusinessException("没有该股票");
+            throw new BusinessException("没有该比特币");
         }
 
         if (bitCoinTags.size() > 1) {
@@ -84,5 +85,40 @@ public class BitCoinService {
         BitCoinTagBO bitCoinTagBO = BitCoinAssembler.BitCoinPO2BitCoinTagBO(bitCoinTags.get(0));
         List<BitCoinBO> bitCoinBOS = bitCoinMapper.queryBitCoinDataByCode(code).stream().map(BitCoinAssembler::BitCoinPO2BitCoinBO).toList();
         return BitCoinAssembler.buildBitCoinEchartsBOFromBitCoinBOsAndBitCoinTagBO(bitCoinBOS, bitCoinTagBO);
+    }
+
+    @Override
+    public List<ImmutablePair<String, String>> getAllBranchBaseData() {
+        List<BitCoinPO> bitCoinTags = bitCoinMapper.queryAllTags();
+
+        if (CollectionUtils.isEmpty(bitCoinTags)) {
+            throw new BusinessException("比特币没有分支数据");
+        }
+
+        return bitCoinTags
+                .stream()
+                .map(bitCoinPO ->
+                        ImmutablePair.of(
+                                bitCoinPO.getCode(),
+                                String.join(
+                                        "-",
+                                        bitCoinPO.getCode(),
+                                        bitCoinPO.getPlatform(),
+                                        RegionAssembler.buildDetailRegionMessageFromISOCode(bitCoinPO.getRegion()),
+                                        CurrencyAssembler.buildCurrencyDetailMessageFromCurrencyCode(bitCoinPO.getCurrency())
+                                )
+                        )
+                ).toList();
+    }
+
+    @Override
+    public ImmutablePair<List<?>, Class<?>> getAllFinancialBranchData(String code) {
+        return ImmutablePair.of(
+                bitCoinMapper.queryBitCoinDataByCode(code)
+                        .stream()
+                        .map(BitCoinAssembler::BitCoinPO2BitCoinBO)
+                        .toList(),
+                BitCoinBO.class
+        );
     }
 }

@@ -33,4 +33,6 @@ public interface BondsMapper {
             @Param("currency") String currency,
             @Param("name") String name
     );
+
+    List<BondsPO> queryAllTags();
 }

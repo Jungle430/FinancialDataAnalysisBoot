@@ -60,3 +60,11 @@ knife4j:
   enable: true
   setting:
     language: zh_cn
+
+financial-data:
+  en-to-cn: "{bit_coin: '比特币', 
+              stock: '股票',
+              stock_index: '股票指数',
+              forex: '外汇(包含离岸人民币)',
+              commodities: '大宗商品',
+              bonds: '美国国债'}"

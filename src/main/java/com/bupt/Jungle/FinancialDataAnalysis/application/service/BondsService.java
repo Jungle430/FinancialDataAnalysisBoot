@@ -14,13 +14,14 @@ import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.BondsMapper;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.BondsPO;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class BondsService {
+@Service(value = "bonds")
+public class BondsService implements AnalysisBaseService {
     private final BondsMapper bondsMapper;
 
     @Autowired
@@ -87,5 +88,37 @@ public class BondsService {
         BondsTagBO bondsTagBO = BondsAssembler.BondsPO2BondsTagBO(bondsTags.get(0));
         List<BondsBO> bondsBOS = bondsMapper.queryBondsDataByCode(code).stream().map(BondsAssembler::BondsPO2BondsBO).toList();
         return BondsAssembler.buildBondsEchartsBOFromBondsBOsAndBondsTagPageBO(bondsBOS, bondsTagBO);
+    }
+
+    @Override
+    public List<ImmutablePair<String, String>> getAllBranchBaseData() {
+        List<BondsPO> bondsTags = bondsMapper.queryAllTags();
+
+        if (CollectionUtils.isEmpty(bondsTags)) {
+            throw new BusinessException("美国国债没有分支数据");
+        }
+
+        return bondsTags.stream().map(
+                bondsPO -> ImmutablePair.of(
+                        bondsPO.getCode(),
+                        String.join(
+                                "-",
+                                bondsPO.getCode(),
+                                bondsPO.getName(),
+                                bondsPO.getPlatform(),
+                                RegionAssembler.buildDetailRegionMessageFromISOCode(bondsPO.getRegion()),
+                                CurrencyAssembler.buildCurrencyDetailMessageFromCurrencyCode(bondsPO.getCurrency())))
+        ).toList();
+    }
+
+    @Override
+    public ImmutablePair<List<?>, Class<?>> getAllFinancialBranchData(String code) {
+        return ImmutablePair.of(
+                bondsMapper.queryBondsDataByCode(code)
+                        .stream()
+                        .map(BondsAssembler::BondsPO2BondsBO)
+                        .toList(),
+                BondsBO.class
+        );
     }
 }

@@ -13,14 +13,15 @@ import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.StockIndexMapper;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.StockIndexPO;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.bupt.Jungle.FinancialDataAnalysis.application.assembler.StockAssembler;
 
 import java.util.List;
 
-@Service
-public class StockIndexService {
+@Service(value = "stock_index")
+public class StockIndexService implements AnalysisBaseService {
     private final StockIndexMapper stockIndexMapper;
 
     @Autowired
@@ -87,5 +88,39 @@ public class StockIndexService {
         StockIndexTagBO stockIndexTagBO = StockAssembler.StockIndexPO2StockIndexTagBO(stockIndexTags.get(0));
         List<StockIndexBO> stockIndexBOS = stockIndexMapper.queryStockIndexDataByCode(code).stream().map(StockAssembler::StockIndexPO2StockIndexBO).toList();
         return StockAssembler.buildStockIndexEchartsBOFromStockIndexBOsAndStockIndexTagBO(stockIndexBOS, stockIndexTagBO);
+    }
+
+    @Override
+    public List<ImmutablePair<String, String>> getAllBranchBaseData() {
+        List<StockIndexPO> stockIndexTags = stockIndexMapper.queryAllTags();
+
+        if (CollectionUtils.isEmpty(stockIndexTags)) {
+            throw new BusinessException("股票指数没有分支数据");
+        }
+
+        return stockIndexTags
+                .stream()
+                .map(stockIndexPO -> ImmutablePair.of(
+                        stockIndexPO.getCode(),
+                        String.join(
+                                "-",
+                                stockIndexPO.getCode(),
+                                stockIndexPO.getName(),
+                                stockIndexPO.getPlatform(),
+                                RegionAssembler.buildDetailRegionMessageFromISOCode(stockIndexPO.getRegion()),
+                                CurrencyAssembler.buildCurrencyDetailMessageFromCurrencyCode(stockIndexPO.getCurrency())
+                        )
+                )).toList();
+    }
+
+    @Override
+    public ImmutablePair<List<?>, Class<?>> getAllFinancialBranchData(String code) {
+        return ImmutablePair.of(
+                stockIndexMapper.queryStockIndexTagByCode(code)
+                        .stream()
+                        .map(StockAssembler::StockIndexPO2StockIndexBO)
+                        .toList(),
+                StockIndexBO.class
+        );
     }
 }

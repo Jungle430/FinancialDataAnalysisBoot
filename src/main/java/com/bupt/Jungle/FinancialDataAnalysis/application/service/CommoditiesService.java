@@ -14,13 +14,14 @@ import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.CommoditiesMapper;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.CommoditiesPO;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class CommoditiesService {
+@Service(value = "commodities")
+public class CommoditiesService implements AnalysisBaseService {
     private final CommoditiesMapper commoditiesMapper;
 
     @Autowired
@@ -87,5 +88,39 @@ public class CommoditiesService {
         CommoditiesTagBO commoditiesTagBO = CommoditiesAssembler.CommoditiesPO2CommoditiesTagBO(commoditiesTags.get(0));
         List<CommoditiesBO> commoditiesBOS = commoditiesMapper.queryCommoditiesDataByCode(code).stream().map(CommoditiesAssembler::CommoditiesPO2CommoditiesBO).toList();
         return CommoditiesAssembler.buildCommoditiesEchartsBOFromCommoditiesBOsAndCommoditiesTagBO(commoditiesBOS, commoditiesTagBO);
+    }
+
+    @Override
+    public List<ImmutablePair<String, String>> getAllBranchBaseData() {
+        List<CommoditiesPO> commoditiesTags = commoditiesMapper.queryAllTags();
+        if (CollectionUtils.isEmpty(commoditiesTags)) {
+            throw new BusinessException("大宗商品没有分支数据");
+        }
+
+        return commoditiesTags
+                .stream()
+                .map(commoditiesPO -> ImmutablePair.of(
+                        commoditiesPO.getCode(),
+                        String.join(
+                                "-",
+                                commoditiesPO.getCode(),
+                                commoditiesPO.getName(),
+                                commoditiesPO.getPlatform(),
+                                RegionAssembler.buildDetailRegionMessageFromISOCode(commoditiesPO.getRegion()),
+                                CurrencyAssembler.buildCurrencyDetailMessageFromCurrencyCode(commoditiesPO.getCurrency())
+                        )
+                ))
+                .toList();
+    }
+
+    @Override
+    public ImmutablePair<List<?>, Class<?>> getAllFinancialBranchData(String code) {
+        return ImmutablePair.of(
+                commoditiesMapper.queryCommoditiesDataByCode(code)
+                        .stream()
+                        .map(CommoditiesAssembler::CommoditiesPO2CommoditiesBO)
+                        .toList(),
+                CommoditiesBO.class
+        );
     }
 }

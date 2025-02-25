@@ -21,6 +21,14 @@ public interface ForexMapper {
             @Param("quoteCurrency") String quoteCurrency
     );
 
+    /**
+     * 为金融数据分析计算准备的SQL,这个里面不再区分基础外汇和离岸人民币
+     */
+    List<ForexPO> queryForexDataByBaseRegionAndQuoteRegionWithOffshoreRMB(
+            @Param("baseCurrency") String baseCurrency,
+            @Param("quoteCurrency") String quoteCurrency
+    );
+
     List<ForexPO> queryForexTagByBaseRegionAndQuoteRegion(
             @Param("baseCurrency") String baseCurrency,
             @Param("quoteCurrency") String quoteCurrency
@@ -40,4 +48,6 @@ public interface ForexMapper {
             @Param("baseCurrency") String baseCurrency,
             @Param("quoteRegion") String quoteRegion,
             @Param("quoteCurrency") String quoteCurrency);
+
+    List<ForexPO> queryAllTags();
 }

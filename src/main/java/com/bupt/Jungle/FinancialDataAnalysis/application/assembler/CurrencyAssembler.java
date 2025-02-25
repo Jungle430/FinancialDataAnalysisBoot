@@ -12,4 +12,8 @@ public class CurrencyAssembler {
                 .englishName(CurrencyUtil.getCurrencyEnglishName(currencyCode))
                 .build();
     }
+
+    public static String buildCurrencyDetailMessageFromCurrencyCode(String currencyCode) {
+        return String.format("%s(%s)", CurrencyUtil.getSimplifiedCurrencyChineseName(currencyCode), CurrencyUtil.getCurrencyEnglishName(currencyCode));
+    }
 }

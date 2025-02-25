@@ -33,4 +33,6 @@ public interface CommoditiesMapper {
             @Param("currency") String currency,
             @Param("name") String name
     );
+
+    List<CommoditiesPO> queryAllTags();
 }

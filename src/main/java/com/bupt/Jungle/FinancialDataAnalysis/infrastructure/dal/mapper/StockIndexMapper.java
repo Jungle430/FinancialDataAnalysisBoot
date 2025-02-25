@@ -33,4 +33,6 @@ public interface StockIndexMapper {
             @Param("currency") String currency,
             @Param("name") String name
     );
+
+    List<StockIndexPO> queryAllTags();
 }

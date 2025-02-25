@@ -31,4 +31,6 @@ public interface BitCoinMapper {
             @Param("region") String region,
             @Param("currency") String currency
     );
+
+    List<BitCoinPO> queryAllTags();
 }

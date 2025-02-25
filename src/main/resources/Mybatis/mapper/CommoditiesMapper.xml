@@ -17,6 +17,14 @@
         <id column="name" jdbcType="VARCHAR" javaType="java.lang.String" property="name"/>
     </resultMap>
 
+    <sql id="commoditiesTags">
+        code, platform, region, currency, name
+    </sql>
+
+    <sql id="commoditiesSTable">
+        `financial_data_analysis`.`commodities`
+    </sql>
+
     <select id="queryAllRegion" resultType="java.lang.String">
         SELECT region
         FROM `financial_data_analysis`.`commodities`
@@ -100,5 +108,15 @@
         SELECT TAGS code, platform, region, currency, name
         FROM `financial_data_analysis`.`commodities`
         WHERE code = #{code};
+    </select>
+
+    <select id="queryAllTags" resultMap="Commodities">
+        SELECT
+        <include refid="commoditiesTags"/>
+        FROM
+        <include refid="commoditiesSTable"/>
+        GROUP BY
+        <include refid="commoditiesTags"/>
+        ORDER BY<include refid="commoditiesTags"/>;
     </select>
 </mapper>

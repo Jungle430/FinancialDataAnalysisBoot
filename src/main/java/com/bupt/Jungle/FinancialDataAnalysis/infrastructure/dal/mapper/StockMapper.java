@@ -37,4 +37,6 @@ public interface StockMapper {
             @Param("name") String name,
             @Param("marketRegion") String marketRegion
     );
+
+    List<StockPO> queryAllTags();
 }
