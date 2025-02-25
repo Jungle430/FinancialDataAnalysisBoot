@@ -141,9 +141,9 @@
     </select>
 
     <select id="queryForexDataByBaseRegionAndQuoteRegionWithOffshoreRMB" resultMap="Forex">
-        SELECT TAGS base_region, base_currency, quote_region, quote_currency
+        SELECT ts, closing_price, opening_price, highest_price, lowest_price, rise_and_fall
         FROM `financial_data_analysis`.`forex`
-        AND base_currency = #{baseCurrency}
+        WHERE base_currency = #{baseCurrency}
         AND quote_currency = #{quoteCurrency};
     </select>
 </mapper>
