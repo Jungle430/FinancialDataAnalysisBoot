@@ -4,6 +4,7 @@ package com.bupt.Jungle.FinancialDataAnalysis.domain.service;
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.AnalysisBaseService;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.util.StockCalculateUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException.NO_FINANCIAL_BRANCH_EXCEPTION;
 
 @Service
+@Slf4j
 public class FinancialDataAnalysisDomainService {
     private final Map<String, AnalysisBaseService> analysisBaseServiceMap;
 
@@ -61,6 +63,12 @@ public class FinancialDataAnalysisDomainService {
                     analysisFinancialDataY.getLeft(), analysisFinancialDataY.getRight()
             );
         } catch (Exception e) {
+            log.error("calculate error: {kindX:{},codeX:{},kindY:{},codeY:{}}",
+                    kindX,
+                    codeX,
+                    kindY,
+                    codeY,
+                    e);
             throw new BusinessException("计算出错, 金融数据: {kindX:%s,codeX:%s,kindY:%s,codeY:%s}", kindX, codeX, kindY, codeY);
         }
     }

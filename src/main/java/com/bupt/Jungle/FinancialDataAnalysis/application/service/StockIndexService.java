@@ -116,7 +116,7 @@ public class StockIndexService implements AnalysisBaseService {
     @Override
     public ImmutablePair<List<?>, Class<?>> getAllFinancialBranchData(String code) {
         return ImmutablePair.of(
-                stockIndexMapper.queryStockIndexTagByCode(code)
+                stockIndexMapper.queryStockIndexDataByCode(code)
                         .stream()
                         .map(StockAssembler::StockIndexPO2StockIndexBO)
                         .toList(),
