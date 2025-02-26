@@ -48,23 +48,8 @@ public final class StockCalculateUtil {
 
     private static double convertToDouble(Object result) {
         Objects.requireNonNull(result);
-        if (result instanceof Double doubleResult) {
-            return doubleResult;
-        }
-        if (result instanceof Float floatResult) {
-            return floatResult.doubleValue();
-        }
-        if (result instanceof Integer integerResult) {
-            return integerResult.doubleValue();
-        }
-        if (result instanceof Long longResult) {
-            return longResult.doubleValue();
-        }
-        if (result instanceof Short shortResult) {
-            return shortResult.doubleValue();
-        }
-        if (result instanceof Byte byteResult) {
-            return byteResult.doubleValue();
+        if (result instanceof Number) {
+            return ((Number) result).doubleValue();
         }
         throw new IllegalStateException("Unexpected return type: " + result.getClass());
     }
@@ -209,29 +194,31 @@ public final class StockCalculateUtil {
                 "values2"
         );
 
+        List<?> filterValues1 = filterElementsWithNonNullAttributes(values1, calculatedMethods1);
+        List<?> filterValues2 = filterElementsWithNonNullAttributes(values2, calculatedMethods2);
 
         List<List<Double>> calculatedValues1 = new ArrayList<>(calculatedMethods1.size());
         for (int i = 0; i < calculatedMethods1.size(); i++) {
-            calculatedValues1.add(new ArrayList<>(values1.size()));
+            calculatedValues1.add(new ArrayList<>(filterValues1.size()));
         }
         List<List<Double>> calculatedValues2 = new ArrayList<>(calculatedMethods2.size());
         for (int i = 0; i < calculatedMethods2.size(); i++) {
-            calculatedValues2.add(new ArrayList<>(values2.size()));
+            calculatedValues2.add(new ArrayList<>(filterValues2.size()));
         }
 
-        int n1 = values1.size();
-        int n2 = values2.size();
+        int n1 = filterValues1.size();
+        int n2 = filterValues2.size();
         int index1 = 0, index2 = 0;
         while (index1 < n1 && index2 < n2) {
-            Timestamp ts1 = (Timestamp) getTsMethod1.invoke(values1.get(index1));
-            Timestamp ts2 = (Timestamp) getTsMethod2.invoke(values2.get(index2));
+            Timestamp ts1 = (Timestamp) getTsMethod1.invoke(filterValues1.get(index1));
+            Timestamp ts2 = (Timestamp) getTsMethod2.invoke(filterValues2.get(index2));
             // assert ts1 != null && ts2 != null
             if (ts1.equals(ts2)) {
                 for (int i = 0; i < calculatedMethods1.size(); i++) {
-                    calculatedValues1.get(i).add(convertToDouble(calculatedMethods1.get(i).invoke(values1.get(index1))));
+                    calculatedValues1.get(i).add(convertToDouble(calculatedMethods1.get(i).invoke(filterValues1.get(index1))));
                 }
                 for (int i = 0; i < calculatedMethods2.size(); i++) {
-                    calculatedValues2.get(i).add(convertToDouble(calculatedMethods2.get(i).invoke(values2.get(index2))));
+                    calculatedValues2.get(i).add(convertToDouble(calculatedMethods2.get(i).invoke(filterValues2.get(index2))));
                 }
                 index1++;
                 index2++;
@@ -297,5 +284,36 @@ public final class StockCalculateUtil {
                 "%s's method ",
                 paramsName
         );
+    }
+
+    /**
+     * @param values            元素
+     * @param calculatedMethods 元素计算的getter
+     * @return 过滤掉getter返回值中有null的元素.确保后续计算(
+     * <pre>
+     * {@code
+     * public static PearsonMatrixWithAttr calculatePearsonMatrix ( final List < ? > values1, Class < ? > class1, final List < ? > values2, Class < ? > class2) throws InvocationTargetException, IllegalAccessException {
+     *
+     * }
+     * }</pre>
+     * 不出现由于null造成的bug
+     * <p>
+     * 不用关心getTs这个getter,因为<b>TDengine</b>里面ts不能为空
+     */
+    private static <T> List<T> filterElementsWithNonNullAttributes(final List<T> values, final List<Method> calculatedMethods) throws InvocationTargetException, IllegalAccessException {
+        List<T> filteredValues = new ArrayList<>();
+        for (T value : values) {
+            boolean hasNull = false;
+            for (Method method : calculatedMethods) {
+                if (Objects.isNull(method.invoke(value))) {
+                    hasNull = true;
+                    break;
+                }
+            }
+            if (!hasNull) {
+                filteredValues.add(value);
+            }
+        }
+        return filteredValues;
     }
 }
