@@ -4,6 +4,8 @@ import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.NoAuthException;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.Result;
 import com.bupt.Jungle.FinancialDataAnalysis.util.GsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
@@ -20,6 +22,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 })
 @Order(2)
 public class RestResponseAdviceAspect implements ResponseBodyAdvice<Object> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestResponseAdviceAspect.class);
+
     private static final String DEFAULT_ERROR_MESSAGE = "服务器错误，请稍后再试!";
 
     @Override
@@ -58,7 +62,8 @@ public class RestResponseAdviceAspect implements ResponseBodyAdvice<Object> {
 
     @ExceptionHandler(value = Exception.class)
     @Order(2)
-    public Result<?> handleException(Exception ignore) {
+    public Result<?> handleException(Exception exception) {
+        LOGGER.error("Exception, {}", exception.getMessage(), exception);
         return Result.error(DEFAULT_ERROR_MESSAGE);
     }
 }
