@@ -10,7 +10,7 @@ import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.AnalysisTwoFi
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.FinancialBranchItemResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.FinancialKindResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.TwoFinancialPearsonMatrixAnalysisResponse;
-import com.bupt.Jungle.FinancialDataAnalysis.util.StockCalculateUtil;
+import com.bupt.Jungle.FinancialDataAnalysis.util.model.PearsonMatrixWithAttr;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -80,7 +80,7 @@ public class FinancialDataAnalysisController {
     public TwoFinancialPearsonMatrixAnalysisResponse analysisTwoFinancialData(
             @RequestBody AnalysisTwoFinancialDataRequest analysisTwoFinancialDataRequest
     ) {
-        StockCalculateUtil.PearsonMatrixWithAttr pearsonMatrixWithAttr = financialDataAnalysisDomainService.analysisTwoFinancialData(
+        PearsonMatrixWithAttr pearsonMatrixWithAttr = financialDataAnalysisDomainService.analysisTwoFinancialData(
                 analysisTwoFinancialDataRequest.getKindX(),
                 analysisTwoFinancialDataRequest.getCodeX(),
                 analysisTwoFinancialDataRequest.getKindY(),

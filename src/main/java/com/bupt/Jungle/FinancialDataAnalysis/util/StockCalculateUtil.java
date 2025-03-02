@@ -1,8 +1,8 @@
 package com.bupt.Jungle.FinancialDataAnalysis.util;
 
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
+import com.bupt.Jungle.FinancialDataAnalysis.util.model.PearsonMatrixWithAttr;
 import com.bupt.Jungle.FinancialDataAnalysis.util.type.FinancialCalculateData;
-import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,28 +20,6 @@ public final class StockCalculateUtil {
     public static final int DEFAULT_SCALE = 15;
 
     public static final RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_EVEN;
-
-    /**
-     * 皮尔逊矩阵返回包装
-     */
-    @Data
-    @Builder
-    public static class PearsonMatrixWithAttr {
-        /**
-         * x属性列表
-         */
-        private List<String> attributesX;
-
-        /**
-         * y属性列表
-         */
-        private List<String> attributesY;
-
-        /**
-         * 皮尔逊矩阵
-         */
-        private double[][] pearsonMatrix;
-    }
 
     private StockCalculateUtil() {
     }

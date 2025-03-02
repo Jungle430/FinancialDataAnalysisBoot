@@ -4,6 +4,7 @@ package com.bupt.Jungle.FinancialDataAnalysis.domain.service;
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.AnalysisBaseService;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.util.StockCalculateUtil;
+import com.bupt.Jungle.FinancialDataAnalysis.util.model.PearsonMatrixWithAttr;
 import com.bupt.Jungle.FinancialDataAnalysis.util.type.FinancialCalculateData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -27,7 +28,7 @@ public class FinancialDataAnalysisDomainService {
         this.analysisBaseServiceMap = new ConcurrentHashMap<>(analysisBaseServiceMap);
     }
 
-    public StockCalculateUtil.PearsonMatrixWithAttr analysisTwoFinancialData(
+    public PearsonMatrixWithAttr analysisTwoFinancialData(
             String kindX,
             String codeX,
             String kindY,
