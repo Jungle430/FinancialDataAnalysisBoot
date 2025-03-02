@@ -13,6 +13,7 @@ import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.CommoditiesMapper;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.CommoditiesPO;
+import com.bupt.Jungle.FinancialDataAnalysis.util.type.FinancialCalculateData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,13 +115,11 @@ public class CommoditiesService implements AnalysisBaseService {
     }
 
     @Override
-    public ImmutablePair<List<?>, Class<?>> getAllFinancialBranchData(String code) {
-        return ImmutablePair.of(
-                commoditiesMapper.queryCommoditiesDataByCode(code)
-                        .stream()
-                        .map(CommoditiesAssembler::CommoditiesPO2CommoditiesBO)
-                        .toList(),
-                CommoditiesBO.class
-        );
+    public List<FinancialCalculateData> getAllFinancialBranchData(String code) {
+        return commoditiesMapper.queryCommoditiesDataByCode(code)
+                .stream()
+                .map(CommoditiesAssembler::CommoditiesPO2CommoditiesBO)
+                .map(FinancialCalculateData.class::cast)
+                .toList();
     }
 }

@@ -13,6 +13,7 @@ import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.BitCoinMapper;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.BitCoinPO;
+import com.bupt.Jungle.FinancialDataAnalysis.util.type.FinancialCalculateData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,13 +113,11 @@ public class BitCoinService implements AnalysisBaseService {
     }
 
     @Override
-    public ImmutablePair<List<?>, Class<?>> getAllFinancialBranchData(String code) {
-        return ImmutablePair.of(
-                bitCoinMapper.queryBitCoinDataByCode(code)
-                        .stream()
-                        .map(BitCoinAssembler::BitCoinPO2BitCoinBO)
-                        .toList(),
-                BitCoinBO.class
-        );
+    public List<FinancialCalculateData> getAllFinancialBranchData(String code) {
+        return bitCoinMapper.queryBitCoinDataByCode(code)
+                .stream()
+                .map(BitCoinAssembler::BitCoinPO2BitCoinBO)
+                .map(FinancialCalculateData.class::cast)
+                .toList();
     }
 }

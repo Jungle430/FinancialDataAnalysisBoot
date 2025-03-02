@@ -1,5 +1,6 @@
 package com.bupt.Jungle.FinancialDataAnalysis.application.service;
 
+import com.bupt.Jungle.FinancialDataAnalysis.util.type.FinancialCalculateData;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.List;
@@ -18,9 +19,7 @@ public interface AnalysisBaseService {
     List<ImmutablePair<String, String>> getAllBranchBaseData();
 
     /**
-     * 获取一个金融分支下的所有数据
-     *
-     * @return left: 金融分支数据 right: 金融分支数据类型信息(分析时需要反射获取计算属性)
+     * @return 获取一个金融分支下的所有数据
      */
-    ImmutablePair<List<?>, Class<?>> getAllFinancialBranchData(String code);
+    List<FinancialCalculateData> getAllFinancialBranchData(String code);
 }

@@ -12,6 +12,7 @@ import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.StockIndexMapper;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.StockIndexPO;
+import com.bupt.Jungle.FinancialDataAnalysis.util.type.FinancialCalculateData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,13 +115,11 @@ public class StockIndexService implements AnalysisBaseService {
     }
 
     @Override
-    public ImmutablePair<List<?>, Class<?>> getAllFinancialBranchData(String code) {
-        return ImmutablePair.of(
-                stockIndexMapper.queryStockIndexDataByCode(code)
-                        .stream()
-                        .map(StockAssembler::StockIndexPO2StockIndexBO)
-                        .toList(),
-                StockIndexBO.class
-        );
+    public List<FinancialCalculateData> getAllFinancialBranchData(String code) {
+        return stockIndexMapper.queryStockIndexDataByCode(code)
+                .stream()
+                .map(StockAssembler::StockIndexPO2StockIndexBO)
+                .map(FinancialCalculateData.class::cast)
+                .toList();
     }
 }

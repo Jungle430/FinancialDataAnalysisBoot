@@ -1,67 +1,25 @@
 package com.bupt.Jungle.FinancialDataAnalysis.util;
 
-import com.bupt.Jungle.FinancialDataAnalysis.util.annotation.Attribute;
+import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
+import com.bupt.Jungle.FinancialDataAnalysis.util.type.FinancialCalculateData;
 import lombok.Builder;
 import lombok.Data;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 public final class StockCalculateUtil {
     public static final int DEFAULT_SCALE = 15;
 
     public static final RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_EVEN;
-
-    private static final Predicate<Method> IS_CALCULATE_GETTER = method -> {
-        String methodName = method.getName();
-        Class<?>[] parameterTypes = method.getParameterTypes();
-        Class<?> returnType = method.getReturnType();
-        return (methodName.startsWith("get") && methodName.length() > 3)
-                && parameterTypes.length == 0
-                &&
-                (
-                        returnType.equals(double.class)
-                                || returnType.equals(float.class)
-                                || returnType.equals(int.class)
-                                || returnType.equals(long.class)
-                                || returnType.equals(short.class)
-                                || returnType.equals(byte.class)
-                                || returnType.equals(Double.class)
-                                || returnType.equals(Float.class)
-                                || returnType.equals(Integer.class)
-                                || returnType.equals(Long.class)
-                                || returnType.equals(Short.class)
-                                || returnType.equals(Byte.class)
-                );
-    };
-
-    private static double convertToDouble(Object result) {
-        Objects.requireNonNull(result);
-        if (result instanceof Number) {
-            return ((Number) result).doubleValue();
-        }
-        throw new IllegalStateException("Unexpected return type: " + result.getClass());
-    }
-
-    private static final Predicate<Method> IS_GET_TS = method -> method.getName().equalsIgnoreCase("getTs");
-
-    private static String getAttrFromGetterMethod(Method method) {
-        Attribute attribute = method.getAnnotation(Attribute.class);
-        return attribute != null ?
-                String.format("%s(%s)", attribute.simplifiedChinese(), attribute.english())
-                : method.getName().substring(3);
-    }
 
     /**
      * 皮尔逊矩阵返回包装
@@ -165,60 +123,145 @@ public final class StockCalculateUtil {
         return result;
     }
 
+    private static boolean filterQualifiedFinancialCalculateData(FinancialCalculateData financialCalculateData) {
+        if (financialCalculateData == null) {
+            return false;
+        }
+
+        Timestamp financialDataTimestamp = financialCalculateData.getFinancialDataTimestamp();
+        if (financialDataTimestamp == null) {
+            return false;
+        }
+
+        List<String> calculationAttributeEnglishNames = financialCalculateData.getCalculationAttributeEnglishNames();
+        if (CollectionUtils.isEmpty(calculationAttributeEnglishNames)) {
+            return false;
+        }
+
+        List<String> calculationAttributeSimplifiedChineseNames = financialCalculateData.getCalculationAttributeSimplifiedChineseNames();
+        if (CollectionUtils.isEmpty(calculationAttributeSimplifiedChineseNames)) {
+            return false;
+        }
+
+        List<Double> calculationAttributeData = financialCalculateData.getCalculationAttributeData();
+        if (CollectionUtils.isEmpty(calculationAttributeData)) {
+            return false;
+        }
+
+        return calculationAttributeEnglishNames.size() == calculationAttributeSimplifiedChineseNames.size()
+                && calculationAttributeEnglishNames.size() == calculationAttributeData.size()
+                && calculationAttributeData
+                .stream()
+                .allMatch(Objects::nonNull)
+                && calculationAttributeEnglishNames
+                .stream()
+                .allMatch(StringUtils::isNotBlank)
+                && calculationAttributeSimplifiedChineseNames
+                .stream()
+                .allMatch(StringUtils::isNotBlank);
+    }
+
+    @Data
+    private static class CalculateDataWithoutFullData {
+        /**
+         * 属性字段名称(简体中文+英文)
+         */
+        private List<String> calculationAttributeNames;
+
+        /**
+         * 属性数量
+         */
+        private int attributeCount;
+
+        /**
+         * 过滤后的数据
+         */
+        private List<FinancialCalculateData> filterValues;
+
+        /**
+         * 后续用于填充数据的列表,填充完数据之后进行相关性系数的计算
+         */
+        private List<List<Double>> calculateValues;
+    }
+
     /**
-     * @param values1 calculate values1, has method like <code>public Timestamp getTs() {...}</code> and ordered by this method
-     * @param class1  values1's class
-     * @param values2 calculate values2, has method like <code>public Timestamp getTs() {...}</code> and ordered by this method
-     * @param class2  values2's class
+     * @param businessExceptionMsg 异常时本数据的标识信息
      */
-    public static PearsonMatrixWithAttr calculatePearsonMatrix(final List<?> values1, Class<?> class1, final List<?> values2, Class<?> class2) throws InvocationTargetException, IllegalAccessException {
-        Validate.notEmpty(values1);
-        Validate.notEmpty(values2);
-        Objects.requireNonNull(class1);
-        Objects.requireNonNull(class2);
+    private static CalculateDataWithoutFullData getCalculateDataWithoutFullData(final List<FinancialCalculateData> value, String businessExceptionMsg) {
+        Validate.notEmpty(value);
 
-        List<Method> methods1 = Arrays.stream(class1.getMethods()).toList();
-        List<Method> methods2 = Arrays.stream(class2.getMethods()).toList();
+        List<FinancialCalculateData> filterValues = value
+                .stream()
+                .filter(StockCalculateUtil::filterQualifiedFinancialCalculateData)
+                .toList();
 
-        Method getTsMethod1 = checkAndGetGetTsMethod(methods1, "values1");
-        Method getTsMethod2 = checkAndGetGetTsMethod(methods2, "values2");
-
-        List<Method> calculatedMethods1 = checkAndGetCalculatedMethods(
-                methods1,
-                Comparator.comparing(Method::getName),
-                "values1"
-        );
-        List<Method> calculatedMethods2 = checkAndGetCalculatedMethods(
-                methods2,
-                Comparator.comparing(Method::getName),
-                "values2"
-        );
-
-        List<?> filterValues1 = filterElementsWithNonNullAttributes(values1, calculatedMethods1);
-        List<?> filterValues2 = filterElementsWithNonNullAttributes(values2, calculatedMethods2);
-
-        List<List<Double>> calculatedValues1 = new ArrayList<>(calculatedMethods1.size());
-        for (int i = 0; i < calculatedMethods1.size(); i++) {
-            calculatedValues1.add(new ArrayList<>(filterValues1.size()));
-        }
-        List<List<Double>> calculatedValues2 = new ArrayList<>(calculatedMethods2.size());
-        for (int i = 0; i < calculatedMethods2.size(); i++) {
-            calculatedValues2.add(new ArrayList<>(filterValues2.size()));
+        if (CollectionUtils.isEmpty(filterValues)) {
+            throw new BusinessException("计算数据%s为空", businessExceptionMsg);
         }
 
-        int n1 = filterValues1.size();
-        int n2 = filterValues2.size();
-        int index1 = 0, index2 = 0;
-        while (index1 < n1 && index2 < n2) {
-            Timestamp ts1 = (Timestamp) getTsMethod1.invoke(filterValues1.get(index1));
-            Timestamp ts2 = (Timestamp) getTsMethod2.invoke(filterValues2.get(index2));
-            // assert ts1 != null && ts2 != null
+        int attributeCount = filterValues.get(0).getCalculationAttributeData().size();
+
+        List<List<Double>> calculateValues = new ArrayList<>(attributeCount);
+        List<String> calculationAttributeNames = new ArrayList<>(attributeCount);
+        for (int i = 0; i < attributeCount; i++) {
+            calculateValues.add(new ArrayList<>(filterValues.size()));
+            calculationAttributeNames.add(
+                    String.join(
+                            "-",
+                            filterValues.get(0).getCalculationAttributeSimplifiedChineseNames().get(i),
+                            filterValues.get(0).getCalculationAttributeEnglishNames().get(i)
+                    )
+            );
+        }
+
+        CalculateDataWithoutFullData calculateDataWithoutFullData = new CalculateDataWithoutFullData();
+        calculateDataWithoutFullData.setCalculationAttributeNames(calculationAttributeNames);
+        calculateDataWithoutFullData.setAttributeCount(attributeCount);
+        calculateDataWithoutFullData.setFilterValues(filterValues);
+        calculateDataWithoutFullData.setCalculateValues(calculateValues);
+        return calculateDataWithoutFullData;
+    }
+
+    /**
+     * 计算两种金融数据的相关性矩阵
+     * <p>
+     * <strong>
+     * 由于数据库中带的排序功能通常会比Java本身的排序快很多,
+     * 并且不会对后端的服务器造成更大的计算压力,
+     * 本方法要求提供排序好的数据,
+     * 请在数据库中或者使用其他方式排序好数据后再将数据传入该方法
+     * </strong>
+     *
+     * @throws NullPointerException     参数为空
+     * @throws IllegalArgumentException 参数为空数组
+     * @throws BusinessException        计算数据经过{@link #filterQualifiedFinancialCalculateData}过滤后为空
+     */
+    public static PearsonMatrixWithAttr calculatePearsonMatrix(final List<FinancialCalculateData> values1, final List<FinancialCalculateData> values2) {
+        CalculateDataWithoutFullData calculateDataWithoutFullData1 = getCalculateDataWithoutFullData(values1, "values1");
+        CalculateDataWithoutFullData calculateDataWithoutFullData2 = getCalculateDataWithoutFullData(values2, "values2");
+
+        int attributeCount1 = calculateDataWithoutFullData1.getAttributeCount();
+        int attributeCount2 = calculateDataWithoutFullData2.getAttributeCount();
+
+        int filterValuesSize1 = calculateDataWithoutFullData1.getFilterValues().size();
+        int filterValuesSize2 = calculateDataWithoutFullData2.getFilterValues().size();
+
+        List<FinancialCalculateData> filterValues1 = calculateDataWithoutFullData1.getFilterValues();
+        List<FinancialCalculateData> filterValues2 = calculateDataWithoutFullData2.getFilterValues();
+
+        int index1 = 0;
+        int index2 = 0;
+        while (index1 < filterValuesSize1 && index2 < filterValuesSize2) {
+            Timestamp ts1 = filterValues1.get(index1).getFinancialDataTimestamp();
+            Timestamp ts2 = filterValues2.get(index2).getFinancialDataTimestamp();
             if (ts1.equals(ts2)) {
-                for (int i = 0; i < calculatedMethods1.size(); i++) {
-                    calculatedValues1.get(i).add(convertToDouble(calculatedMethods1.get(i).invoke(filterValues1.get(index1))));
+                List<Double> calculationAttributeData1 = calculateDataWithoutFullData1.getFilterValues().get(index1).getCalculationAttributeData();
+                for (int i = 0; i < attributeCount1; i++) {
+                    calculateDataWithoutFullData1.getCalculateValues().get(i).add(calculationAttributeData1.get(i));
                 }
-                for (int i = 0; i < calculatedMethods2.size(); i++) {
-                    calculatedValues2.get(i).add(convertToDouble(calculatedMethods2.get(i).invoke(filterValues2.get(index2))));
+                List<Double> calculationAttributeData2 = calculateDataWithoutFullData2.getFilterValues().get(index2).getCalculationAttributeData();
+                for (int i = 0; i < attributeCount2; i++) {
+                    calculateDataWithoutFullData2.getCalculateValues().get(i).add(calculationAttributeData2.get(i));
                 }
                 index1++;
                 index2++;
@@ -229,15 +272,15 @@ public final class StockCalculateUtil {
             }
         }
 
-        double[][] pearsonMatrix = calculatePearsonMatrix(calculatedValues1, calculatedValues2);
+        double[][] pearsonMatrix = calculatePearsonMatrixWithProcessedData(calculateDataWithoutFullData1.getCalculateValues(), calculateDataWithoutFullData2.getCalculateValues());
         return PearsonMatrixWithAttr.builder()
-                .attributesX(calculatedMethods1.stream().map(StockCalculateUtil::getAttrFromGetterMethod).toList())
-                .attributesY(calculatedMethods2.stream().map(StockCalculateUtil::getAttrFromGetterMethod).toList())
                 .pearsonMatrix(pearsonMatrix)
+                .attributesX(calculateDataWithoutFullData1.getCalculationAttributeNames())
+                .attributesY(calculateDataWithoutFullData2.getCalculationAttributeNames())
                 .build();
     }
 
-    private static double[][] calculatePearsonMatrix(final List<List<Double>> values1, final List<List<Double>> values2) {
+    private static double[][] calculatePearsonMatrixWithProcessedData(final List<List<Double>> values1, final List<List<Double>> values2) {
         int numAttributes1 = values1.size();
         int numAttributes2 = values2.size();
         double[][] crossCorrelationMatrix = new double[numAttributes1][numAttributes2];
@@ -252,68 +295,4 @@ public final class StockCalculateUtil {
         return crossCorrelationMatrix;
     }
 
-    private static Method checkAndGetGetTsMethod(final List<Method> methods, final String paramsName) {
-        Validate.isTrue(methods.stream()
-                        .filter(IS_GET_TS)
-                        .count() == 1,
-                "the number of %s's methods contains method like 'getTs' != 1",
-                paramsName
-        );
-        Method getTsMethod = methods.stream()
-                .filter(IS_GET_TS)
-                .findFirst()
-                .orElseThrow(
-                        () -> new IllegalStateException(String.format("%s's methods not contains method like 'getTs'", paramsName))
-                );
-        Validate.isTrue(
-                getTsMethod.getReturnType().equals(Timestamp.class),
-                "%s's method 'getTs' returnType is not timestamp",
-                paramsName);
-        Validate.isTrue(getTsMethod.getParameterTypes().length == 0,
-                "%s: method 'getTs' parameterTypes is not '()'",
-                paramsName);
-        return getTsMethod;
-    }
-
-    private static List<Method> checkAndGetCalculatedMethods(final List<Method> methods, Comparator<Method> comparator, String paramsName) {
-        return Validate.notEmpty(
-                methods.stream()
-                        .filter(IS_CALCULATE_GETTER)
-                        .sorted(comparator)
-                        .toList(),
-                "%s's method ",
-                paramsName
-        );
-    }
-
-    /**
-     * @param values            元素
-     * @param calculatedMethods 元素计算的getter
-     * @return 过滤掉getter返回值中有null的元素.确保后续计算(
-     * <pre>
-     * {@code
-     * public static PearsonMatrixWithAttr calculatePearsonMatrix ( final List < ? > values1, Class < ? > class1, final List < ? > values2, Class < ? > class2) throws InvocationTargetException, IllegalAccessException {
-     *
-     * }
-     * }</pre>
-     * 不出现由于null造成的bug
-     * <p>
-     * 不用关心getTs这个getter,因为<b>TDengine</b>里面ts不能为空
-     */
-    private static <T> List<T> filterElementsWithNonNullAttributes(final List<T> values, final List<Method> calculatedMethods) throws InvocationTargetException, IllegalAccessException {
-        List<T> filteredValues = new ArrayList<>();
-        for (T value : values) {
-            boolean hasNull = false;
-            for (Method method : calculatedMethods) {
-                if (Objects.isNull(method.invoke(value))) {
-                    hasNull = true;
-                    break;
-                }
-            }
-            if (!hasNull) {
-                filteredValues.add(value);
-            }
-        }
-        return filteredValues;
-    }
 }

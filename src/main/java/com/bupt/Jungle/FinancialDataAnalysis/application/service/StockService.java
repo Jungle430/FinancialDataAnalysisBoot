@@ -13,6 +13,7 @@ import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.StockMapper;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.StockPO;
+import com.bupt.Jungle.FinancialDataAnalysis.util.type.FinancialCalculateData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -130,13 +131,11 @@ public class StockService implements AnalysisBaseService {
     }
 
     @Override
-    public ImmutablePair<List<?>, Class<?>> getAllFinancialBranchData(String code) {
-        return ImmutablePair.of(
-                stockMapper.queryStockDataByCode(code)
-                        .stream()
-                        .map(StockAssembler::StockPO2StockBO)
-                        .toList(),
-                StockBO.class
-        );
+    public List<FinancialCalculateData> getAllFinancialBranchData(String code) {
+        return stockMapper.queryStockDataByCode(code)
+                .stream()
+                .map(StockAssembler::StockPO2StockBO)
+                .map(FinancialCalculateData.class::cast)
+                .toList();
     }
 }

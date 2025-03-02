@@ -13,6 +13,7 @@ import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.ForexMapper;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.ForexPO;
+import com.bupt.Jungle.FinancialDataAnalysis.util.type.FinancialCalculateData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,21 +125,19 @@ public class ForexService implements AnalysisBaseService {
     }
 
     @Override
-    public ImmutablePair<List<?>, Class<?>> getAllFinancialBranchData(String code) {
+    public List<FinancialCalculateData> getAllFinancialBranchData(String code) {
         String[] codes = code.split("-");
         if (codes.length != 2) {
             throw new BusinessException("数据格式不对, code:" + code);
         }
         String baseCurrency = codes[0];
         String quoteCurrency = codes[1];
-        return ImmutablePair.of(
-                forexMapper.queryForexDataByBaseRegionAndQuoteRegionWithOffshoreRMB(
-                                baseCurrency,
-                                quoteCurrency)
-                        .stream()
-                        .map(ForexAssembler::ForexPO2ForexBO)
-                        .toList(),
-                ForexBO.class
-        );
+        return forexMapper.queryForexDataByBaseRegionAndQuoteRegionWithOffshoreRMB(
+                        baseCurrency,
+                        quoteCurrency)
+                .stream()
+                .map(ForexAssembler::ForexPO2ForexBO)
+                .map(FinancialCalculateData.class::cast)
+                .toList();
     }
 }

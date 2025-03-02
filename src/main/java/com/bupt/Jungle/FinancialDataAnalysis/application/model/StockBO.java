@@ -1,29 +1,25 @@
 package com.bupt.Jungle.FinancialDataAnalysis.application.model;
 
-import com.bupt.Jungle.FinancialDataAnalysis.util.annotation.Attribute;
+import com.bupt.Jungle.FinancialDataAnalysis.util.type.FinancialCalculateData;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 
-@Setter
-@ToString
-@EqualsAndHashCode
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StockBO {
+public class StockBO implements FinancialCalculateData {
     /**
      * 时间戳
      */
-    @Getter
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss", iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(pattern = "yyyy/MM/dd")
     private Timestamp ts;
@@ -58,33 +54,44 @@ public class StockBO {
      */
     private Double riseAndFall;
 
-    @Attribute(english = "closing price", simplifiedChinese = "收盘价")
-    public Double getClosingPrice() {
-        return this.closingPrice;
+    @Override
+    public Timestamp getFinancialDataTimestamp() {
+        return this.ts;
     }
 
-    @Attribute(english = "opening price", simplifiedChinese = "开盘价")
-    public Double getOpeningPrice() {
-        return this.openingPrice;
+    @Override
+    public List<String> getCalculationAttributeEnglishNames() {
+        return Arrays.asList(
+                "closing_price",
+                "opening_price",
+                "highest_price",
+                "lowest_price",
+                "trade_volume",
+                "rise_and_fall"
+        );
     }
 
-    @Attribute(english = "highest price", simplifiedChinese = "最高价")
-    public Double getHighestPrice() {
-        return this.highestPrice;
+    @Override
+    public List<String> getCalculationAttributeSimplifiedChineseNames() {
+        return Arrays.asList(
+                "收盘价",
+                "开盘价",
+                "最高价",
+                "最低价",
+                "交易量",
+                "涨跌幅"
+        );
     }
 
-    @Attribute(english = "lowest price", simplifiedChinese = "最低价")
-    public Double getLowestPrice() {
-        return this.lowestPrice;
-    }
-
-    @Attribute(english = "trade volume", simplifiedChinese = "交易量")
-    public Double getTradeVolume() {
-        return this.tradeVolume;
-    }
-
-    @Attribute(english = "rise and fall", simplifiedChinese = "涨跌幅")
-    public Double getRiseAndFall() {
-        return this.riseAndFall;
+    @Override
+    public List<Double> getCalculationAttributeData() {
+        return Arrays.asList(
+                closingPrice,
+                openingPrice,
+                highestPrice,
+                lowestPrice,
+                tradeVolume,
+                riseAndFall
+        );
     }
 }

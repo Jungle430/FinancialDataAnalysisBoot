@@ -4,9 +4,9 @@ package com.bupt.Jungle.FinancialDataAnalysis.domain.service;
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.AnalysisBaseService;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.util.StockCalculateUtil;
+import com.bupt.Jungle.FinancialDataAnalysis.util.type.FinancialCalculateData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,11 +33,11 @@ public class FinancialDataAnalysisDomainService {
             String kindY,
             String codeY
     ) {
-        ImmutablePair<List<?>, Class<?>> analysisFinancialDataX = Optional
+        List<FinancialCalculateData> analysisFinancialDataX = Optional
                 .ofNullable(analysisBaseServiceMap.get(kindX))
                 .orElseThrow(NO_FINANCIAL_BRANCH_EXCEPTION)
                 .getAllFinancialBranchData(codeX);
-        if (CollectionUtils.isEmpty(analysisFinancialDataX.getLeft())) {
+        if (CollectionUtils.isEmpty(analysisFinancialDataX)) {
             throw new BusinessException(
                     "金融数据:{kind:%s,code:%s}为空",
                     kindX,
@@ -45,11 +45,11 @@ public class FinancialDataAnalysisDomainService {
             );
         }
 
-        ImmutablePair<List<?>, Class<?>> analysisFinancialDataY = Optional
+        List<FinancialCalculateData> analysisFinancialDataY = Optional
                 .ofNullable(analysisBaseServiceMap.get(kindY))
                 .orElseThrow(NO_FINANCIAL_BRANCH_EXCEPTION)
                 .getAllFinancialBranchData(codeY);
-        if (CollectionUtils.isEmpty(analysisFinancialDataY.getLeft())) {
+        if (CollectionUtils.isEmpty(analysisFinancialDataY)) {
             throw new BusinessException(
                     "金融数据:{kind:%s,code:%s}为空",
                     kindY,
@@ -59,8 +59,8 @@ public class FinancialDataAnalysisDomainService {
 
         try {
             return StockCalculateUtil.calculatePearsonMatrix(
-                    analysisFinancialDataX.getLeft(), analysisFinancialDataX.getRight(),
-                    analysisFinancialDataY.getLeft(), analysisFinancialDataY.getRight()
+                    analysisFinancialDataX,
+                    analysisFinancialDataY
             );
         } catch (Exception e) {
             log.error("calculate error: {kindX:{},codeX:{},kindY:{},codeY:{}}",

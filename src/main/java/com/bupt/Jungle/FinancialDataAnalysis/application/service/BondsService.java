@@ -13,6 +13,7 @@ import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper.BondsMapper;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.BondsPO;
+import com.bupt.Jungle.FinancialDataAnalysis.util.type.FinancialCalculateData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,13 +113,11 @@ public class BondsService implements AnalysisBaseService {
     }
 
     @Override
-    public ImmutablePair<List<?>, Class<?>> getAllFinancialBranchData(String code) {
-        return ImmutablePair.of(
-                bondsMapper.queryBondsDataByCode(code)
-                        .stream()
-                        .map(BondsAssembler::BondsPO2BondsBO)
-                        .toList(),
-                BondsBO.class
-        );
+    public List<FinancialCalculateData> getAllFinancialBranchData(String code) {
+        return bondsMapper.queryBondsDataByCode(code)
+                .stream()
+                .map(BondsAssembler::BondsPO2BondsBO)
+                .map(FinancialCalculateData.class::cast)
+                .toList();
     }
 }
