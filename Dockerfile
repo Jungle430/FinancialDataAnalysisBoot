@@ -9,10 +9,10 @@ CMD java \
     -Djava.io.tmpdir=/tmp \
     -XX:ActiveProcessorCount=2 \
     -Xss512k \
-    -Xmx1g -Xms1g \
+    -Xmx1g -Xms256m \
     -XX:MetaspaceSize=256m \
     -XX:MaxMetaspaceSize=256m \
-    -XX:ReservedCodeCacheSize=240m \
+    -XX:ReservedCodeCacheSize=128m \
     -XX:+HeapDumpOnOutOfMemoryError \
     -XX:+UseG1GC -XX:G1HeapRegionSize=4M \
     -XX:InitiatingHeapOccupancyPercent=40 \
