@@ -1,5 +1,5 @@
 FROM amazoncorretto:17
-COPY target /app/com.bupt.Jungle.FinancialDataAnalysis
+COPY ../target /app/com.bupt.Jungle.FinancialDataAnalysis
 WORKDIR /app/com.bupt.Jungle.FinancialDataAnalysis
 RUN mkdir -p /opt/logs/com.bupt.Jungle.FinancialDataAnalysis
 CMD java \
