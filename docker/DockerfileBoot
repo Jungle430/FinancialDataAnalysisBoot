@@ -1,24 +1,33 @@
+FROM maven:3.9.9-amazoncorretto-17-alpine AS maven_builder
+COPY docker/conf/maven.xml /usr/share/maven/conf/settings.xml
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn -DskipTests=true package
+
 FROM amazoncorretto:17
-COPY ../target /app/com.bupt.Jungle.FinancialDataAnalysis
-WORKDIR /app/com.bupt.Jungle.FinancialDataAnalysis
-RUN mkdir -p /opt/logs/com.bupt.Jungle.FinancialDataAnalysis
-CMD java \
-    -server \
-    -Dfile.encoding=UTF-8 \
-    -Dsun.jnu.encoding=UTF-8 \
-    -Djava.io.tmpdir=/tmp \
-    -XX:ActiveProcessorCount=2 \
-    -Xss512k \
-    -Xmx1g -Xms256m \
-    -XX:MetaspaceSize=256m \
-    -XX:MaxMetaspaceSize=256m \
-    -XX:ReservedCodeCacheSize=128m \
-    -XX:+HeapDumpOnOutOfMemoryError \
-    -XX:+UseG1GC -XX:G1HeapRegionSize=4M \
-    -XX:InitiatingHeapOccupancyPercent=40 \
-    -XX:MaxGCPauseMillis=100 \
-    -XX:+TieredCompilation \
-    -XX:CICompilerCount=2 \
-    -Xlog:gc*:file=/opt/logs/com.bupt.Jungle.FinancialDataAnalysis/gc.log:time,uptime:filecount=30,filesize=50M \
-    -XX:+PrintFlagsFinal \
-    -jar FinancialDataAnalysisBoot-0.0.1-SNAPSHOT.jar > /opt/logs/com.bupt.Jungle.FinancialDataAnalysis/app.log 2>&1
+ENV APP_NAME=com.bupt.Jungle.FinancialDataAnalysis
+ENV APP_JAR_NAME=FinancialDataAnalysisBoot
+ENV APP_VERSION=0.0.1-SNAPSHOT
+RUN mkdir -p /opt/logs/${APP_NAME}
+COPY --from=maven_builder /app/target /app/${APP_NAME}
+WORKDIR /app/${APP_NAME}
+ENV JVM_ARGS="-server \
+              -Dfile.encoding=UTF-8 \
+              -Dsun.jnu.encoding=UTF-8 \
+              -Djava.io.tmpdir=/tmp \
+              -XX:ActiveProcessorCount=2 \
+              -Xss512k \
+              -Xmx1g -Xms256m \
+              -XX:MetaspaceSize=256m \
+              -XX:MaxMetaspaceSize=256m \
+              -XX:ReservedCodeCacheSize=128m \
+              -XX:+HeapDumpOnOutOfMemoryError \
+              -XX:+UseG1GC -XX:G1HeapRegionSize=4M \
+              -XX:InitiatingHeapOccupancyPercent=40 \
+              -XX:MaxGCPauseMillis=100 \
+              -XX:+TieredCompilation \
+              -XX:CICompilerCount=2 \
+              -Xlog:gc*:file=/opt/logs/${APP_NAME}/gc.log:time,uptime:filecount=30,filesize=50M \
+              -XX:+PrintFlagsFinal"
+CMD java ${JVM_ARGS} -jar ${APP_JAR_NAME}-${APP_VERSION}.jar > /opt/logs/${APP_NAME}/app.log 2>&1
