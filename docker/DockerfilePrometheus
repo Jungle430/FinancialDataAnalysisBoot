@@ -1,2 +1,0 @@
-FROM prom/prometheus:v2.53.4
-COPY docker/conf/prometheus.yml /etc/prometheus/prometheus.yml
