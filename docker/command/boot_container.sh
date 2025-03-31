@@ -1,0 +1,1 @@
+docker container run -d -p 8080:8080 financial_data_analysis_boot:latest

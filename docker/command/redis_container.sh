@@ -1,0 +1,1 @@
+docker container run -d -p 6379:6379 financial_data_analysis_redis:latest
