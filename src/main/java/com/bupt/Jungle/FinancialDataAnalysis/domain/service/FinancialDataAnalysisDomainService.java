@@ -148,7 +148,7 @@ public class FinancialDataAnalysisDomainService {
 
     @Performance
     @Async("financialAnalysisTaskThreadPool")
-    @Scheduled(cron = "0 0 0 * * ?") // 凌晨执行
+    @Scheduled(cron = "0 0 1 * * ?") // 凌晨执行
     public void analysisTwoFinancialDataKindHighestTask() {
         log.info("task:{} start", analysisTwoFinancialDataKindHighestTaskKey);
         List<FinancialKindBO> financialKindBOS = baseDBMessageService.getAllFinancialKind();
