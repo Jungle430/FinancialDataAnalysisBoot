@@ -173,7 +173,7 @@ public class FinancialDataAnalysisDomainService {
         cacheService.set(
                 analysisTwoFinancialDataKindHighestTaskKey,
                 GsonUtil.beanToJson(financialKindRiseAndFallBOS),
-                TimeUnit.DAYS.toSeconds(1) + 10,
+                TimeUnit.DAYS.toSeconds(1) + TimeUnit.MINUTES.toSeconds(1),
                 TimeUnit.SECONDS
         );
         log.info("cacheService.set end, key:{}", analysisTwoFinancialDataKindHighestTaskKey);
