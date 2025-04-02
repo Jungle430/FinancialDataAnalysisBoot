@@ -9,6 +9,7 @@ FROM amazoncorretto:17
 ENV APP_NAME=com.bupt.Jungle.FinancialDataAnalysis
 ENV APP_JAR_NAME=FinancialDataAnalysisBoot
 ENV APP_VERSION=0.0.1-SNAPSHOT
+ENV TZ=Asia/Shanghai
 RUN mkdir -p /opt/logs/${APP_NAME}
 COPY --from=maven_builder /app/target /app/${APP_NAME}
 WORKDIR /app/${APP_NAME}
