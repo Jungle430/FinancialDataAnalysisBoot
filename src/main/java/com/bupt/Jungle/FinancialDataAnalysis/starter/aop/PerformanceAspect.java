@@ -42,11 +42,13 @@ public class PerformanceAspect {
             double heapMemoryUsageAfterMb = (double) heapMemoryUsageAfterBytes / (1024 * 1024);
             double heapMemoryUsageAfterGb = heapMemoryUsageAfterMb / 1024;
             Method method = extractActualMethod(joinPoint);
+            String className = joinPoint.getSignature().getDeclaringTypeName();
             Performance performance = method.getAnnotation(Performance.class);
             boolean timePerformance = performance.timePerformance();
             boolean memoryPerformance = performance.memoryPerformance();
             if (!timePerformance && memoryPerformance) {
-                LOGGER.info("Method:{}, Method arguments:{}, Heap memory usage before:{}bytes/{}mb/{}GB,Heap memory usage after:{}bytes/{}mb/{}GB",
+                LOGGER.info("Method:{}.{}, Method arguments:{}, Heap memory usage before:{}bytes/{}mb/{}GB,Heap memory usage after:{}bytes/{}mb/{}GB",
+                        className,
                         joinPoint.getSignature().getName(),
                         Arrays.toString(joinPoint.getArgs()),
                         heapMemoryUsageBeforeBytes,
@@ -59,14 +61,16 @@ public class PerformanceAspect {
             }
 
             if (timePerformance && !memoryPerformance) {
-                LOGGER.info("Method:{}, Method arguments:{}, execution time: {}ms",
+                LOGGER.info("Method:{}.{}, Method arguments:{}, execution time: {}ms",
+                        className,
                         joinPoint.getSignature().getName(),
                         Arrays.toString(joinPoint.getArgs()),
                         duration);
             }
 
             if (timePerformance && memoryPerformance) {
-                LOGGER.info("Method {}, Method arguments:{}, execution time: {}ms,Heap memory usage before:{}bytes/{}mb/{}GB,Heap memory usage after:{}bytes/{}mb/{}GB",
+                LOGGER.info("Method {}.{}, Method arguments:{}, execution time: {}ms,Heap memory usage before:{}bytes/{}mb/{}GB,Heap memory usage after:{}bytes/{}mb/{}GB",
+                        className,
                         joinPoint.getSignature().getName(),
                         Arrays.toString(joinPoint.getArgs()),
                         duration,
