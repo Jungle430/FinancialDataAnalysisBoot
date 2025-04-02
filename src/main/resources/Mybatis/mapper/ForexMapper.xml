@@ -145,11 +145,17 @@
     </select>
 
     <select id="queryForexDataByBaseRegionAndQuoteRegionWithOffshoreRMB" resultMap="Forex">
-        SELECT
-        <include refid="forexValues"/>
-        FROM
-        <include refid="forexSTable"/>
+        SELECT <include refid="forexValues"/>
+        FROM <include refid="forexSTable"/>
         WHERE base_currency = #{baseCurrency}
-        AND quote_currency = #{quoteCurrency};
+        AND quote_currency = #{quoteCurrency}
+        ORDER BY ts;
+    </select>
+
+    <select id="queryForexRiseAndFallAVGWithOffshoreRMB" resultMap="Forex">
+        SELECT ts, AVG(rise_and_fall) as rise_and_fall
+        FROM <include refid="forexSTable"/>
+        GROUP BY ts
+        ORDER BY ts;
     </select>
 </mapper>

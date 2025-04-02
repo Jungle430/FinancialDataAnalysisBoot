@@ -94,4 +94,9 @@ public class BitCoinBO implements FinancialCalculateData {
                 riseAndFall
         );
     }
+
+    @Override
+    public Double getRiseAndFallData() {
+        return riseAndFall;
+    }
 }

@@ -16,6 +16,8 @@ public interface ForexMapper {
 
     List<String> queryAllQuoteCurrency();
 
+    List<ForexPO> queryForexRiseAndFallAVGWithOffshoreRMB();
+
     List<ForexPO> queryForexDataByBaseRegionAndQuoteRegion(
             @Param("baseCurrency") String baseCurrency,
             @Param("quoteCurrency") String quoteCurrency

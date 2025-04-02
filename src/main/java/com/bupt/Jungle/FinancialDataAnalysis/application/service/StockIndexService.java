@@ -122,4 +122,13 @@ public class StockIndexService implements AnalysisBaseService {
                 .map(FinancialCalculateData.class::cast)
                 .toList();
     }
+
+    @Override
+    public List<FinancialCalculateData> getAllFinancialKindRiseAndFallAVG() {
+        return stockIndexMapper.queryStockIndexRiseAndFallAVG()
+                .stream()
+                .map(StockAssembler::StockIndexPO2StockIndexBO)
+                .map(FinancialCalculateData.class::cast)
+                .toList();
+    }
 }

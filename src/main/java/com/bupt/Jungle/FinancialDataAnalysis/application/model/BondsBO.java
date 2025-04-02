@@ -94,4 +94,9 @@ public class BondsBO implements FinancialCalculateData {
                 riseAndFall
         );
     }
+
+    @Override
+    public Double getRiseAndFallData() {
+        return riseAndFall;
+    }
 }

@@ -120,4 +120,11 @@
         GROUP BY <include refid="bondsTags"/>
         ORDER BY <include refid="bondsTags"/>;
     </select>
+
+    <select id="queryBondsRiseAndFallAVG" resultMap="Bonds">
+        SELECT ts, AVG(rise_and_fall) as rise_and_fall
+        FROM <include refid="bondsSTable"/>
+        GROUP BY ts
+        ORDER BY ts;
+    </select>
 </mapper>

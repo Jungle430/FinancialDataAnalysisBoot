@@ -140,4 +140,13 @@ public class ForexService implements AnalysisBaseService {
                 .map(FinancialCalculateData.class::cast)
                 .toList();
     }
+
+    @Override
+    public List<FinancialCalculateData> getAllFinancialKindRiseAndFallAVG() {
+        return forexMapper.queryForexRiseAndFallAVGWithOffshoreRMB()
+                .stream()
+                .map(ForexAssembler::ForexPO2ForexBO)
+                .map(FinancialCalculateData.class::cast)
+                .toList();
+    }
 }

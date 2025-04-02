@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AnalysisTwoFinancialDataRequest {
+public class AnalysisTwoFinancialBranchDataRequest {
     /**
      * 金融数据X的种类
      */

@@ -12,6 +12,8 @@ public interface CommoditiesMapper {
 
     List<String> queryAllCurrency();
 
+    List<CommoditiesPO> queryCommoditiesRiseAndFallAVG();
+
     List<CommoditiesPO> queryCommoditiesDataByCode(@Param("code") String code);
 
     List<CommoditiesPO> queryCommoditiesTagByCode(@Param("code") String code);

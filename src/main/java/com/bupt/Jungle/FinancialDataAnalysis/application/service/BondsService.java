@@ -120,4 +120,13 @@ public class BondsService implements AnalysisBaseService {
                 .map(FinancialCalculateData.class::cast)
                 .toList();
     }
+
+    @Override
+    public List<FinancialCalculateData> getAllFinancialKindRiseAndFallAVG() {
+        return bondsMapper.queryBondsRiseAndFallAVG()
+                .stream()
+                .map(BondsAssembler::BondsPO2BondsBO)
+                .map(FinancialCalculateData.class::cast)
+                .toList();
+    }
 }

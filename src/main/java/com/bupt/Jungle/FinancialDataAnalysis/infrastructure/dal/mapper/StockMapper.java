@@ -14,6 +14,8 @@ public interface StockMapper {
 
     List<String> queryAllMarketRegion();
 
+    List<StockPO> queryStockRiseAndFallAVG();
+
     List<StockPO> queryStockDataByCode(@Param("code") String code);
 
     List<StockPO> queryStockTagByCode(@Param("code") String code);

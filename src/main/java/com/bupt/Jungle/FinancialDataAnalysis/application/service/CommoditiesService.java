@@ -122,4 +122,13 @@ public class CommoditiesService implements AnalysisBaseService {
                 .map(FinancialCalculateData.class::cast)
                 .toList();
     }
+
+    @Override
+    public List<FinancialCalculateData> getAllFinancialKindRiseAndFallAVG() {
+        return commoditiesMapper.queryCommoditiesRiseAndFallAVG()
+                .stream()
+                .map(CommoditiesAssembler::CommoditiesPO2CommoditiesBO)
+                .map(FinancialCalculateData.class::cast)
+                .toList();
+    }
 }

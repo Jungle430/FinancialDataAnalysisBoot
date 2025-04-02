@@ -206,7 +206,7 @@ public final class StockCalculateUtil {
      * <strong>
      * 由于数据库中带的排序功能通常会比Java本身的排序快很多,
      * 并且不会对后端的服务器造成更大的计算压力,
-     * 本方法要求提供排序好的数据,
+     * 本方法要求提供按时间排序好的数据,
      * 请在数据库中或者使用其他方式排序好数据后再将数据传入该方法
      * </strong>
      *
@@ -256,6 +256,43 @@ public final class StockCalculateUtil {
                 .attributesX(calculateDataWithoutFullData1.getCalculationAttributeNames())
                 .attributesY(calculateDataWithoutFullData2.getCalculationAttributeNames())
                 .build();
+    }
+
+    /**
+     * @return 计算金融数据涨跌幅的皮尔逊相关系数(用于计算金融数据相关性)
+     * <p>
+     * <strong>
+     * 参考{@link #calculatePearsonMatrix},提供按时间排序好的数据
+     * </strong>
+     */
+    public static double calculatePearsonCorrelationCoefficient(List<FinancialCalculateData> values1, List<FinancialCalculateData> values2) {
+        int n1 = values1.size();
+        int n2 = values2.size();
+
+        List<Double> riseAndFallAVGs1 = new ArrayList<>();
+        List<Double> riseAndFallAVGs2 = new ArrayList<>();
+
+        int index1 = 0;
+        int index2 = 0;
+        while (index1 < n1 && index2 < n2) {
+            Timestamp ts1 = values1.get(index1).getFinancialDataTimestamp();
+            Timestamp ts2 = values2.get(index2).getFinancialDataTimestamp();
+            if (ts1.equals(ts2)) {
+                riseAndFallAVGs1.add(values1.get(index1).getRiseAndFallData());
+                riseAndFallAVGs2.add(values2.get(index2).getRiseAndFallData());
+                index1++;
+                index2++;
+            } else if (ts1.compareTo(ts2) < 0) {
+                index1++;
+            } else if (ts1.compareTo(ts2) > 0) {
+                index2++;
+            }
+        }
+        PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
+        return pearsonsCorrelation.correlation(
+                riseAndFallAVGs1.stream().mapToDouble(Double::doubleValue).toArray(),
+                riseAndFallAVGs2.stream().mapToDouble(Double::doubleValue).toArray()
+        );
     }
 
     private static double[][] calculatePearsonMatrixWithProcessedData(final List<List<Double>> values1, final List<List<Double>> values2) {

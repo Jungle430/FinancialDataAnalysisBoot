@@ -22,4 +22,9 @@ public interface AnalysisBaseService {
      * @return 获取一个金融分支下的所有数据
      */
     List<FinancialCalculateData> getAllFinancialBranchData(String code);
+
+    /**
+     * @return 获取该金融数据种类下的涨跌幅平均数据(按每日统计)
+     */
+    List<FinancialCalculateData> getAllFinancialKindRiseAndFallAVG();
 }

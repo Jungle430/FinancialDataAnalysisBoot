@@ -94,4 +94,9 @@ public class CommoditiesBO implements FinancialCalculateData {
                 riseAndFall
         );
     }
+
+    @Override
+    public Double getRiseAndFallData() {
+        return riseAndFall;
+    }
 }

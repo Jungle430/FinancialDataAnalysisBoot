@@ -95,4 +95,9 @@ public class StockIndexBO implements FinancialCalculateData {
                 riseAndFall
         );
     }
+
+    @Override
+    public Double getRiseAndFallData() {
+        return riseAndFall;
+    }
 }

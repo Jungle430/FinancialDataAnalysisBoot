@@ -120,4 +120,13 @@ public class BitCoinService implements AnalysisBaseService {
                 .map(FinancialCalculateData.class::cast)
                 .toList();
     }
+
+    @Override
+    public List<FinancialCalculateData> getAllFinancialKindRiseAndFallAVG() {
+        return bitCoinMapper.queryBitCoinRiseAndFallAVG()
+                .stream()
+                .map(BitCoinAssembler::BitCoinPO2BitCoinBO)
+                .map(FinancialCalculateData.class::cast)
+                .toList();
+    }
 }

@@ -123,4 +123,11 @@
         <include refid="commoditiesTags"/>
         ORDER BY<include refid="commoditiesTags"/>;
     </select>
+
+    <select id="queryCommoditiesRiseAndFallAVG" resultMap="Commodities">
+        SELECT ts, AVG(rise_and_fall) as rise_and_fall
+        FROM <include refid="commoditiesSTable"/>
+        GROUP BY ts
+        ORDER BY ts;
+    </select>
 </mapper>

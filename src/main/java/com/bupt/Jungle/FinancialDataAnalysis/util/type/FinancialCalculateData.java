@@ -104,4 +104,17 @@ public interface FinancialCalculateData {
      * }</pre>
      */
     List<Double> getCalculationAttributeData();
+
+    /**
+     * @return 获取涨跌幅
+     *
+     * <pre>
+     * {@code
+     * @Override
+     *     public Double getRiseAndFallData() {
+     *         return riseAndFall;
+     *     }
+     * }</pre>
+     */
+    Double getRiseAndFallData();
 }

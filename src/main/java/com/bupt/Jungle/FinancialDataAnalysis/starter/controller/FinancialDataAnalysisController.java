@@ -6,9 +6,10 @@ import com.bupt.Jungle.FinancialDataAnalysis.application.service.BaseDBMessageSe
 import com.bupt.Jungle.FinancialDataAnalysis.domain.service.FinancialDataAnalysisDomainService;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.annotation.Performance;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.FinancialDataAssembler;
-import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.AnalysisTwoFinancialDataRequest;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.AnalysisTwoFinancialBranchDataRequest;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.FinancialBranchItemResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.FinancialKindResponse;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.FinancialKindRiseAndFallResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.TwoFinancialPearsonMatrixAnalysisResponse;
 import com.bupt.Jungle.FinancialDataAnalysis.util.model.PearsonMatrixWithAttr;
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,24 +73,30 @@ public class FinancialDataAnalysisController {
     }
 
     @Performance
-    @PostMapping("/analysisTwoFinancialData")
+    @PostMapping("/analysisTwoFinancialDataBranch")
     @Operation(summary = "两种金融分支数据的相关性系数的计算和分析")
     @Parameters({
-            @Parameter(name = "analysisTwoFinancialDataRequest", description = "查询参数")
+            @Parameter(name = "analysisTwoFinancialBranchDataRequest", description = "查询参数")
     })
-    public TwoFinancialPearsonMatrixAnalysisResponse analysisTwoFinancialData(
-            @RequestBody AnalysisTwoFinancialDataRequest analysisTwoFinancialDataRequest
+    public TwoFinancialPearsonMatrixAnalysisResponse analysisTwoFinancialBranchData(
+            @RequestBody AnalysisTwoFinancialBranchDataRequest analysisTwoFinancialBranchDataRequest
     ) {
-        PearsonMatrixWithAttr pearsonMatrixWithAttr = financialDataAnalysisDomainService.analysisTwoFinancialData(
-                analysisTwoFinancialDataRequest.getKindX(),
-                analysisTwoFinancialDataRequest.getCodeX(),
-                analysisTwoFinancialDataRequest.getKindY(),
-                analysisTwoFinancialDataRequest.getCodeY()
+        PearsonMatrixWithAttr pearsonMatrixWithAttr = financialDataAnalysisDomainService.analysisTwoFinancialDataBranch(
+                analysisTwoFinancialBranchDataRequest.getKindX(),
+                analysisTwoFinancialBranchDataRequest.getCodeX(),
+                analysisTwoFinancialBranchDataRequest.getKindY(),
+                analysisTwoFinancialBranchDataRequest.getCodeY()
         );
-        return TwoFinancialPearsonMatrixAnalysisResponse.builder()
-                .attributesX(pearsonMatrixWithAttr.getAttributesX())
-                .attributesY(pearsonMatrixWithAttr.getAttributesY())
-                .pearsonMatrix(pearsonMatrixWithAttr.getPearsonMatrix())
-                .build();
+        return FinancialDataAssembler.buildTwoFinancialPearsonMatrixAnalysisResponseFromPearsonMatrixWithAttr(pearsonMatrixWithAttr);
+    }
+
+    @Performance
+    @GetMapping("/analysisFinancialDataKinds")
+    @Operation(summary = "金融数据的相关性系数的计算(由低到高排序)")
+    public List<FinancialKindRiseAndFallResponse> analysisFinancialDataKinds() {
+        return financialDataAnalysisDomainService.analysisTwoFinancialDataKindHighest()
+                .stream()
+                .map(FinancialDataAssembler::FinancialKindRiseAndFallBO2Response)
+                .toList();
     }
 }

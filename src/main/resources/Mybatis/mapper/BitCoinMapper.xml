@@ -111,4 +111,11 @@
         GROUP BY <include refid="bitCoinTags"/>
         ORDER BY <include refid="bitCoinTags"/>;
     </select>
+
+    <select id="queryBitCoinRiseAndFallAVG" resultMap="BitCoin">
+        SELECT ts, AVG(rise_and_fall) as rise_and_fall
+        FROM <include refid="bitCoinSTable"/>
+        GROUP BY ts
+        ORDER BY ts;
+    </select>
 </mapper>

@@ -139,4 +139,11 @@
         <include refid="stockTags"/>
         ORDER BY<include refid="stockTags"/>;
     </select>
+
+    <select id="queryStockRiseAndFallAVG" resultMap="Stock">
+        SELECT ts, AVG(rise_and_fall) as rise_and_fall
+        FROM <include refid="stockSTable"/>
+        GROUP BY ts
+        ORDER BY ts;
+    </select>
 </mapper>

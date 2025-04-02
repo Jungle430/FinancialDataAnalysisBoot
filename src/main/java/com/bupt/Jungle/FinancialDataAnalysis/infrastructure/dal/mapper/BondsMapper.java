@@ -12,6 +12,8 @@ public interface BondsMapper {
 
     List<String> queryAllCurrency();
 
+    List<BondsPO> queryBondsRiseAndFallAVG();
+
     List<BondsPO> queryBondsDataByCode(@Param("code") String code);
 
     List<BondsPO> queryBondsTagByCode(@Param("code") String code);
