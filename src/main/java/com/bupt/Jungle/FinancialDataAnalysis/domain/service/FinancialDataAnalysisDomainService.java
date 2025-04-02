@@ -14,17 +14,17 @@ import com.bupt.Jungle.FinancialDataAnalysis.util.GsonUtil;
 import com.bupt.Jungle.FinancialDataAnalysis.util.StockCalculateUtil;
 import com.bupt.Jungle.FinancialDataAnalysis.util.model.PearsonMatrixWithAttr;
 import com.bupt.Jungle.FinancialDataAnalysis.util.type.FinancialCalculateData;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 import static com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException.NO_FINANCIAL_BRANCH_EXCEPTION;
@@ -32,8 +32,6 @@ import static com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessExc
 @Service
 @Slf4j
 public class FinancialDataAnalysisDomainService {
-    private final Executor financialAnalysisTaskThreadPool;
-
     private final BaseDBMessageService baseDBMessageService;
 
     private final Map<String, AnalysisBaseService> analysisBaseServiceMap;
@@ -46,18 +44,17 @@ public class FinancialDataAnalysisDomainService {
     public FinancialDataAnalysisDomainService(
             Map<String, AnalysisBaseService> analysisBaseServiceMap,
             BaseDBMessageService baseDBMessageService,
-            RedisGateway redisGateway,
-            Executor financialAnalysisTaskThreadPool
+            RedisGateway redisGateway
     ) {
         this.analysisBaseServiceMap = new ConcurrentHashMap<>(analysisBaseServiceMap);
         this.baseDBMessageService = baseDBMessageService;
         this.cacheService = redisGateway;
-        this.financialAnalysisTaskThreadPool = financialAnalysisTaskThreadPool;
     }
 
-    @PostConstruct
-    public void init() {
-        financialAnalysisTaskThreadPool.execute(this::analysisTwoFinancialDataKindHighestTask);
+    @Performance
+    @EventListener(ContextRefreshedEvent.class)
+    public void onApplicationEvent() {
+        analysisTwoFinancialDataKindHighestTask();
     }
 
     public PearsonMatrixWithAttr analysisTwoFinancialDataBranch(
