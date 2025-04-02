@@ -38,7 +38,11 @@ public class FinancialDataAnalysisDomainService {
 
     private final CacheService cacheService;
 
-    private final String analysisTwoFinancialDataKindHighestTaskKey = "FinancialDataAnalysisDomainService.analysisTwoFinancialDataKindHighestTask";
+    private final String analysisTwoFinancialDataKindHighestTaskKey = String.format(
+            "%s.%s",
+            FinancialDataAnalysisDomainService.class.getName(),
+            "analysisTwoFinancialDataKindHighestTask"
+    );
 
     @Autowired
     public FinancialDataAnalysisDomainService(
