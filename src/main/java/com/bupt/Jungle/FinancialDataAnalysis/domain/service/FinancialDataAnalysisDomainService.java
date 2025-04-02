@@ -180,14 +180,17 @@ public class FinancialDataAnalysisDomainService {
         List<FinancialKindRiseAndFallBO> financialKindRiseAndFallBOS;
         try {
             log.info("cacheService.get start, key:{}", analysisTwoFinancialDataKindHighestTaskKey);
-            financialKindRiseAndFallBOS = GsonUtil.jsonToList(cacheService.get(analysisTwoFinancialDataKindHighestTaskKey), FinancialKindRiseAndFallBO.class);
+            financialKindRiseAndFallBOS = Objects.requireNonNull(
+                    GsonUtil.jsonToList(
+                            cacheService.get(analysisTwoFinancialDataKindHighestTaskKey),
+                            FinancialKindRiseAndFallBO.class
+                    ),
+                    "数据为空"
+            );
+            return financialKindRiseAndFallBOS;
         } catch (Exception exception) {
             log.error("cacheService.get fail, key:{}", analysisTwoFinancialDataKindHighestTaskKey, exception);
             throw new ServiceException("缓存/定时任务有问题,key:" + analysisTwoFinancialDataKindHighestTaskKey);
         }
-        if (financialKindRiseAndFallBOS == null) {
-            throw new ServiceException("缓存/定时任务有问题,无对应数据,key:" + analysisTwoFinancialDataKindHighestTaskKey);
-        }
-        return financialKindRiseAndFallBOS;
     }
 }
