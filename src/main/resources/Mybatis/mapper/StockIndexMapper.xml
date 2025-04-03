@@ -130,4 +130,11 @@
         GROUP BY ts
         ORDER BY ts;
     </select>
+
+    <select id="queryAllCode" resultType="java.lang.String">
+        SELECT code
+        FROM <include refid="stockIndexSTable"/>
+        GROUP BY code
+        ORDER BY code;
+    </select>
 </mapper>
