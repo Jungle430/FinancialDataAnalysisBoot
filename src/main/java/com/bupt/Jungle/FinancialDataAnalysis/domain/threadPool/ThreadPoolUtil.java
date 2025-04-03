@@ -12,8 +12,8 @@ public class ThreadPoolUtil {
     @Bean(name = "financialAnalysisTaskThreadPool")
     public Executor financialAnalysisTaskThreadPool() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setMaxPoolSize(2);
-        executor.setCorePoolSize(1);
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(4);
         executor.setQueueCapacity(20);
         executor.setThreadNamePrefix("AnalysisTask-");
         executor.setKeepAliveSeconds(60);
