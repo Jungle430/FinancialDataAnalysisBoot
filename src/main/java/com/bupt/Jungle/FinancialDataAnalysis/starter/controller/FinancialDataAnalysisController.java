@@ -4,13 +4,12 @@ package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.AnalysisBaseService;
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.BaseDBMessageService;
 import com.bupt.Jungle.FinancialDataAnalysis.domain.service.FinancialDataAnalysisDomainService;
+import com.bupt.Jungle.FinancialDataAnalysis.domain.service.StockIndexDomainService;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.annotation.Performance;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.FinancialDataAssembler;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.StockAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.AnalysisTwoFinancialBranchDataRequest;
-import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.FinancialBranchItemResponse;
-import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.FinancialKindResponse;
-import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.FinancialKindRiseAndFallResponse;
-import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.TwoFinancialPearsonMatrixAnalysisResponse;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.*;
 import com.bupt.Jungle.FinancialDataAnalysis.util.model.PearsonMatrixWithAttr;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -42,15 +41,19 @@ public class FinancialDataAnalysisController {
 
     private final FinancialDataAnalysisDomainService financialDataAnalysisDomainService;
 
+    private final StockIndexDomainService stockIndexDomainService;
+
     @Autowired
     public FinancialDataAnalysisController(
             BaseDBMessageService baseDBMessageService,
             Map<String, AnalysisBaseService> analysisBaseServiceMap,
-            FinancialDataAnalysisDomainService financialDataAnalysisDomainService
+            FinancialDataAnalysisDomainService financialDataAnalysisDomainService,
+            StockIndexDomainService stockIndexDomainService
     ) {
         this.baseDBMessageService = baseDBMessageService;
         this.analysisBaseServiceMap = new ConcurrentHashMap<>(analysisBaseServiceMap);
         this.financialDataAnalysisDomainService = financialDataAnalysisDomainService;
+        this.stockIndexDomainService = stockIndexDomainService;
     }
 
     @GetMapping("/kind/list")
@@ -97,6 +100,16 @@ public class FinancialDataAnalysisController {
         return financialDataAnalysisDomainService.analysisTwoFinancialDataKindHighest()
                 .stream()
                 .map(FinancialDataAssembler::FinancialKindRiseAndFallBO2Response)
+                .toList();
+    }
+
+    @Performance
+    @GetMapping("/analysisRegionAndMarket")
+    @Operation(summary = "分析市场与区域相关性(股票指数分析,由高到低排序)")
+    public List<StockIndexRiseAndFallResponse> analysisRegionAndMarket() {
+        return stockIndexDomainService.analysisStockIndexRelevance()
+                .stream()
+                .map(StockAssembler::StockIndexRiseAndFallBO2Response)
                 .toList();
     }
 }

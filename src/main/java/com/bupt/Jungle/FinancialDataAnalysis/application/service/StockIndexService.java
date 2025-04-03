@@ -91,6 +91,18 @@ public class StockIndexService implements AnalysisBaseService {
         return StockAssembler.buildStockIndexEchartsBOFromStockIndexBOsAndStockIndexTagBO(stockIndexBOS, stockIndexTagBO);
     }
 
+    public StockIndexTagBO getStockIndexTag(String code) {
+        List<StockIndexPO> stockIndexTags = stockIndexMapper.queryStockIndexTagByCode(code);
+        if (CollectionUtils.isEmpty(stockIndexTags)) {
+            throw new BusinessException("没有该股票");
+        }
+
+        if (stockIndexTags.size() > 1) {
+            throw new ServiceException(String.format("数据库数据有问题, 一个code查出来两组TAG, code:%s, tags:%s", code, stockIndexTags));
+        }
+        return StockAssembler.StockIndexPO2StockIndexTagBO(stockIndexTags.get(0));
+    }
+
     @Override
     public List<ImmutablePair<String, String>> getAllBranchBaseData() {
         List<StockIndexPO> stockIndexTags = stockIndexMapper.queryAllTags();

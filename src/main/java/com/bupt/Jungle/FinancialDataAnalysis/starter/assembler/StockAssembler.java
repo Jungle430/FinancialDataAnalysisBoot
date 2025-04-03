@@ -4,10 +4,8 @@ import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockEchartsBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockIndexEchartsBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockIndexTagPageBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.StockTagPageBO;
-import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.StockEchartsResponse;
-import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.StockIndexEchartsResponse;
-import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.StockIndexTagPageResponse;
-import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.StockTagPageResponse;
+import com.bupt.Jungle.FinancialDataAnalysis.domain.model.StockIndexRiseAndFallBO;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.*;
 
 public class StockAssembler {
     public static StockTagPageResponse StockTagPageBO2StockTagsPageResponse(StockTagPageBO stockTagPageBO) {
@@ -44,5 +42,13 @@ public class StockAssembler {
                 .MA20(stockIndexEchartsBO.getMA20())
                 .MA30(stockIndexEchartsBO.getMA30())
                 .build();
+    }
+
+    public static StockIndexRiseAndFallResponse StockIndexRiseAndFallBO2Response(StockIndexRiseAndFallBO stockIndexRiseAndFallBO) {
+        StockIndexRiseAndFallResponse stockIndexRiseAndFallResponse = new StockIndexRiseAndFallResponse();
+        stockIndexRiseAndFallResponse.setStockIndexX(stockIndexRiseAndFallBO.getStockIndexTagBOX());
+        stockIndexRiseAndFallResponse.setStockIndexY(stockIndexRiseAndFallBO.getStockIndexTagBOY());
+        stockIndexRiseAndFallResponse.setRiseAndFallPearsonCorrelationCoefficient(stockIndexRiseAndFallBO.getRiseAndFallPearsonCorrelationCoefficient());
+        return stockIndexRiseAndFallResponse;
     }
 }

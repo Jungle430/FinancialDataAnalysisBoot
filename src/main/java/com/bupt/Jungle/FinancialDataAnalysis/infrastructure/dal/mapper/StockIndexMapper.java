@@ -14,6 +14,8 @@ public interface StockIndexMapper {
 
     List<StockIndexPO> queryStockIndexRiseAndFallAVG();
 
+    List<String> queryAllCode();
+
     List<StockIndexPO> queryStockIndexDataByCode(@Param("code") String code);
 
     List<StockIndexPO> queryStockIndexTagByCode(@Param("code") String code);
