@@ -24,11 +24,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
 public class StockIndexDomainService {
+    private final Executor financialAnalysisTaskThreadPool;
+
     private final StockIndexService stockIndexService;
 
     private final StockIndexMapper stockIndexMapper;
@@ -40,16 +43,22 @@ public class StockIndexDomainService {
     );
 
     @Autowired
-    public StockIndexDomainService(StockIndexService stockIndexService, StockIndexMapper stockIndexMapper, RedisGateway redisGateway) {
+    public StockIndexDomainService(
+            StockIndexService stockIndexService,
+            StockIndexMapper stockIndexMapper,
+            RedisGateway redisGateway,
+            Executor financialAnalysisTaskThreadPool
+    ) {
         this.stockIndexService = stockIndexService;
         this.stockIndexMapper = stockIndexMapper;
         this.cacheService = redisGateway;
+        this.financialAnalysisTaskThreadPool = financialAnalysisTaskThreadPool;
     }
 
     @Performance
     @EventListener(ContextRefreshedEvent.class)
     public void onApplicationEvent() {
-        analysisStockIndexRelevanceTask();
+        financialAnalysisTaskThreadPool.execute(this::analysisStockIndexRelevanceTask);
     }
 
     @Performance
