@@ -6,6 +6,7 @@ import com.bupt.Jungle.FinancialDataAnalysis.application.service.AnalysisBaseSer
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.BaseDBMessageService;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.ServiceException;
+import com.bupt.Jungle.FinancialDataAnalysis.domain.model.FinancialBranchRiseAndFallBO;
 import com.bupt.Jungle.FinancialDataAnalysis.domain.model.FinancialKindRiseAndFallBO;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.cache.CacheService;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.gateway.RedisGateway;
@@ -25,13 +26,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 import static com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException.NO_FINANCIAL_BRANCH_EXCEPTION;
+import static com.bupt.Jungle.FinancialDataAnalysis.util.StockCalculateUtil.calculatePearsonCorrelationCoefficient;
 
 @Service
 @Slf4j
 public class FinancialDataAnalysisDomainService {
+    private final Executor financialAnalysisTaskThreadPool;
+
     private final BaseDBMessageService baseDBMessageService;
 
     private final Map<String, AnalysisBaseService> analysisBaseServiceMap;
@@ -44,21 +49,30 @@ public class FinancialDataAnalysisDomainService {
             "analysisTwoFinancialDataKindHighestTask"
     );
 
+    private final String analysisTwoFinancialDataBranchHighestTaskKey = String.format(
+            "%s.%s",
+            FinancialDataAnalysisDomainService.class.getName(),
+            "analysisTwoFinancialDataBranchHighestTask"
+    );
+
     @Autowired
     public FinancialDataAnalysisDomainService(
             Map<String, AnalysisBaseService> analysisBaseServiceMap,
             BaseDBMessageService baseDBMessageService,
-            RedisGateway redisGateway
+            RedisGateway redisGateway,
+            Executor financialAnalysisTaskThreadPool
     ) {
         this.analysisBaseServiceMap = new ConcurrentHashMap<>(analysisBaseServiceMap);
         this.baseDBMessageService = baseDBMessageService;
         this.cacheService = redisGateway;
+        this.financialAnalysisTaskThreadPool = financialAnalysisTaskThreadPool;
     }
 
     @Performance
     @EventListener(ContextRefreshedEvent.class)
     public void onApplicationEvent() {
-        analysisTwoFinancialDataKindHighestTask();
+        financialAnalysisTaskThreadPool.execute(this::analysisTwoFinancialDataKindHighestTask);
+        financialAnalysisTaskThreadPool.execute(this::analysisTwoFinancialDataBranchHighestTask);
     }
 
     public PearsonMatrixWithAttr analysisTwoFinancialDataBranch(
@@ -134,7 +148,7 @@ public class FinancialDataAnalysisDomainService {
         }
 
         try {
-            return StockCalculateUtil.calculatePearsonCorrelationCoefficient(
+            return calculatePearsonCorrelationCoefficient(
                     analysisFinancialKindXData,
                     analysisFinancialKindYData
             );
@@ -196,5 +210,68 @@ public class FinancialDataAnalysisDomainService {
             log.error("cacheService.get fail, key:{}", analysisTwoFinancialDataKindHighestTaskKey, exception);
             throw new ServiceException("缓存/定时任务有问题,key:" + analysisTwoFinancialDataKindHighestTaskKey);
         }
+    }
+
+    public List<FinancialBranchRiseAndFallBO> analysisTwoFinancialDataBranchHighest() {
+        List<FinancialBranchRiseAndFallBO> financialBranchRiseAndFallBOS;
+        try {
+            log.info("cacheService.get start, key:{}", analysisTwoFinancialDataBranchHighestTaskKey);
+            financialBranchRiseAndFallBOS = Objects.requireNonNull(
+                    GsonUtil.jsonToList(
+                            cacheService.get(analysisTwoFinancialDataBranchHighestTaskKey),
+                            FinancialBranchRiseAndFallBO.class
+                    ),
+                    "数据为空"
+            );
+            return financialBranchRiseAndFallBOS;
+        } catch (Exception e) {
+            log.error("cacheService.get fail, key:{}", analysisTwoFinancialDataBranchHighestTaskKey, e);
+            throw new ServiceException("缓存/定时任务有问题,key:" + analysisTwoFinancialDataBranchHighestTaskKey);
+        }
+    }
+
+    @Performance
+    @Async("financialAnalysisTaskThreadPool")
+    @Scheduled(cron = "0 0 3 * * ?") // 凌晨执行
+    public void analysisTwoFinancialDataBranchHighestTask() {
+        log.info("task:{} start", analysisTwoFinancialDataBranchHighestTaskKey);
+        List<String> kinds = analysisBaseServiceMap.keySet()
+                .stream()
+                .sorted(String::compareTo)
+                .toList();
+        int n = kinds.size();
+        List<FinancialBranchRiseAndFallBO> financialBranchRiseAndFallBOS = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                String kind1 = kinds.get(i);
+                String kind2 = kinds.get(j);
+                List<String> codes1 = analysisBaseServiceMap.get(kind1).getAllFinancialBranchCode();
+                List<String> codes2 = analysisBaseServiceMap.get(kind2).getAllFinancialBranchCode();
+                for (String code1 : codes1) {
+                    for (String code2 : codes2) {
+                        if (!(kind1.equals(kind2) && code1.equals(code2))) {
+                            double pearsonCorrelationCoefficient = calculatePearsonCorrelationCoefficient(
+                                    analysisBaseServiceMap.get(kind1).getAllFinancialBranchData(code1),
+                                    analysisBaseServiceMap.get(kind2).getAllFinancialBranchData(code2)
+                            );
+                            financialBranchRiseAndFallBOS.add(FinancialBranchRiseAndFallBO.builder()
+                                    .financialKindBOX(kind1 + "-" + code1)
+                                    .financialKindBOY(kind2 + "-" + code2)
+                                    .riseAndFallPearsonCorrelationCoefficient(pearsonCorrelationCoefficient)
+                                    .build());
+                        }
+                    }
+                }
+            }
+        }
+        financialBranchRiseAndFallBOS.sort(Comparator.comparingDouble(FinancialBranchRiseAndFallBO::getRiseAndFallPearsonCorrelationCoefficient));
+        log.info("cacheService.set begin, key:{}", analysisTwoFinancialDataBranchHighestTaskKey);
+        cacheService.set(
+                analysisTwoFinancialDataBranchHighestTaskKey,
+                GsonUtil.beanToJson(financialBranchRiseAndFallBOS),
+                TimeUnit.DAYS.toSeconds(1) + TimeUnit.HOURS.toSeconds(1),
+                TimeUnit.SECONDS
+        );
+        log.info("cacheService.set end, key:{}", analysisTwoFinancialDataBranchHighestTaskKey);
     }
 }

@@ -19,6 +19,11 @@ public interface AnalysisBaseService {
     List<ImmutablePair<String, String>> getAllBranchBaseData();
 
     /**
+     * @return 获取所有金融分支的代码
+     */
+    List<String> getAllFinancialBranchCode();
+
+    /**
      * @return 获取一个金融分支下的所有数据
      */
     List<FinancialCalculateData> getAllFinancialBranchData(String code);

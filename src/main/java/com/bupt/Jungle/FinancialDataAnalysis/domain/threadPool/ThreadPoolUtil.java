@@ -9,12 +9,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 @Component
 public class ThreadPoolUtil {
-    @Bean
+    @Bean(name = "financialAnalysisTaskThreadPool")
     public Executor financialAnalysisTaskThreadPool() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setMaxPoolSize(2);
         executor.setCorePoolSize(1);
-        executor.setQueueCapacity(10);
+        executor.setQueueCapacity(20);
         executor.setThreadNamePrefix("AnalysisTask-");
         executor.setKeepAliveSeconds(60);
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());

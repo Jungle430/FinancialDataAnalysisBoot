@@ -3,6 +3,7 @@ package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.AnalysisBaseService;
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.BaseDBMessageService;
+import com.bupt.Jungle.FinancialDataAnalysis.domain.model.FinancialBranchRiseAndFallBO;
 import com.bupt.Jungle.FinancialDataAnalysis.domain.service.FinancialDataAnalysisDomainService;
 import com.bupt.Jungle.FinancialDataAnalysis.domain.service.StockIndexDomainService;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.annotation.Performance;
@@ -111,5 +112,12 @@ public class FinancialDataAnalysisController {
                 .stream()
                 .map(StockAssembler::StockIndexRiseAndFallBO2Response)
                 .toList();
+    }
+
+    @Performance
+    @GetMapping("/analysisTwoFinancialDataBranchHighest")
+    @Operation(summary = "金融数据相关性排行(由低到高)")
+    public List<FinancialBranchRiseAndFallBO> analysisTwoFinancialDataBranchHighest() {
+        return financialDataAnalysisDomainService.analysisTwoFinancialDataBranchHighest();
     }
 }

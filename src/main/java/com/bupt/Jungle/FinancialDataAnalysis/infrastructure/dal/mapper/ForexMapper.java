@@ -51,5 +51,5 @@ public interface ForexMapper {
             @Param("quoteRegion") String quoteRegion,
             @Param("quoteCurrency") String quoteCurrency);
 
-    List<ForexPO> queryAllTags();
+    List<ForexPO> queryAllTagsWithOffshoreRMB();
 }

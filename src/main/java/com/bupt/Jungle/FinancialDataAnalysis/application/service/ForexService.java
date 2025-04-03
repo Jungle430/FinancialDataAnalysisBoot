@@ -104,7 +104,7 @@ public class ForexService implements AnalysisBaseService {
 
     @Override
     public List<ImmutablePair<String, String>> getAllBranchBaseData() {
-        List<ForexPO> forexTags = forexMapper.queryAllTags();
+        List<ForexPO> forexTags = forexMapper.queryAllTagsWithOffshoreRMB();
 
         if (CollectionUtils.isEmpty(forexTags)) {
             throw new BusinessException("外汇没有分支数据");
@@ -123,6 +123,15 @@ public class ForexService implements AnalysisBaseService {
                 ))
                 .toList();
     }
+
+    @Override
+    public List<String> getAllFinancialBranchCode() {
+        return forexMapper.queryAllTagsWithOffshoreRMB()
+                .stream()
+                .map(forexPO -> String.format("%s-%s", forexPO.getBaseCurrency(), forexPO.getQuoteCurrency()))
+                .toList();
+    }
+
 
     @Override
     public List<FinancialCalculateData> getAllFinancialBranchData(String code) {

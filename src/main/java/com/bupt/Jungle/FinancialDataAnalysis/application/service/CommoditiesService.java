@@ -115,6 +115,14 @@ public class CommoditiesService implements AnalysisBaseService {
     }
 
     @Override
+    public List<String> getAllFinancialBranchCode() {
+        return commoditiesMapper.queryAllTags()
+                .stream()
+                .map(CommoditiesPO::getCode)
+                .toList();
+    }
+
+    @Override
     public List<FinancialCalculateData> getAllFinancialBranchData(String code) {
         return commoditiesMapper.queryCommoditiesDataByCode(code)
                 .stream()

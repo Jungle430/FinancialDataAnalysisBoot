@@ -113,6 +113,14 @@ public class BitCoinService implements AnalysisBaseService {
     }
 
     @Override
+    public List<String> getAllFinancialBranchCode() {
+        return bitCoinMapper.queryAllTags()
+                .stream()
+                .map(BitCoinPO::getCode)
+                .toList();
+    }
+
+    @Override
     public List<FinancialCalculateData> getAllFinancialBranchData(String code) {
         return bitCoinMapper.queryBitCoinDataByCode(code)
                 .stream()

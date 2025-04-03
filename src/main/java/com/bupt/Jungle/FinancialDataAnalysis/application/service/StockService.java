@@ -131,6 +131,14 @@ public class StockService implements AnalysisBaseService {
     }
 
     @Override
+    public List<String> getAllFinancialBranchCode() {
+        return stockMapper.queryAllTags()
+                .stream()
+                .map(StockPO::getCode)
+                .toList();
+    }
+
+    @Override
     public List<FinancialCalculateData> getAllFinancialBranchData(String code) {
         return stockMapper.queryStockDataByCode(code)
                 .stream()

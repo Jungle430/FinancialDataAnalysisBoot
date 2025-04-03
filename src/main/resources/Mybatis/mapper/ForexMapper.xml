@@ -134,7 +134,7 @@
         AND quote_currency = #{quoteCurrency};
     </select>
 
-    <select id="queryAllTags" resultMap="Forex">
+    <select id="queryAllTagsWithOffshoreRMB" resultMap="Forex">
         SELECT
         <include refid="forexTags"/>
         FROM

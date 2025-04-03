@@ -113,6 +113,14 @@ public class BondsService implements AnalysisBaseService {
     }
 
     @Override
+    public List<String> getAllFinancialBranchCode() {
+        return bondsMapper.queryAllTags()
+                .stream()
+                .map(BondsPO::getCode)
+                .toList();
+    }
+
+    @Override
     public List<FinancialCalculateData> getAllFinancialBranchData(String code) {
         return bondsMapper.queryBondsDataByCode(code)
                 .stream()
