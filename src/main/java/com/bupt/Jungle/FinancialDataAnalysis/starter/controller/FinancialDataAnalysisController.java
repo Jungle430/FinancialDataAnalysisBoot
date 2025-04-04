@@ -118,6 +118,6 @@ public class FinancialDataAnalysisController {
     @GetMapping("/analysisTwoFinancialDataBranchHighest")
     @Operation(summary = "金融数据相关性排行(由低到高)")
     public List<FinancialBranchRiseAndFallBO> analysisTwoFinancialDataBranchHighest() {
-        return financialDataAnalysisDomainService.analysisTwoFinancialDataBranchHighest();
+        return financialDataAnalysisDomainService.analysisTwoFinancialDataBranchHighestAndLowest();
     }
 }

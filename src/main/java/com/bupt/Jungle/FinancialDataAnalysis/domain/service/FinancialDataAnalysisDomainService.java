@@ -49,10 +49,10 @@ public class FinancialDataAnalysisDomainService {
             "analysisTwoFinancialDataKindHighestTask"
     );
 
-    private final String analysisTwoFinancialDataBranchHighestTaskKey = String.format(
+    private final String analysisTwoFinancialDataBranchHighestAndLowestTaskKey = String.format(
             "%s.%s",
             FinancialDataAnalysisDomainService.class.getName(),
-            "analysisTwoFinancialDataBranchHighestTask"
+            "analysisTwoFinancialDataBranchHighestAndLowestTaskKey"
     );
 
     @Autowired
@@ -72,7 +72,7 @@ public class FinancialDataAnalysisDomainService {
     @EventListener(ContextRefreshedEvent.class)
     public void onApplicationEvent() {
         financialAnalysisTaskThreadPool.execute(this::analysisTwoFinancialDataKindHighestTask);
-        financialAnalysisTaskThreadPool.execute(this::analysisTwoFinancialDataBranchHighestTask);
+        financialAnalysisTaskThreadPool.execute(this::analysisTwoFinancialDataBranchHighestAndLowestTask);
     }
 
     public PearsonMatrixWithAttr analysisTwoFinancialDataBranch(
@@ -212,29 +212,29 @@ public class FinancialDataAnalysisDomainService {
         }
     }
 
-    public List<FinancialBranchRiseAndFallBO> analysisTwoFinancialDataBranchHighest() {
+    public List<FinancialBranchRiseAndFallBO> analysisTwoFinancialDataBranchHighestAndLowest() {
         List<FinancialBranchRiseAndFallBO> financialBranchRiseAndFallBOS;
         try {
-            log.info("cacheService.get start, key:{}", analysisTwoFinancialDataBranchHighestTaskKey);
+            log.info("cacheService.get start, key:{}", analysisTwoFinancialDataBranchHighestAndLowestTaskKey);
             financialBranchRiseAndFallBOS = Objects.requireNonNull(
                     GsonUtil.jsonToList(
-                            cacheService.get(analysisTwoFinancialDataBranchHighestTaskKey),
+                            cacheService.get(analysisTwoFinancialDataBranchHighestAndLowestTaskKey),
                             FinancialBranchRiseAndFallBO.class
                     ),
                     "数据为空"
             );
             return financialBranchRiseAndFallBOS;
         } catch (Exception e) {
-            log.error("cacheService.get fail, key:{}", analysisTwoFinancialDataBranchHighestTaskKey, e);
-            throw new ServiceException("缓存/定时任务有问题,key:" + analysisTwoFinancialDataBranchHighestTaskKey);
+            log.error("cacheService.get fail, key:{}", analysisTwoFinancialDataBranchHighestAndLowestTaskKey, e);
+            throw new ServiceException("缓存/定时任务有问题,key:" + analysisTwoFinancialDataBranchHighestAndLowestTaskKey);
         }
     }
 
     @Performance
     @Async("financialAnalysisTaskThreadPool")
     @Scheduled(cron = "0 0 3 * * ?") // 凌晨执行
-    public void analysisTwoFinancialDataBranchHighestTask() {
-        log.info("task:{} start", analysisTwoFinancialDataBranchHighestTaskKey);
+    public void analysisTwoFinancialDataBranchHighestAndLowestTask() {
+        log.info("task:{} start", analysisTwoFinancialDataBranchHighestAndLowestTaskKey);
         List<String> kinds = analysisBaseServiceMap.keySet()
                 .stream()
                 .sorted(String::compareTo)
@@ -265,13 +265,13 @@ public class FinancialDataAnalysisDomainService {
             }
         }
         financialBranchRiseAndFallBOS.sort(Comparator.comparingDouble(FinancialBranchRiseAndFallBO::getRiseAndFallPearsonCorrelationCoefficient));
-        log.info("cacheService.set begin, key:{}", analysisTwoFinancialDataBranchHighestTaskKey);
+        log.info("cacheService.set begin, key:{}", analysisTwoFinancialDataBranchHighestAndLowestTaskKey);
         cacheService.set(
-                analysisTwoFinancialDataBranchHighestTaskKey,
+                analysisTwoFinancialDataBranchHighestAndLowestTaskKey,
                 GsonUtil.beanToJson(financialBranchRiseAndFallBOS),
                 TimeUnit.DAYS.toSeconds(1) + TimeUnit.HOURS.toSeconds(1),
                 TimeUnit.SECONDS
         );
-        log.info("cacheService.set end, key:{}", analysisTwoFinancialDataBranchHighestTaskKey);
+        log.info("cacheService.set end, key:{}", analysisTwoFinancialDataBranchHighestAndLowestTaskKey);
     }
 }
