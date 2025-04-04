@@ -115,9 +115,12 @@ public class FinancialDataAnalysisController {
     }
 
     @Performance
-    @GetMapping("/analysisTwoFinancialDataBranchHighest")
+    @GetMapping("/analysisTwoFinancialDataBranchHighestAndLowest")
     @Operation(summary = "金融数据相关性排行(由低到高)")
-    public List<FinancialBranchRiseAndFallBO> analysisTwoFinancialDataBranchHighest() {
-        return financialDataAnalysisDomainService.analysisTwoFinancialDataBranchHighestAndLowest();
+    public FinancialBranchRiseAndFallHighestAndLowest analysisTwoFinancialDataBranchHighestAndLowest() {
+        FinancialBranchRiseAndFallHighestAndLowest financialBranchRiseAndFallHighestAndLowest = new FinancialBranchRiseAndFallHighestAndLowest();
+        financialBranchRiseAndFallHighestAndLowest.setFinancialBranchRiseAndFallHighest(financialDataAnalysisDomainService.analysisTwoFinancialDataBranchHighest());
+        financialBranchRiseAndFallHighestAndLowest.setFinancialBranchRiseAndFallLowest(financialDataAnalysisDomainService.analysisTwoFinancialDataBranchLowest());
+        return financialBranchRiseAndFallHighestAndLowest;
     }
 }

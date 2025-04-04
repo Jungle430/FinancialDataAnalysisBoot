@@ -68,3 +68,5 @@ financial-data:
               forex: '外汇(包含离岸人民币)',
               commodities: '大宗商品',
               bonds: '美国国债'}"
+  analysisTwoFinancialDataBranchHighestAndLowestTaskLowest:
+    show-size: 10
