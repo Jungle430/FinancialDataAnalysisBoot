@@ -18,6 +18,7 @@ import com.bupt.Jungle.FinancialDataAnalysis.util.type.FinancialCalculateData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -43,29 +44,48 @@ public class FinancialDataAnalysisDomainService {
 
     private final CacheService cacheService;
 
-    private final String analysisTwoFinancialDataKindHighestTaskKey = String.format(
-            "%s.%s",
-            FinancialDataAnalysisDomainService.class.getName(),
-            "analysisTwoFinancialDataKindHighestTask"
-    );
+    public final String analysisTwoFinancialDataKindHighestTaskKey;
 
-    private final String analysisTwoFinancialDataBranchHighestAndLowestTaskKey = String.format(
-            "%s.%s",
-            FinancialDataAnalysisDomainService.class.getName(),
-            "analysisTwoFinancialDataBranchHighestAndLowestTaskKey"
-    );
+    public final String analysisTwoFinancialDataBranchHighestAndLowestTaskKey;
+
+    public final String analysisTwoFinancialDataBranchHighestAndLowestTaskHighestKey;
+
+    public final String analysisTwoFinancialDataBranchHighestAndLowestTaskLowestKey;
 
     @Autowired
     public FinancialDataAnalysisDomainService(
             Map<String, AnalysisBaseService> analysisBaseServiceMap,
             BaseDBMessageService baseDBMessageService,
             RedisGateway redisGateway,
-            Executor financialAnalysisTaskThreadPool
+            Executor financialAnalysisTaskThreadPool,
+            @Value("${spring.application.name}") String applicationName
     ) {
         this.analysisBaseServiceMap = new ConcurrentHashMap<>(analysisBaseServiceMap);
         this.baseDBMessageService = baseDBMessageService;
         this.cacheService = redisGateway;
         this.financialAnalysisTaskThreadPool = financialAnalysisTaskThreadPool;
+        this.analysisTwoFinancialDataKindHighestTaskKey = String.join(
+                ".",
+                applicationName,
+                FinancialDataAnalysisDomainService.class.getName(),
+                "analysisTwoFinancialDataKindHighestTask"
+        );
+        this.analysisTwoFinancialDataBranchHighestAndLowestTaskKey = String.join(
+                ".",
+                applicationName,
+                FinancialDataAnalysisDomainService.class.getName(),
+                "analysisTwoFinancialDataBranchHighestAndLowestTask"
+        );
+        this.analysisTwoFinancialDataBranchHighestAndLowestTaskHighestKey = String.join(
+                ".",
+                analysisTwoFinancialDataBranchHighestAndLowestTaskKey,
+                "Highest"
+        );
+        analysisTwoFinancialDataBranchHighestAndLowestTaskLowestKey = String.join(
+                ".",
+                analysisTwoFinancialDataBranchHighestAndLowestTaskKey,
+                "Lowest"
+        );
     }
 
     @Performance

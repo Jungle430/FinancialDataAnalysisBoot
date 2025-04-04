@@ -14,6 +14,7 @@ import com.bupt.Jungle.FinancialDataAnalysis.util.StockCalculateUtil;
 import com.bupt.Jungle.FinancialDataAnalysis.util.type.FinancialCalculateData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -38,21 +39,26 @@ public class StockIndexDomainService {
 
     private final CacheService cacheService;
 
-    private final String analysisStockIndexRelevanceKey = String.format(
-            "%s.%s", StockIndexDomainService.class.getName(), "analysisStockIndexRelevance"
-    );
+    public final String analysisStockIndexRelevanceKey;
 
     @Autowired
     public StockIndexDomainService(
             StockIndexService stockIndexService,
             StockIndexMapper stockIndexMapper,
             RedisGateway redisGateway,
-            Executor financialAnalysisTaskThreadPool
+            Executor financialAnalysisTaskThreadPool,
+            @Value("${spring.application.name}") String applicationName
     ) {
         this.stockIndexService = stockIndexService;
         this.stockIndexMapper = stockIndexMapper;
         this.cacheService = redisGateway;
         this.financialAnalysisTaskThreadPool = financialAnalysisTaskThreadPool;
+        this.analysisStockIndexRelevanceKey = String.join(
+                ".",
+                applicationName,
+                StockIndexDomainService.class.getName(),
+                "analysisStockIndexRelevance"
+        );
     }
 
     @Performance
