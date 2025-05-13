@@ -1,3 +1,8 @@
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
 logging:
   level:
     com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper: debug

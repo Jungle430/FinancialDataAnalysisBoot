@@ -31,4 +31,5 @@ ENV JVM_ARGS="-server \
               -XX:CICompilerCount=2 \
               -Xlog:gc*:file=/opt/logs/${APP_NAME}/gc.log:time,uptime:filecount=30,filesize=50M \
               -XX:+PrintFlagsFinal"
-CMD java ${JVM_ARGS} -jar ${APP_JAR_NAME}-${APP_VERSION}.jar > /opt/logs/${APP_NAME}/app.log 2>&1
+ENV SPRINGBOOT_ARGS="--spring.profiles.active=prod"
+CMD java ${JVM_ARGS} -jar ${APP_JAR_NAME}-${APP_VERSION}.jar ${SPRINGBOOT_ARGS} > /opt/logs/${APP_NAME}/app.log 2>&1
