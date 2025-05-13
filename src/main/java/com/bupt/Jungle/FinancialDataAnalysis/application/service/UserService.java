@@ -31,6 +31,10 @@ public class UserService {
     }
 
     public UserInfoBO getUserInfo() {
-        return UserInfoHolder.getUserInfoBO();
+        UserInfoBO userInfoBO = UserInfoHolder.getUserInfoBO();
+        if (Objects.isNull(userInfoBO)) {
+            throw new NoAuthException();
+        }
+        return userInfoBO;
     }
 }

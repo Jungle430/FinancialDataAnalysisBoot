@@ -1,6 +1,7 @@
 package com.bupt.Jungle.FinancialDataAnalysis.starter.config;
 
 import com.bupt.Jungle.FinancialDataAnalysis.common.config.UserLogConfig;
+import com.bupt.Jungle.FinancialDataAnalysis.common.constant.ModeConstant;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.cache.CacheService;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.gateway.RedisGateway;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.interceptor.LoginInterceptor;
@@ -32,7 +33,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(@NonNull InterceptorRegistry registry) {
-        if ("dev".equals(mode)) {
+        if (ModeConstant.DEV.equals(mode)) {
             return;
         }
 
