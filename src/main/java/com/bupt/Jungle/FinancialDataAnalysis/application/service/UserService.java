@@ -1,6 +1,5 @@
 package com.bupt.Jungle.FinancialDataAnalysis.application.service;
 
-import com.bupt.Jungle.FinancialDataAnalysis.application.model.LoginBO;
 import com.bupt.Jungle.FinancialDataAnalysis.application.model.UserInfoBO;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.NoAuthException;
 import com.bupt.Jungle.FinancialDataAnalysis.domain.service.UserDomainService;
@@ -21,10 +20,6 @@ public class UserService {
         this.userDomainService = userDomainService;
     }
 
-    public LoginBO login(String phone, String password) {
-        return userDomainService.login(phone, password);
-    }
-
     public void logout(String token) {
         UserInfoBO userInfoBO = UserInfoHolder.getUserInfoBO();
         if (Objects.isNull(userInfoBO)) {
@@ -36,10 +31,6 @@ public class UserService {
     }
 
     public UserInfoBO getUserInfo() {
-        UserInfoBO userInfoBO = UserInfoHolder.getUserInfoBO();
-        if (Objects.isNull(userInfoBO)) {
-            throw new NoAuthException();
-        }
-        return userInfoBO;
+        return UserInfoHolder.getUserInfoBO();
     }
 }

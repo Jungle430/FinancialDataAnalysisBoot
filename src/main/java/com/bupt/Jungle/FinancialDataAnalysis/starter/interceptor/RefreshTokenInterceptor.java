@@ -5,10 +5,12 @@ import com.bupt.Jungle.FinancialDataAnalysis.common.config.UserLogConfig;
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.cache.CacheService;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.local.UserInfoHolder;
 import com.bupt.Jungle.FinancialDataAnalysis.util.GsonUtil;
+import com.google.gson.JsonSyntaxException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Objects;
@@ -29,6 +31,10 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
+        if (!(handler instanceof HandlerMethod)) {
+            return true;
+        }
+
         String token = request.getHeader(HEADERS_TOKEN_KEY);
         if (StringUtils.isEmpty(token)) {
             return true;
@@ -40,13 +46,22 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        UserInfoBO userInfoBo = GsonUtil.jsonToBean(value, UserInfoBO.class);
-        if (Objects.isNull(userInfoBo)) {
+        UserInfoBO userInfoBO;
+        try {
+            userInfoBO = Objects.requireNonNull(
+                    GsonUtil.jsonToBean(value, UserInfoBO.class)
+            );
+        } catch (NullPointerException | JsonSyntaxException ignore) {
             return true;
         }
 
-        UserInfoHolder.saveUserInfoBO(userInfoBo);
+        UserInfoHolder.saveUserInfoBO(userInfoBO);
         cacheService.expire(key, userLogConfig.getExpireTimeInDays(), TimeUnit.DAYS);
         return true;
+    }
+
+    @Override
+    public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, Exception ex) {
+        UserInfoHolder.removeUserInfoBO();
     }
 }

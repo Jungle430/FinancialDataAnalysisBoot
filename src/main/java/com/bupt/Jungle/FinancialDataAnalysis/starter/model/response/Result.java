@@ -1,11 +1,16 @@
 package com.bupt.Jungle.FinancialDataAnalysis.starter.model.response;
 
 import com.bupt.Jungle.FinancialDataAnalysis.common.constant.ResultCodeConstant;
+import com.bupt.Jungle.FinancialDataAnalysis.util.GsonUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.io.IOException;
+import java.io.PrintWriter;
 
 @Setter
 @Getter
@@ -79,5 +84,12 @@ public class Result<T> {
         result.setData(null);
         result.setTimestamp(System.currentTimeMillis());
         return result;
+    }
+
+    public static void writeErrorResponse(HttpServletResponse response) throws IOException {
+        response.setContentType("application/json;charset=utf-8");
+        try (PrintWriter printWriter = response.getWriter()) {
+            printWriter.write(GsonUtil.beanToJson(noAuth()));
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.UserService;
 import com.bupt.Jungle.FinancialDataAnalysis.common.config.UserLogConfig;
 import com.bupt.Jungle.FinancialDataAnalysis.common.exception.BusinessException;
+import com.bupt.Jungle.FinancialDataAnalysis.domain.service.UserDomainService;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.UserAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.LoginRequest;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.response.LoginResponse;
@@ -30,11 +31,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
 
+    private final UserDomainService userDomainService;
+
     private final String HEADERS_TOKEN_KEY;
 
     @Autowired
-    public UserController(UserService userService, UserLogConfig userLogConfig) {
+    public UserController(UserService userService,
+                          UserDomainService userDomainService,
+                          UserLogConfig userLogConfig) {
         this.userService = userService;
+        this.userDomainService = userDomainService;
         this.HEADERS_TOKEN_KEY = userLogConfig.getHead_token_key();
     }
 
@@ -42,7 +48,7 @@ public class UserController {
     @Operation(summary = "登录")
     @Parameters({@Parameter(name = "loginRequest", description = "登录信息")})
     public LoginResponse login(@RequestBody LoginRequest loginRequest) {
-        return UserAssembler.LoginBO2Response(userService.login(loginRequest.getPhone(), loginRequest.getPassword()));
+        return UserAssembler.LoginBO2Response(userDomainService.login(loginRequest.getPhone(), loginRequest.getPassword()));
     }
 
     @GetMapping("/info")
