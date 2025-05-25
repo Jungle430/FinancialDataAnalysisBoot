@@ -79,7 +79,7 @@ public class RedisGateway implements CacheService {
 
     @Override
     public boolean del(String key) throws CacheServiceException {
-        return Boolean.TRUE.equals(stringRedisTemplate.delete(key));
+        return stringRedisTemplate.delete(key);
     }
 
     @Override
@@ -106,6 +106,6 @@ public class RedisGateway implements CacheService {
 
     @Override
     public boolean expire(String key, long timeout, TimeUnit timeUnit) throws CacheServiceException {
-        return Boolean.TRUE.equals(stringRedisTemplate.expire(key, timeout, timeUnit));
+        return stringRedisTemplate.expire(key, timeout, timeUnit);
     }
 }
