@@ -3,10 +3,11 @@ package com.bupt.Jungle.FinancialDataAnalysis.starter.controller;
 
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.AnalysisBaseService;
 import com.bupt.Jungle.FinancialDataAnalysis.application.service.BaseDBMessageService;
-import com.bupt.Jungle.FinancialDataAnalysis.domain.model.FinancialBranchRiseAndFallBO;
+import com.bupt.Jungle.FinancialDataAnalysis.domain.service.CommoditiesDomainService;
 import com.bupt.Jungle.FinancialDataAnalysis.domain.service.FinancialDataAnalysisDomainService;
 import com.bupt.Jungle.FinancialDataAnalysis.domain.service.StockIndexDomainService;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.annotation.Performance;
+import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.CommoditiesAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.FinancialDataAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.assembler.StockAssembler;
 import com.bupt.Jungle.FinancialDataAnalysis.starter.model.request.AnalysisTwoFinancialBranchDataRequest;
@@ -44,17 +45,21 @@ public class FinancialDataAnalysisController {
 
     private final StockIndexDomainService stockIndexDomainService;
 
+    private final CommoditiesDomainService commoditiesDomainService;
+
     @Autowired
     public FinancialDataAnalysisController(
             BaseDBMessageService baseDBMessageService,
             Map<String, AnalysisBaseService> analysisBaseServiceMap,
             FinancialDataAnalysisDomainService financialDataAnalysisDomainService,
-            StockIndexDomainService stockIndexDomainService
+            StockIndexDomainService stockIndexDomainService,
+            CommoditiesDomainService commoditiesDomainService
     ) {
         this.baseDBMessageService = baseDBMessageService;
         this.analysisBaseServiceMap = new ConcurrentHashMap<>(analysisBaseServiceMap);
         this.financialDataAnalysisDomainService = financialDataAnalysisDomainService;
         this.stockIndexDomainService = stockIndexDomainService;
+        this.commoditiesDomainService = commoditiesDomainService;
     }
 
     @GetMapping("/kind/list")
@@ -122,5 +127,11 @@ public class FinancialDataAnalysisController {
         financialBranchRiseAndFallHighestAndLowest.setFinancialBranchRiseAndFallHighest(financialDataAnalysisDomainService.analysisTwoFinancialDataBranchHighest());
         financialBranchRiseAndFallHighestAndLowest.setFinancialBranchRiseAndFallLowest(financialDataAnalysisDomainService.analysisTwoFinancialDataBranchLowest());
         return financialBranchRiseAndFallHighestAndLowest;
+    }
+
+    @GetMapping("/CommoditiesCurrencyNumber")
+    @Operation(summary = "商品和货币的关系")
+    public CommoditiesCurrencyNumberResponse getCommoditiesCurrencyNumber() {
+        return CommoditiesAssembler.buildCommoditiesCurrencyNumberResponseFromBOs(commoditiesDomainService.getCommoditiesCurrencyNumber());
     }
 }

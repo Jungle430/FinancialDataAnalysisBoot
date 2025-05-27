@@ -1,6 +1,7 @@
 package com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.mapper;
 
 import com.bupt.Jungle.FinancialDataAnalysis.infrastructure.dal.model.CommoditiesPO;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -37,4 +38,6 @@ public interface CommoditiesMapper {
     );
 
     List<CommoditiesPO> queryAllTags();
+
+    List<ImmutablePair<Long, String>> queryCurrencyNumber();
 }

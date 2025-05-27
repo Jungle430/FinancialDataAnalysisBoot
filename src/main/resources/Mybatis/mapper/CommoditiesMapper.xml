@@ -130,4 +130,12 @@
         GROUP BY ts
         ORDER BY ts;
     </select>
+
+    <select id="queryCurrencyNumber" resultType="org.apache.commons.lang3.tuple.ImmutablePair">
+        SELECT COUNT(*) AS number, currency
+        FROM (SELECT TAGS currency
+        FROM <include refid="commoditiesSTable"/>)
+        GROUP BY currency
+        ORDER BY number DESC;
+    </select>
 </mapper>
