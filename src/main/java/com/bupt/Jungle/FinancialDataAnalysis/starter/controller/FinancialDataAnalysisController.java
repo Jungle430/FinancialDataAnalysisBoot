@@ -129,7 +129,7 @@ public class FinancialDataAnalysisController {
         return financialBranchRiseAndFallHighestAndLowest;
     }
 
-    @GetMapping("/CommoditiesCurrencyNumber")
+    @GetMapping("/commoditiesCurrencyNumber")
     @Operation(summary = "商品和货币的关系")
     public CommoditiesCurrencyNumberResponse getCommoditiesCurrencyNumber() {
         return CommoditiesAssembler.buildCommoditiesCurrencyNumberResponseFromBOs(commoditiesDomainService.getCommoditiesCurrencyNumber());
