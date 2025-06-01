@@ -20,6 +20,9 @@ personal:
       head_key: "X-Token"
       prefix: "userService:token:"
       expiration_time_in_days: 3
+  transformer_predict:
+    ip: localhost
+    port: 5000
 
 spring:
   application:

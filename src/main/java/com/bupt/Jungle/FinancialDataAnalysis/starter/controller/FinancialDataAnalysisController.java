@@ -134,4 +134,10 @@ public class FinancialDataAnalysisController {
     public CommoditiesCurrencyNumberResponse getCommoditiesCurrencyNumber() {
         return CommoditiesAssembler.buildCommoditiesCurrencyNumberResponseFromBOs(commoditiesDomainService.getCommoditiesCurrencyNumber());
     }
+
+    @GetMapping("/predict/{code}")
+    @Operation(summary = "股票预测值")
+    public List<Double> predictStock(@PathVariable(name = "code") String code) {
+        return financialDataAnalysisDomainService.predictStock(code);
+    }
 }
