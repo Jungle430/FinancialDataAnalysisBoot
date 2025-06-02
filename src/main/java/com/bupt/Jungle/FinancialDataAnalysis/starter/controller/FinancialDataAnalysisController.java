@@ -135,9 +135,15 @@ public class FinancialDataAnalysisController {
         return CommoditiesAssembler.buildCommoditiesCurrencyNumberResponseFromBOs(commoditiesDomainService.getCommoditiesCurrencyNumber());
     }
 
-    @GetMapping("/predict/{code}")
+    @GetMapping("/predict/data/{code}")
     @Operation(summary = "股票预测值")
-    public List<Double> predictStock(@PathVariable(name = "code") String code) {
-        return financialDataAnalysisDomainService.predictStock(code);
+    public List<Double> predictStockData(@PathVariable(name = "code") String code) {
+        return financialDataAnalysisDomainService.predictStockData(code);
+    }
+
+    @GetMapping("/predict/attributes")
+    @Operation(summary = "股票预测值的属性")
+    public List<String> predictStockAttributes() {
+        return financialDataAnalysisDomainService.predictStockAttributes();
     }
 }

@@ -350,8 +350,8 @@ public class FinancialDataAnalysisDomainService {
         log.info("cacheService.set end, key:{}", analysisTwoFinancialDataBranchHighestAndLowestTaskHighestKey);
     }
 
-    public List<Double> predictStock(String code) {
-        String url = String.format("http://%s:%d/predict/%s", transformerWebIp, transformerWebPort, code);
+    public List<Double> predictStockData(String code) {
+        String url = String.format("http://%s:%d/predict/data/%s", transformerWebIp, transformerWebPort, code);
         log.info("start http call for {}", url);
         ParameterizedTypeReference<Result<List<Double>>> typeRef =
                 new ParameterizedTypeReference<>() {
@@ -370,6 +370,31 @@ public class FinancialDataAnalysisDomainService {
         if (!res.isSuccess()) {
             log.error("call http for {} tail, success is fail", url);
             throw new BusinessException("预测出现问题，请稍后再试");
+        }
+        log.info("end http call for {}", url);
+        return res.getData().subList(1, res.getData().size());
+    }
+
+    public List<String> predictStockAttributes() {
+        String url = String.format("http://%s:%d/predict/attributes", transformerWebIp, transformerWebPort);
+        log.info("start http call for {}", url);
+        ParameterizedTypeReference<Result<List<String>>> typeRef =
+                new ParameterizedTypeReference<>() {
+                };
+        ResponseEntity<Result<List<String>>> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                typeRef
+        );
+        Result<List<String>> res = response.getBody();
+        if (Objects.isNull(res)) {
+            log.error("call http for {} fail, res is null", url);
+            throw new BusinessException("股票数据出现问题，请稍后再试");
+        }
+        if (!res.isSuccess()) {
+            log.error("call http for {} tail, success is fail", url);
+            throw new BusinessException("股票数据出现问题，请稍后再试");
         }
         log.info("end http call for {}", url);
         return res.getData().subList(1, res.getData().size());
