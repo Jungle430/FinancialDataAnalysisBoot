@@ -368,7 +368,7 @@ public class FinancialDataAnalysisDomainService {
             throw new BusinessException("预测出现问题，请稍后再试");
         }
         if (!res.isSuccess()) {
-            log.error("call http for {} tail, success is fail", url);
+            log.error("call http for {} fail, success is fail", url);
             throw new BusinessException("预测出现问题，请稍后再试");
         }
         log.info("end http call for {}", url);
