@@ -16,6 +16,9 @@ public class CurrencyBO {
      */
     private String currencyCode;
 
+    /**
+     * 中文名称
+     */
     private String simplifiedChineseName;
 
     private String englishName;
