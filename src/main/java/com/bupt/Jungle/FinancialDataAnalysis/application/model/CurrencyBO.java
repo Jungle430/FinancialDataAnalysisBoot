@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CurrencyBO {
+    /**
+     * 货币代码
+     */
     private String currencyCode;
 
     private String simplifiedChineseName;
